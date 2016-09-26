@@ -1,0 +1,14 @@
+{
+    outputDirectory: "../../Factorio_0.14.7/mods",
+    info:{
+        "name": "subterra",
+        "version": "0.0.1",
+        "factorio_version": "0.14",
+        "title": "Subterranean Mod",
+        "author": "Daedeross",
+        "homepage": "n/a",
+        "contact": "n/a",
+        "description": "Adds a subterranean surface and special entities to place there.",
+        "dependencies": ["base >= 0.14.0", "? rso-mod"]
+    }
+}
