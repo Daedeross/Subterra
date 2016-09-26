@@ -5,7 +5,7 @@ data:extend(
     name = "subterra_straight-rail",
     icon = "__base__/graphics/icons/rail.png",
     flags = {"placeable-neutral", "player-creation", "building-direction-8-way"},
-    minable = {mining_time = 0.5, result = "rail"},
+    minable = {mining_time = 0.5, result = "subterra_rail"},
     max_health = 100,
     corpse = "straight-rail-remnants",
     resistances =
@@ -25,7 +25,7 @@ data:extend(
     name = "curved-rail",
     icon = "__base__/graphics/icons/curved-rail.png",
     flags = {"placeable-neutral", "player-creation", "building-direction-8-way"},
-    minable = {mining_time = 0.5, result = "rail", count = 4},
+    minable = {mining_time = 0.5, result = "subterra_rail", count = 4},
     max_health = 200,
     corpse = "curved-rail-remnants",
     resistances =
