@@ -9,12 +9,13 @@ function get_member_safe( t, key )
   end
 end
 
-function addPlayerProxy(index, player)
-    if global.player_proxies[index] == nil then
+function addPlayerProxy(i, p)
+    if global.player_proxies[i] == nil then
         local proxy = {
-            name = player.name
+            name = player.name,
+            index = i,
+            player = p,
         }
-        proxy.index = index
-        global.player_proxies[index] = proxy
+        global.player_proxies[i] = proxy
     end
 end

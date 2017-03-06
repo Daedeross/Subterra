@@ -20,7 +20,7 @@ INITIAL_EXTENTS = {
 	right_bottom  = { x =  1000, y =  1000},
 }
 
-DEBUG = true
+DEBUG = false
 
 function make_bbox(left, top, right, bottom)
 	return { 
@@ -71,7 +71,7 @@ function QuadtreeNode:add_proxy (proxy)
 		-- print ("self: " .. tostring(self))
 		-- print ("proxies: " .. tostring(self.proxies))
 		table.insert(self.proxies, proxy)
-		if table.getn(self.proxies) >= MAX_ITEMS_PER_QUADTREE_NODE then
+		if #self.proxies >= MAX_ITEMS_PER_QUADTREE_NODE then
 			self:split()
 		end
 	else
@@ -389,7 +389,6 @@ if DEBUG then
 	end
 
 	print("now attempting to clear metatables...")
-	
 
 	function clear_metatable(o)
 		if o ~= nil then

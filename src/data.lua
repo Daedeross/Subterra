@@ -1,2 +1,5 @@
 require("config")
 require("prototypes.tile.tiles")
+require("prototypes.entity.pads")
+require("prototypes.entity.rail")
+require("prototypes.items.pads")

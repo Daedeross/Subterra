@@ -13,12 +13,16 @@ function OnChunkGenerated(event)
     local pos = {bb.left_top.x + 16, bb.left_top.y + 16 }
     if surface.name == "nauvis" then
         -- generate below-ground chunk if necessary
-        game.surfaces["underground-1"].request_to_generate_chunks(pos, 1)
-    elseif surface.name == "underground-1" then
+        if not game.surfaces["underground_1"].is_chunk_generated(pos) then
+            game.surfaces["underground_1"].request_to_generate_chunks(pos, 1)
+        end
+    elseif surface.name == "underground_1" then
         --game.print("Gen")
         
         -- generate above-ground chunk if necessary
-        game.surfaces["nauvis"].request_to_generate_chunks(pos, 1)
+        if game.surfaces["underground_1"].is_chunk_generated(pos) then
+            game.surfaces["nauvis"].request_to_generate_chunks(pos, 1)
+        end
         
         local entities = surface.find_entities(bb)
         for k, e in pairs(entities) do

@@ -24,13 +24,13 @@ function InitializeSubterra ()
     end
     gen_settings.peaceful_mode = true
     -- create surface with no resources
-    if game.surfaces["underground-1"] == nil then
-        game.create_surface("underground-1", gen_settings)
-        game.surfaces["underground-1"].daytime = 0.5
-        game.surfaces["underground-1"].freeze_daytime(true)
+    if game.surfaces["underground_1"] == nil then
+        game.create_surface("underground_1", gen_settings)
+        game.surfaces["underground_1"].daytime = 0.5
+        game.surfaces["underground_1"].freeze_daytime(true)
     end
     if remote.interfaces["RSO"] then
-        remote.call("RSO", "ignoreSurface", "underground-1")
+        remote.call("RSO", "ignoreSurface", "underground_1")
     end
     
     -- create player proxies
@@ -39,6 +39,13 @@ function InitializeSubterra ()
     for i, p in pairs(game.players) do
        addPlayerProxy(i, p)
     end
+
+    -- initialize telepad container
+    global.telepads = {
+        nauvis = Quadtree:new(),
+        underground_1 = Quadtree:new()
+    }
+
 end
 
 --============================================================================--

@@ -7,7 +7,7 @@ param (
 
 $buildInfo = Get-Content "$InfoPath" | ConvertFrom-Json
 
-$resolvedPath = rvpa $buildInfo.outputDirectory
+$resolvedPath = rvpa $buildInfo.output_directory
 $modsDir = $resolvedPath.ToString()
 
 if(!$NoClean) {
