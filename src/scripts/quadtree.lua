@@ -364,7 +364,8 @@ Quadtree = {}
 
 function Quadtree:new(o)
 	local qt = o or {
-		root = QuadtreeNode:new(INITIAL_EXTENTS)
+		root = QuadtreeNode:new(INITIAL_EXTENTS),
+		entities = {}
 	}
 	setmetatable(qt, self)
 	self.__index = self
@@ -380,12 +381,17 @@ function Quadtree:add_proxy(proxy)
 	if self.root:check_proxy_collision(proxy.bbox) then
 		return false
 	end
+	table.insert(self.proxies, proxy)
 	self:add_proxy_unsafe(proxy)
 	return true
 end
 
 function Quadtree:remove_proxy(proxy)
-	return self.root:remove_proxy(proxy)
+	local p = self.root:remove_proxy(proxy)
+	if p ~= nil then
+		return table.remove(self.proxies, proxy)
+	end
+	return p
 end
 
 function Quadtree:check_proxy_collision (bbox)

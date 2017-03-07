@@ -86,3 +86,10 @@ function AddTelepadProxy(pad, surface)
         
     -- end
 end
+
+function handle_remove_telepad(entity)
+    -- local sname = entity.surface.name
+    -- local pads = global.layers[s_name].telepads
+    -- local proxy = pads.proxies
+    -- global.layers[s_name].telepads:remove_proxy()
+end
