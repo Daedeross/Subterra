@@ -4,8 +4,9 @@
 
 
 require 'util'
+require ('config')
 require 'scripts/utils'
-
+MAX_LAYER_COUNT = 2
 
 --============================================================================--
 -- InitializeSubterra()
@@ -23,14 +24,17 @@ function InitializeSubterra ()
         r.richness = 'very-poor'
     end
     gen_settings.peaceful_mode = true
-    -- create surface with no resources
-    if game.surfaces["underground_1"] == nil then
-        game.create_surface("underground_1", gen_settings)
-        game.surfaces["underground_1"].daytime = 0.5
-        game.surfaces["underground_1"].freeze_daytime(true)
-    end
-    if remote.interfaces["RSO"] then
-        remote.call("RSO", "ignoreSurface", "underground_1")
+    -- create surface(s) with no resources
+    for i = 2, MAX_LAYER_COUNT do
+        local layer_name = "underground_" .. tostring(i-1)
+        if game.surfaces[layer_name] == nil then
+            game.create_surface(layer_name, gen_settings)
+            game.surfaces[layer_name].daytime = 0.5
+            game.surfaces[layer_name].freeze_daytime(true)
+        end
+        if remote.interfaces["RSO"] then
+            remote.call("RSO", "ignoreSurface", layer_name)
+        end
     end
     
     -- create player proxies
@@ -41,17 +45,31 @@ function InitializeSubterra ()
     end
 
     -- initialize telepad container
-    global.layers = {
-        0 = {
+    global.layers = {}
+    table.insert(global.layers, {
+            layer_above = nil,
             surface = game.surfaces["nauvis"],
             telepads = Quadtree:new()
-        },
-        1 = {
-            surface = game.surfaces["underground_1"],
+        })
+    global.layers["nauvis"] = global.layers[1]
+
+    for i = 2, MAX_LAYER_COUNT do
+        local l_name = "underground_"..tostring(i-1)
+        local layer = {
+            surface = game.surfaces[l_name],
             telepads = Quadtree:new()
         }
-    }
+        table.insert(global.layers, layer)
+        global.layers[l_name] = layer
+    end
 
+    -- set adjacency
+    for i = 2, MAX_LAYER_COUNT do
+        global.layers[i].layer_above = global.layers[i-1]
+        if i < MAX_LAYER_COUNT then
+            global.layers[i].layer_below = global.layers[i+1]
+        end
+    end
 end
 
 --============================================================================--

@@ -8,17 +8,18 @@ require ("util")
 
 function OnBuiltEntity(event)
     local p_index = event.player_index
+    local player = game.players[event.player_index]
     --local p = game.players[p_index]
-    local surface = game.players[p_index].surface
-    local level = string.match(surface.name"underground_(%d)")
+    local surface = player.surface
+    local level = string.match(surface.name, "underground_(%d)")
     if level == nil then
-        handle_surface_placement(event)
+        handle_surface_placement(event, player)
     else
-        handle_underground_placement(event, level)
+        handle_underground_placement(event, player, level)
     end
 end
 
-function handle_surface_placement(event)
+function handle_surface_placement(event, p)
     local ent = event.created_entity
     if string.find(ent.name, "subterra-u", 1, true) then
         --p.print("u")
@@ -30,7 +31,7 @@ function handle_surface_placement(event)
     end
 end
 
-function handle_underground_placement(event, level)
+function handle_underground_placement(event, p, level)
     local ent = event.created_entity
     if string.find(ent.name, "subterra-u", 1, true) == nil then
         local prod = ent.prototype.mineable_properties.products[1].name
@@ -78,7 +79,7 @@ function AddTelepadProxy(pad, surface)
         entity = pad,
         bbox = pad.bounding_box
     }
-    global.telepads[sname]:add_proxy(pad_proxy)
+    global.layers[sname].telepads:add_proxy(pad_proxy)
 
     -- add pad to other surface
     -- if string.find(sname, "underground", 1, true) then
