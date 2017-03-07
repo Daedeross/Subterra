@@ -20,13 +20,13 @@ function OnChunkGenerated(event)
         --game.print("Gen")
         
         -- generate above-ground chunk if necessary
-        if game.surfaces["underground_1"].is_chunk_generated(pos) then
+        if not game.surfaces["nauvis"].is_chunk_generated(pos) then
             game.surfaces["nauvis"].request_to_generate_chunks(pos, 1)
         end
         
         local entities = surface.find_entities(bb)
         for k, e in pairs(entities) do
-            if e.type ~= 'player' then
+            if e.type ~= 'player' then  -- just in case someone is walking there when it's generating...
                 entities[k].destroy()
             end
         end
@@ -34,7 +34,7 @@ function OnChunkGenerated(event)
         local new_tiles = {}
         for i=bb.left_top.x, bb.right_bottom.x do
             for j=bb.left_top.y, bb.right_bottom.y do
-                local old_tile = surface.get_tile(i, j).name
+                --local old_tile = surface.get_tile(i, j).name
                 --if not (old_tile == "water" or old_tile == "water-green" or old_tile == "deepwater" or old_tile == "deepwater-green") then
                     table.insert(new_tiles, {name="sub-dirt", position={i,j}})
                 --end

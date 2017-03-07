@@ -41,17 +41,23 @@ function InitializeSubterra ()
     end
 
     -- initialize telepad container
-    global.telepads = {
-        nauvis = Quadtree:new(),
-        underground_1 = Quadtree:new()
+    global.layers = {
+        0 = {
+            surface = game.surfaces["nauvis"],
+            telepads = Quadtree:new()
+        },
+        1 = {
+            surface = game.surfaces["underground_1"],
+            telepads = Quadtree:new()
+        }
     }
 
 end
 
 --============================================================================--
--- InitializeSubterra()
+-- OnPlayerJoined()
 --
--- initiate mod and generate underground surface
+-- add player to needed data structures
 -- wired in control.lua:
 --============================================================================--
 function OnPlayerJoined(event)

@@ -14,11 +14,16 @@
 --QuadtreeNode
 
 
-MAX_ITEMS_PER_QUADTREE_NODE = 8	-- this will eventually be in a config file
-INITIAL_EXTENTS = {
-	left_top      = { x = -1000, y = -1000},
-	right_bottom  = { x =  1000, y =  1000},
-}
+if MAX_ITEMS_PER_QUADTREE_NODE == nil then
+	MAX_ITEMS_PER_QUADTREE_NODE = 8	-- this will eventually be in a config file
+end
+
+if INITIAL_EXTENTS == nil then
+	INITIAL_EXTENTS = {
+		left_top      = { x = -1000, y = -1000},
+		right_bottom  = { x =  1000, y =  1000},
+	}
+end
 
 DEBUG = false
 
@@ -216,6 +221,47 @@ function QuadtreeNode:check_proxy_collision (bbox)
 	return nil
 end
 
+-- remove a proxy from the Node and returns it
+-- retursn 'nil' if proxy is not in the Node
+function QuadtreeNode:remove_proxy(proxy)
+	-- first check if it is even in this node
+	if bbox.left_top.x > self.extents.right_bottom.x or
+	   bbox.left_top.y > self.extents.right_bottom.y or
+	   bbox.right_bottom.x < self.extents.left_top.x or
+	   bbox.right_bottom.y < self.extents.left_top.y then
+		return nil -- no matching proxy
+	end
+	if self.children == nil then
+		-- remove proxy from table (if it's there) and return it
+		return table.remove(self.proxies, p)
+	else
+		-- recursievly check child nodes
+		local result = nil
+		if bbox.left_top.y < self.center.y then
+			if bbox.left_top.x < self.center.x then
+				result = self.children[1]:remove_proxy(proxy)
+				if result ~= nil then return result end
+			end
+			if bbox.right_bottom.x > self.center.x then
+				result = self.children[2]:remove_proxy(proxy)
+				if result ~= nil then return result end
+			end
+		end
+		if bbox.right_bottom.y > self.center.y then
+			if bbox.left_top.x < self.center.x then
+				result = self.children[3]:remove_proxy(proxy)
+				if result ~= nil then return result end
+			end
+			if bbox.right_bottom.x > self.center.x then
+				result = self.children[4]:remove_proxy(proxy)
+				if result ~= nil then return result end
+			end
+		end
+	end
+	-- if we get here the proxy is not contained in this node
+	return nil
+end
+
 -- if the proxy to add is outside the extents of the tree,
 -- then create a new root node and make 'this' one of its
 -- children. The new root is thus twice the dimensions (4x the area).
@@ -336,6 +382,10 @@ function Quadtree:add_proxy(proxy)
 	end
 	self:add_proxy_unsafe(proxy)
 	return true
+end
+
+function Quadtree:remove_proxy(proxy)
+	return self.root:remove_proxy(proxy)
 end
 
 function Quadtree:check_proxy_collision (bbox)

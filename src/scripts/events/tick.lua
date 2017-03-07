@@ -1,5 +1,3 @@
-
-
 function OnTick(event)
     local tick = event.tick
     CheckBelts()
@@ -24,8 +22,26 @@ end
 
 function CheckBelts()
     for _,b in pairs(global.belt_telepads) do
-        local line1 = b.entity.get_transport_line(1)
-        local line2 = b.entity.get_transport_line(2)
+        local in1 = b.input.get_transport_line(1)
+        local in2 = b.input.get_transport_line(2)
+        local out1 = b.output.get_transport_line(1)
+        local out2 = b.output.get_transport_line(2)
         
+        for n, c in pairs(in1.get_contents()) do
+            while c > 0 and out1.can_insert_at_back() do
+                if  then
+                    out1.insert_at_back({name=n})
+                    c = c -1
+                end
+            end
+        end
+        for n, c in pairs(in2.get_contents()) do
+            while c > 0 and out2.can_insert_at_back() do
+                if  then
+                    out2.insert_at_back({name=n})
+                    c = c -1
+                end
+            end
+        end
     end 
 end

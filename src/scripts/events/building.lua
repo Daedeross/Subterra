@@ -7,39 +7,38 @@
 require ("util")
 
 function OnBuiltEntity(event)
--- <<<<<<< HEAD
-    handle_placement(event)
--- =======
---     local p_index = event.player_index
---     local p = game.players[p_index]
---     local surface = game.players[event.player_index].surface
---     if surface.name == "underground-1" then
---         handle_sub_placement(event)
---     elseif surface.name == "nauvis" then
---         handle_surface_placement(event)
---     end
--- >>>>>>> eded83eb5a99b4e9f0c3f829b055f2873e0679d9
+    local p_index = event.player_index
+    --local p = game.players[p_index]
+    local surface = game.players[p_index].surface
+    local level = string.match(surface.name"underground_(%d)")
+    if level == nil then
+        handle_surface_placement(event)
+    else
+        handle_underground_placement(event, level)
+    end
 end
 
-function handle_sub_placement(event)
+function handle_surface_placement(event)
     local ent = event.created_entity
--- <<<<<<< HEAD
     if string.find(ent.name, "subterra-u", 1, true) then
-        p.print("u")
-        if p.surface.name ~= "underground_1" then
-            local prod = ent.prototype.mineable_properties.products[1].name
-            p.insert{name = prod, count = 1}
-            ent.destroy()
-        elseif ent.name == "subterra-u-telepad-up" then
-            AddTelepadProxy(ent, p.surface)
-        end
-    else
-        if p.surface.name == "underground_1" then
-            local prod = ent.prototype.mineable_properties.products[1].name
-            p.insert{name = prod, count = 1}
-            ent.destroy()
-        elseif ent.name == "subterra-telepad-down" then
-            AddTelepadProxy(ent, p.surface)
+        --p.print("u")
+        local prod = ent.prototype.mineable_properties.products[1].name
+        p.insert{name = prod, count = 1}
+        ent.destroy()
+    elseif ent.name == "subterra-telepad-down" then
+        AddTelepadProxy(ent, p.surface)
+    end
+end
+
+function handle_underground_placement(event, level)
+    local ent = event.created_entity
+    if string.find(ent.name, "subterra-u", 1, true) == nil then
+        local prod = ent.prototype.mineable_properties.products[1].name
+        p.insert{name = prod, count = 1}
+        ent.destroy()
+    elseif ent.name == "subterra-u-telepad-up" then
+        AddTelepadProxy(ent, p.surface)
+    end
 -- =======
 --     if not string.find(ent.name, "subterra_u-") then
 --         local prod = ent.prototype.mineable_properties.products[1].name
@@ -64,8 +63,6 @@ function handle_sub_placement(event)
 --             }
 --             global.underground.belt_telepads.add_proxy(proxy)
 -- >>>>>>> eded83eb5a99b4e9f0c3f829b055f2873e0679d9
-        end
-    end
 end
 
 function AddTelepadProxy(pad, surface)

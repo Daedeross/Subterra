@@ -1,5 +1,3 @@
-
-
 function get_member_safe( t, key )
   local call_result, value = pcall( function () return t[key] end )
   if call_result then
