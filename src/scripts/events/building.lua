@@ -87,9 +87,20 @@ function AddTelepadProxy(pad, surface)
     -- end
 end
 
+function OnPrePlayerMinedItem(event)
+    if string.find(event.entity.prototype.name, "telepad") ~= nil then
+        handle_remove_telepad(event.entity)
+    end
+end
+
+function OnPreRobotMinedItem(event)
+    if string.find(event.entity.prototype.name, "telepad") ~= nil then
+        handle_remove_telepad(event.entity)
+    end
+end
+
 function handle_remove_telepad(entity)
-    -- local sname = entity.surface.name
-    -- local pads = global.layers[s_name].telepads
-    -- local proxy = pads.proxies
-    -- global.layers[s_name].telepads:remove_proxy()
+    local sname = entity.surface.name
+    local pads = global.layers[s_name].telepads
+    local proxy = pads:remove_proxy(entity.bounding_box)
 end

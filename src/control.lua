@@ -23,3 +23,9 @@ script.on_event(defines.events.on_player_joined_game, OnPlayerJoined)
 script.on_event(defines.events.on_built_entity, OnBuiltEntity)
 
 script.on_event(defines.events.on_tick, OnTick)
+
+script.on_event(defines.events.one_entity_died, OnEntityDied)
+
+script.on_event(defines.events.on_preplayer_mined_item, OnPrePlayerMinedItem)
+
+script.on_event(defines.events.on_robot_pre_mined, OnPreRobotMinedItem)
