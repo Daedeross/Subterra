@@ -6,7 +6,7 @@
 require 'util'
 require ('config')
 require 'scripts/utils'
-MAX_LAYER_COUNT = 2
+--MAX_LAYER_COUNT = 2
 
 --============================================================================--
 -- InitializeSubterra()
@@ -25,7 +25,7 @@ function InitializeSubterra ()
     end
     gen_settings.peaceful_mode = true
     -- create surface(s) with no resources
-    for i = 2, MAX_LAYER_COUNT do
+    for i = 2, subterra.config.MAX_LAYER_COUNT do
         local layer_name = "underground_" .. tostring(i-1)
         if game.surfaces[layer_name] == nil then
             game.create_surface(layer_name, gen_settings)
@@ -47,15 +47,17 @@ function InitializeSubterra ()
     -- initialize telepad container
     global.layers = {}
     table.insert(global.layers, {
+            index = 1,
             layer_above = nil,
             surface = game.surfaces["nauvis"],
             telepads = Quadtree:new()
         })
     global.layers["nauvis"] = global.layers[1]
 
-    for i = 2, MAX_LAYER_COUNT do
+    for i = 2, subterra.config.MAX_LAYER_COUNT do
         local l_name = "underground_"..tostring(i-1)
         local layer = {
+            index = i,
             surface = game.surfaces[l_name],
             telepads = Quadtree:new()
         }
@@ -64,12 +66,18 @@ function InitializeSubterra ()
     end
 
     -- set adjacency
-    for i = 2, MAX_LAYER_COUNT do
+    global.layers[1].layer_below = global.layers[2]
+    for i = 2, subterra.config.MAX_LAYER_COUNT do
         global.layers[i].layer_above = global.layers[i-1]
-        if i < MAX_LAYER_COUNT then
+        if i < subterra.config.MAX_LAYER_COUNT then
             global.layers[i].layer_below = global.layers[i+1]
+        else
+            global.layers[i].layer_below = nil
         end
     end
+
+    -- set underground enitity list
+    global.underground_entities = table.deepcopy(subterra.config.starting_entities)
 end
 
 --============================================================================--

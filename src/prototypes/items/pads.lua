@@ -1,12 +1,12 @@
  data:extend({
     {   
         type = "item",
-        name = "subterra-u-telepad-up",
+        name = "subterra-telepad-up",
         icon = "__subterra__/graphics/entities/telepad/telepad-up-icon.png",
         flags = {"goes-to-quickbar"},
         subgroup = "transport",
         order = "a[telepad]",
-        place_result = "subterra-u-telepad-up",
+        place_result = "subterra-telepad-up",
         stack_size = 50
     },
     {   
@@ -26,9 +26,9 @@
         flags = {"goes-to-quickbar"},
         subgroup = "transport",
         order = "a[train-system]-a[rail]",
-        place_result = "subterra-u-straight-rail",
+        place_result = "subterra-straight-rail",
         stack_size = 100,
-        straight_rail = "subterra-u-straight-rail",
-        curved_rail = "subterra-u-curved-rail"
+        straight_rail = "subterra-straight-rail",
+        curved_rail = "subterra-curved-rail"
     },
 })

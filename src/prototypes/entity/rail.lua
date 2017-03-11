@@ -38,7 +38,7 @@ data:extend(
 {
   {
     type = "straight-rail",
-    name = "subterra-u-straight-rail",
+    name = "subterra-straight-rail",
     icon = "__base__/graphics/icons/rail.png",
     flags = {"placeable-neutral", "player-creation", "building-direction-8-way"},
     minable = {mining_time = 0.5, result = "subterra-rail"},
@@ -58,7 +58,7 @@ data:extend(
   },
   {
     type = "curved-rail",
-    name = "subterra-u-curved-rail",
+    name = "subterra-curved-rail",
     icon = "__base__/graphics/icons/curved-rail.png",
     flags = {"placeable-neutral", "player-creation", "building-direction-8-way"},
     minable = {mining_time = 0.5, result = "subterra-rail", count = 4},

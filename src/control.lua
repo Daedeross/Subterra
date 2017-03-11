@@ -1,8 +1,8 @@
 if not subterra then subterra = {} end
 if not subterra.config then subterra.config = {} end
 
-require "util"
-require "config"
+require("util")
+require("config")
 require("scripts.events.initialization")
 require("scripts.events.generation")
 require("scripts.events.building")
@@ -24,7 +24,7 @@ script.on_event(defines.events.on_built_entity, OnBuiltEntity)
 
 script.on_event(defines.events.on_tick, OnTick)
 
-script.on_event(defines.events.one_entity_died, OnEntityDied)
+script.on_event(defines.events.on_entity_died, OnEntityDied)
 
 script.on_event(defines.events.on_preplayer_mined_item, OnPrePlayerMinedItem)
 

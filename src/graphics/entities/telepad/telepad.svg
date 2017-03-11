@@ -28,9 +28,9 @@
      inkscape:pageshadow="2"
      inkscape:zoom="0.5"
      inkscape:cx="444.18038"
-     inkscape:cy="439.07463"
+     inkscape:cy="359.07463"
      inkscape:document-units="px"
-     inkscape:current-layer="layer4"
+     inkscape:current-layer="layer5"
      showgrid="true"
      units="px"
      inkscape:snap-grids="true"
@@ -65,7 +65,7 @@
      id="layer1"
      transform="translate(0,-236.36212)"
      sodipodi:insensitive="true"
-     style="display:none">
+     style="display:inline">
     <rect
        style="fill:#007d80;fill-opacity:1;stroke:#000000;stroke-width:2.37167525;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
        id="rect4144"
@@ -648,7 +648,7 @@
      inkscape:groupmode="layer"
      id="layer4"
      inkscape:label="Down"
-     style="display:inline">
+     style="display:none">
     <flowRoot
        transform="translate(-155,270)"
        style="font-style:normal;font-weight:normal;font-size:50px;line-height:125%;font-family:sans-serif;text-align:center;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
@@ -921,4 +921,21 @@
        width="100%"
        height="100%" />
   </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer5"
+     inkscape:label="Icon">
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot4719"
+       style="font-style:normal;font-weight:normal;font-size:90px;line-height:125%;font-family:sans-serif;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       transform="translate(2,618)"><flowRegion
+         id="flowRegion4721"><rect
+           id="rect4723"
+           width="132"
+           height="136"
+           x="33"
+           y="34.000011"
+           style="font-size:90px" /></flowRegion><flowPara
+         id="flowPara4725">D</flowPara></flowRoot>  </g>
 </svg>

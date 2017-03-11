@@ -1,10 +1,10 @@
 data:extend({
     {
     type = "lamp",
-    name = "subterra-u-telepad-up",
+    name = "subterra-telepad-up",
     icon = "__subterra__/graphics/entities/telepad/telepad-up-icon.png",
     flags = {"placeable-neutral", "player-creation"},
-    minable = {hardness = 0.1, mining_time = 0.1, result = "subterra-u-telepad-up"},
+    minable = {hardness = 0.1, mining_time = 0.1, result = "subterra-telepad-up"},
     max_health = 55,
     corpse = "big-remnants",
     collision_box = {{-1.2, -1.2}, {1.2, 1.2}},

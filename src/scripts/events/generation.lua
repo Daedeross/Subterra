@@ -11,19 +11,25 @@ function OnChunkGenerated(event)
     local bb = event.area
     local surface = event.surface
     local pos = {bb.left_top.x + 16, bb.left_top.y + 16 }
-    if surface.name == "nauvis" then
-        -- generate below-ground chunk if necessary
-        if not game.surfaces["underground_1"].is_chunk_generated(pos) then
-            game.surfaces["underground_1"].request_to_generate_chunks(pos, 1)
+    local layer = global.layers[surface.name]
+    -- if the surface name is not a key in global.layers,
+    -- then it is a surface from another mod and will be ignored
+    if layer == nil then
+        return
+    end
+    local index = layer.index
+    -- genreate chunk on other layers if necessary
+    for i = 1, subterra.config.MAX_LAYER_COUNT do
+        if i ~= index then
+            local l_surface = global.layers[i].surface
+            if l_surface.is_chunk_generated(pos) then
+                l_surface.request_to_generate_chunks(pos, 1)
+            end
         end
-    elseif surface.name == "underground_1" then
-        --game.print("Gen")
-        
-        -- generate above-ground chunk if necessary
-        if not game.surfaces["nauvis"].is_chunk_generated(pos) then
-            game.surfaces["nauvis"].request_to_generate_chunks(pos, 1)
-        end
-        
+    end
+
+    -- clear entities and set tiles if this is a below ground chunk
+    if index ~= 1 then
         local entities = surface.find_entities(bb)
         for k, e in pairs(entities) do
             if e.type ~= 'player' then  -- just in case someone is walking there when it's generating...
