@@ -44,7 +44,7 @@ function InitializeSubterra ()
        addPlayerProxy(i, p)
     end
 
-    -- initialize telepad container
+    -- initialize layers container
     global.layers = {}
     table.insert(global.layers, {
             index = 1,
@@ -65,9 +65,10 @@ function InitializeSubterra ()
         global.layers[l_name] = layer
     end
 
-    -- set adjacency
+    -- set adjacency and kickstart chunk generation
     global.layers[1].layer_below = global.layers[2]
     for i = 2, subterra.config.MAX_LAYER_COUNT do
+        global.layers[i].surface.request_to_generate_chunks({0,0}, 10)
         global.layers[i].layer_above = global.layers[i-1]
         if i < subterra.config.MAX_LAYER_COUNT then
             global.layers[i].layer_below = global.layers[i+1]
@@ -75,6 +76,9 @@ function InitializeSubterra ()
             global.layers[i].layer_below = nil
         end
     end
+
+    -- initialize belt-elevator container
+    global.belt_elevators = {}
 
     -- set underground enitity list
     global.underground_entities = table.deepcopy(subterra.config.starting_entities)

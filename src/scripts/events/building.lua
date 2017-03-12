@@ -27,8 +27,16 @@ end
 
 function handle_surface_placement(event, p)
     local ent = event.created_entity
+    debug("place")
+    debug(ent.name)
+    debug(string.find(ent.name, "subterra%-belt"))
     if string.find(ent.name, "telepad") ~= nil then
         if not AddTelepadProxy(ent, p.surface) then
+            destroy_and_return(ent, p)
+        end
+    elseif string.find(ent.name, "subterra%-belt") ~= nil then
+        debug("belt")
+        if not add_belt_proxy(ent, p.surface) then
             destroy_and_return(ent, p)
         end
     end
@@ -40,6 +48,10 @@ function handle_underground_placement(event, p, level)
     if global.underground_entities[ent.name] then
         if string.find(ent.name, "telepad") ~= nil then
             if not AddTelepadProxy(ent, p.surface) then
+                destroy_and_return(ent, p)
+            end
+        elseif string.find(ent.name, "subterra%-belt") ~= nil then
+            if not add_belt_proxy(ent, p.surface) then
                 destroy_and_return(ent, p)
             end
         end
@@ -108,6 +120,57 @@ function AddTelepadProxy(pad, surface)
     -- if string.find(sname, "underground", 1, true) then
         
     -- end
+    return true
+end
+
+function add_belt_proxy(belt, surface)
+    local sname = surface.name
+    local is_down = string.find(belt.name, "%-down") ~= nil
+    local is_in = string.find(belt.name, "%-in") ~= nil
+    local layer = global.layers[sname]
+
+    local target_layer
+    local target_name
+
+    --debug(layer)
+    if is_down then
+        target_layer = layer.layer_below
+        target_name = "subterra-belt-down-" .. (is_in and "out" or "in")
+    else
+        target_layer = layer.layer_above
+        target_name = "subterra-belt-up-" .. (is_in and "out" or "in")
+    end
+    
+    --debug(target_layer)
+    -- check if target layer exists
+    if target_layer == nil then
+        return false
+    end
+
+    debug("placing")
+
+    -- check if target location is free
+    local target_surface = target_layer.surface
+    if not target_surface.can_place_entity{name = target_name, position = belt.position} then
+        return false
+    end
+
+    local target_entity = target_surface.create_entity{
+        name = target_name,
+        position = belt.position,
+        force = belt.force
+    }
+
+    debug("placed target")
+    debug(target_entity)
+
+    local belt_proxy = {
+        id = belt.unit_number,
+        input = is_in and belt or target_entity,
+        output = is_in and target_entity or belt,
+        target_layer = target_layer,
+    }
+    global.belt_elevators[belt.unit_number] = belt_proxy
     return true
 end
 

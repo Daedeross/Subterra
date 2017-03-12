@@ -23,7 +23,7 @@ function OnChunkGenerated(event)
         if i ~= index then
             local l_surface = global.layers[i].surface
             if l_surface.is_chunk_generated(pos) then
-                l_surface.request_to_generate_chunks(pos, 1)
+                l_surface.request_to_generate_chunks(pos, 0)
             end
         end
     end

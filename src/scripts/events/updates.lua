@@ -1,5 +1,5 @@
 function OnTick(event)
-    --CheckBelts()
+    CheckBelts()
     if event.tick % 30 == 0 then
         CheckPlayerPadCollision()
     end
@@ -22,7 +22,7 @@ function teleport_player(player, pad)
 end
 
 function CheckBelts()
-    for _,b in pairs(global.belt_telepads) do
+    for _,b in pairs(global.belt_elevators) do
         local in1 = b.input.get_transport_line(1)
         local in2 = b.input.get_transport_line(2)
         local out1 = b.output.get_transport_line(1)
@@ -31,12 +31,14 @@ function CheckBelts()
         for n, c in pairs(in1.get_contents()) do
             while c > 0 and out1.can_insert_at_back() do
                 out1.insert_at_back({name=n})
+                in1.remove_item({name=n})
                 c = c -1
             end
         end
         for n, c in pairs(in2.get_contents()) do
             while c > 0 and out2.can_insert_at_back() do
                 out2.insert_at_back({name=n})
+                in2.remove_item({name=n})
                 c = c -1
             end
         end
