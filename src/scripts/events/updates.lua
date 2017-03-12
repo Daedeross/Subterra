@@ -22,7 +22,7 @@ function teleport_player(player, pad)
 end
 
 function CheckBelts()
-    for _,b in pairs(global.belt_elevators) do
+    for _,b in pairs(global.belt_inputs) do
         local in1 = b.input.get_transport_line(1)
         local in2 = b.input.get_transport_line(2)
         local out1 = b.output.get_transport_line(1)

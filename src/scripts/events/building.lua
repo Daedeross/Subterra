@@ -20,16 +20,21 @@ function OnBuiltEntity(event)
 end
 
 function destroy_and_return(built_entity, placing_entity)
-    local prod = built_entity.prototype.mineable_properties.products[1].name
+    local prod
+    if built_entity.prototype.mineable_properties.products then
+        prod = built_entity.prototype.mineable_properties.products[1].name
+    else
+        prod = built_entity.name
+    end
     placing_entity.insert{name = prod, count = 1}
     built_entity.destroy()
 end
 
 function handle_surface_placement(event, p)
     local ent = event.created_entity
-    debug("place")
-    debug(ent.name)
-    debug(string.find(ent.name, "subterra%-belt"))
+    -- debug("place")
+    -- debug(ent.name)
+    -- debug(string.find(ent.name, "subterra%-belt"))
     if string.find(ent.name, "telepad") ~= nil then
         if not AddTelepadProxy(ent, p.surface) then
             destroy_and_return(ent, p)
@@ -58,30 +63,6 @@ function handle_underground_placement(event, p, level)
     else
         destroy_and_return(ent, p)
     end
--- =======
---     if not string.find(ent.name, "subterra_u-") then
---         local prod = ent.prototype.mineable_properties.products[1].name
---         p.insert{name = prod, count = 1}
---         ent.destroy()
---     else
---         if ent.name == "subterra_belt-up" then
---             -- check above-ground spot
---             local newEnt = {
---                 name = "subterra_belt-down",
---                 position = ent.position,
---                 direction = ent.direction,
---                 force = ent.force,
---             }
---             if game.surfaces["nauvis"].can_place_entity{
---                 } then
---                 game.surfaces
---             end
---             local proxy = {
---                 input = ent,
---                 bbox = ent.bounding_box,
---             }
---             global.underground.belt_telepads.add_proxy(proxy)
--- >>>>>>> eded83eb5a99b4e9f0c3f829b055f2873e0679d9
 end
 
 function AddTelepadProxy(pad, surface)
@@ -90,14 +71,14 @@ function AddTelepadProxy(pad, surface)
     local layer = global.layers[sname]
     local target_layer
     
-    --debug(layer)
+    -- debug(layer)
     if is_down then
         target_layer = layer.layer_below
     else
         target_layer = layer.layer_above
     end
     
-    --debug(target_layer)
+    -- debug(target_layer)
     -- check if target layer exists
     if target_layer == nil then
         return false
@@ -126,28 +107,19 @@ end
 function add_belt_proxy(belt, surface)
     local sname = surface.name
     local is_down = string.find(belt.name, "%-down") ~= nil
-    local is_in = string.find(belt.name, "%-in") ~= nil
+    --local is_in = string.find(belt.name, "%-in") ~= nil
     local layer = global.layers[sname]
 
-    local target_layer
-    local target_name
-
-    --debug(layer)
-    if is_down then
-        target_layer = layer.layer_below
-        target_name = "subterra-belt-down-" .. (is_in and "out" or "in")
-    else
-        target_layer = layer.layer_above
-        target_name = "subterra-belt-up-" .. (is_in and "out" or "in")
-    end
+    local target_layer = is_down and layer.layer_below or layer.layer_above
+    local target_name = "subterra-belt-out" -- later if I add more speeds, this will actually be variable
     
-    --debug(target_layer)
+    -- debug(target_layer)
     -- check if target layer exists
     if target_layer == nil then
         return false
     end
 
-    debug("placing")
+    -- debug("placing")
 
     -- check if target location is free
     local target_surface = target_layer.surface
@@ -160,35 +132,43 @@ function add_belt_proxy(belt, surface)
         position = belt.position,
         force = belt.force
     }
-
-    debug("placed target")
-    debug(target_entity)
-
+    -- debug("placed target")
+    -- debug(target_entity)
     local belt_proxy = {
-        id = belt.unit_number,
-        input = is_in and belt or target_entity,
-        output = is_in and target_entity or belt,
+        input = belt,
+        output = target_entity,
         target_layer = target_layer,
     }
-    global.belt_elevators[belt.unit_number] = belt_proxy
+    global.belt_inputs[belt.unit_number] = belt_proxy
+    global.belt_outputs[target_entity.unit_number] = belt_proxy
     return true
 end
 
 function OnEntityDied(event)
-    if string.find(event.entity.prototype.name, "telepad") ~= nil then
+    local name = event.entity.prototype.name
+    if string.find(name, "telepad") ~= nil then
         handle_remove_telepad(event.entity)
+    elseif string.find(name, "subterra%-belt") ~= nil then
+        handle_remove_belt_elevator(event.entity)
     end
 end
 
 function OnPrePlayerMinedItem(event)
-    if string.find(event.entity.prototype.name, "telepad") ~= nil then
+    local name = event.entity.prototype.name
+    if string.find(name, "telepad") ~= nil then
         handle_remove_telepad(event.entity)
+    elseif string.find(name, "subterra%-belt") ~= nil then
+        debug(event.player_index)
+        handle_remove_belt_elevator(event.entity, game.players[event.player_index])
     end
 end
 
 function OnPreRobotMinedItem(event)
-    if string.find(event.entity.prototype.name, "telepad") ~= nil then
+    local name = event.entity.prototype.name
+    if string.find(name, "telepad") ~= nil then
         handle_remove_telepad(event.entity)
+    elseif string.find(name, "subterra%-belt") ~= nil then
+        handle_remove_belt_elevator(event.entity)
     end
 end
 
@@ -196,6 +176,24 @@ function handle_remove_telepad(entity)
     local sname = entity.surface.name
     local pads = global.layers[sname].telepads
     local proxy = pads:remove_proxy(entity.bounding_box)
+end
+
+function handle_remove_belt_elevator(belt, entity)
+    local proxy = global.belt_inputs[belt.unit_number] or global.belt_outputs[belt.unit_number]
+    local in_id = proxy.input.unit_number
+    local out_id = proxy.output.unit_number
+    local mine_results = proxy.input.name -- naming convention, entity is name same as item that places it
+    if belt ~= proxy.input then
+        proxy.input.destroy()
+    else 
+        proxy.output.destroy()
+    end
+    global.belt_inputs[in_id] = nil
+    global.belt_outputs[out_id] = nil
+    debug(entity)
+    if entity ~= nil then
+        entity.insert({name=mine_results})
+    end
 end
 
 function debug(x)

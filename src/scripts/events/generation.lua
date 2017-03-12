@@ -32,7 +32,10 @@ function OnChunkGenerated(event)
     if index ~= 1 then
         local entities = surface.find_entities(bb)
         for k, e in pairs(entities) do
-            if e.type ~= 'player' then  -- just in case someone is walking there when it's generating...
+            if e.type ~= 'player' and -- just in case someone is walking there when it's generating...
+               e.type ~= 'item' and
+               not global.underground_entities[e.name]
+               then  
                 entities[k].destroy()
             end
         end

@@ -78,7 +78,8 @@ function InitializeSubterra ()
     end
 
     -- initialize belt-elevator container
-    global.belt_elevators = {}
+    global.belt_inputs = {}
+    global.belt_outputs = {}
 
     -- set underground enitity list
     global.underground_entities = table.deepcopy(subterra.config.starting_entities)
