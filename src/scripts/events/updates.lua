@@ -1,24 +1,27 @@
 function OnTick(event)
     CheckBelts()
     if event.tick % 30 == 0 then
-        CheckPlayerPadCollision()
+        CheckPlayerPads()
     end
 end
 
-function CheckPlayerPadCollision()
+function CheckPlayerPads()
     for i, p in pairs(game.players) do
         local sname = p.surface.name
         local qt = global.layers[sname].telepads
-
+        local proxy = global.player_proxies[i]
         local pad = qt:check_proxy_collision(p.character.bounding_box)
-        if pad ~= nil then
+        if pad and not proxy.on_pad then
+            proxy.on_pad = true
             p.teleport(p.position, pad.target_layer.surface.name)
+        else
+            proxy.on_pad = false
         end
     end
 end
 
 function teleport_player(player, pad)
-    
+
 end
 
 function CheckBelts()

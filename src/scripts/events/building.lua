@@ -67,40 +67,52 @@ end
 
 function AddTelepadProxy(pad, surface)
     local sname = surface.name
-    local is_down = string.find(pad.name, "down") ~= nil
+    local is_down = string.find(belt.name, "%-down") ~= nil
+    --local is_in = string.find(belt.name, "%-in") ~= nil
     local layer = global.layers[sname]
-    local target_layer
+
+    local target_layer = is_down and layer.layer_below or layer.layer_above
+    local target_name = "subterra-telepad-" .. is_down and "up" or "down"
     
-    -- debug(layer)
-    if is_down then
-        target_layer = layer.layer_below
-    else
-        target_layer = layer.layer_above
-    end
-    
-    -- debug(target_layer)
     -- check if target layer exists
     if target_layer == nil then
         return false
     end
 
-    -- first check for collision up/downstairs
-    -- nah, I'll do that later
+    -- check if target location is free
+    local target_surface = target_layer.surface
+    if not target_surface.can_place_entity{name = target_name, position = belt.position} then
+        return false
+    end
+
+    -- create target pad entity
+    local target_entity = target_surface.create_entity{
+        name = target_name,
+        position = belt.position,
+        force = belt.force
+    }
 
     -- add padd to proxies
     local pad_proxy = {
         name = "proxy_" .. string.format("%010d", pad.unit_number),
-        target_layer = target_layer,
         entity = pad,
+        target_layer = target_layer,
+        --target_entity = target_entity,
         bbox = pad.bounding_box,
-        players = {}    -- TODO: for tracking status of players standing on pad after teleporting, to prevent loops
+        --players = {}    -- TODO: for tracking status of players standing on pad after teleporting, to prevent loops
     }
     global.layers[sname].telepads:add_proxy(pad_proxy)
 
-    -- add pad to other surface
-    -- if string.find(sname, "underground", 1, true) then
-        
-    -- end
+    -- add target pad
+    local target_proxy = {
+        name = "proxy_" .. string.format("%010d", target_entity.unit_number),
+        entity = target_entity,
+        target_layer = layer,
+        target_pad = pad_proxy,
+        bbox = target_entity.bounding_box,
+    }
+    pad_proxy.target_pad = target_proxy
+
     return true
 end
 
