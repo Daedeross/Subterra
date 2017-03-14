@@ -6,16 +6,18 @@ function OnTick(event)
 end
 
 function CheckPlayerPads()
-    for i, p in pairs(game.players) do
-        local sname = p.surface.name
+    for i, p in pairs(global.player_proxies) do
+        local player = p.player
+        local sname = player.surface.name        
         local qt = global.layers[sname].telepads
-        local proxy = global.player_proxies[i]
-        local pad = qt:check_proxy_collision(p.character.bounding_box)
-        if pad and not proxy.on_pad then
-            proxy.on_pad = true
-            p.teleport(p.position, pad.target_layer.surface.name)
+        local pad = qt:check_proxy_collision(player.character.bounding_box)
+        if pad then
+            if not p.on_pad then
+                p.on_pad = true
+                player.teleport(player.position, pad.target_layer.surface.name)
+            end
         else
-            proxy.on_pad = false
+            p.on_pad = false
         end
     end
 end

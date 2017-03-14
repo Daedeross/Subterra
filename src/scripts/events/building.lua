@@ -67,12 +67,11 @@ end
 
 function AddTelepadProxy(pad, surface)
     local sname = surface.name
-    local is_down = string.find(belt.name, "%-down") ~= nil
-    --local is_in = string.find(belt.name, "%-in") ~= nil
+    local is_down = string.find(pad.name, "%-down") ~= nil
     local layer = global.layers[sname]
 
     local target_layer = is_down and layer.layer_below or layer.layer_above
-    local target_name = "subterra-telepad-" .. is_down and "up" or "down"
+    local target_name = "subterra-telepad-" .. (is_down and "up" or "down")
     
     -- check if target layer exists
     if target_layer == nil then
@@ -81,15 +80,15 @@ function AddTelepadProxy(pad, surface)
 
     -- check if target location is free
     local target_surface = target_layer.surface
-    if not target_surface.can_place_entity{name = target_name, position = belt.position} then
+    if not target_surface.can_place_entity{name = target_name, position = pad.position} then
         return false
     end
 
     -- create target pad entity
     local target_entity = target_surface.create_entity{
         name = target_name,
-        position = belt.position,
-        force = belt.force
+        position = pad.position,
+        force = pad.force
     }
 
     -- add padd to proxies
@@ -112,6 +111,7 @@ function AddTelepadProxy(pad, surface)
         bbox = target_entity.bounding_box,
     }
     pad_proxy.target_pad = target_proxy
+    target_layer.telepads:add_proxy(target_proxy)
 
     return true
 end
@@ -188,6 +188,8 @@ function handle_remove_telepad(entity)
     local sname = entity.surface.name
     local pads = global.layers[sname].telepads
     local proxy = pads:remove_proxy(entity.bounding_box)
+    proxy.target_layer.telepads:remove_proxy(proxy.target_pad.entity.bounding_box)
+    proxy.target_pad.entity.destroy()
 end
 
 function handle_remove_belt_elevator(belt, entity)

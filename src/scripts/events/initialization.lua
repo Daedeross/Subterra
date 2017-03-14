@@ -92,5 +92,22 @@ end
 -- wired in control.lua:
 --============================================================================--
 function OnPlayerJoined(event)
-    
+    addPlayerProxy(event.player_index)
+end
+
+function addPlayerProxy(i)
+    local p = game.players[i]
+    if global.player_proxies[i] == nil then
+        local proxy = {
+            name = p.name,
+            index = i,
+            player = p,
+            on_pad = false,
+        }
+        global.player_proxies[i] = proxy
+    end
+end
+
+function OnPlayerLeft(event)
+    global.player_proxies[event.player_index] = nil
 end

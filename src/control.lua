@@ -29,3 +29,7 @@ script.on_event(defines.events.on_entity_died, OnEntityDied)
 script.on_event(defines.events.on_preplayer_mined_item, OnPrePlayerMinedItem)
 
 script.on_event(defines.events.on_robot_pre_mined, OnPreRobotMinedItem)
+
+script.on_event(defines.events.on_player_joined_game, OnPlayerJoined)
+
+script.on_event(defines.events.on_player_left_game, OnPlayerLeft)
