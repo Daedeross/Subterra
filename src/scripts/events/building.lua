@@ -132,7 +132,6 @@ function add_belt_proxy(belt, surface)
     end
 
     -- debug("placing")
-
     -- check if target location is free
     local target_surface = target_layer.surface
     if not target_surface.can_place_entity{name = target_name, position = belt.position} then
