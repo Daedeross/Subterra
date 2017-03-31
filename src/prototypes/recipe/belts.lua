@@ -1,5 +1,4 @@
-data:extend(
-{
+data:extend({
   {
     type = "recipe",
     name = "subterra-belt-down",

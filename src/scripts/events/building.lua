@@ -96,7 +96,6 @@ function AddTelepadProxy(pad, surface)
         name = "proxy_" .. string.format("%010d", pad.unit_number),
         entity = pad,
         target_layer = target_layer,
-        --target_entity = target_entity,
         bbox = pad.bounding_box,
         --players = {}    -- TODO: for tracking status of players standing on pad after teleporting, to prevent loops
     }
@@ -141,7 +140,8 @@ function add_belt_proxy(belt, surface)
     local target_entity = target_surface.create_entity{
         name = target_name,
         position = belt.position,
-        force = belt.force
+        force = belt.force,
+        direction = belt.direction
     }
     -- debug("placed target")
     -- debug(target_entity)
@@ -149,6 +149,7 @@ function add_belt_proxy(belt, surface)
         input = belt,
         output = target_entity,
         target_layer = target_layer,
+        swapped_last = true
     }
     global.belt_inputs[belt.unit_number] = belt_proxy
     global.belt_outputs[target_entity.unit_number] = belt_proxy
