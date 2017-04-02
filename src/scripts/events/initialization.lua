@@ -111,3 +111,14 @@ end
 function OnPlayerLeft(event)
     global.player_proxies[event.player_index] = nil
 end
+
+function OnLoad()
+    --game.players[1].print("onload")
+    for _, layer in pairs(global.layers) do
+        local pads = layer.telepads
+        if getmetatable(pads) == nil then
+            setmetatable(pads, Quadtree)
+	        pads:rebuild_metatables()
+        end
+    end
+end

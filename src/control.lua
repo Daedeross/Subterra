@@ -13,6 +13,9 @@ require("scripts.quadtree")
 -- initiate mod and generate underground surface
 script.on_init(InitializeSubterra)
 
+-- resetup metatables and stuff
+script.on_load(OnLoad)
+
 -- player_proxies maint
 script.on_event(defines.events.on_player_joined_game, OnPlayerJoined)
 

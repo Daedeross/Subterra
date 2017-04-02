@@ -100,7 +100,7 @@ function QuadtreeNode:add_proxy (proxy)
 end
 
 function QuadtreeNode:rebuild_metatables(node)
-	if getmetatable(node) ~= nil then
+	if getmetatable(node) == nil then
 		setmetatable(node, self) 
 	end
 	if node.children ~= nil then
@@ -148,7 +148,7 @@ function QuadtreeNode:split()
 	-- 
     -- print ("self: " .. tostring(self))
 	-- print ("proxies: " .. tostring(self.proxies))
-	for i = table.getn(self.proxies), 1, -1 do
+	for i = #self.proxies, 1, -1 do
 		local p = self.proxies[i]
 		-- print(p)
 		if p.bbox.left_top.y < self.center.y then
@@ -315,7 +315,7 @@ end
 -- returns an inerator over all_proxies under the node
 function QuadtreeNode:get_all_proxies()
 	local i
-	local n = table.getn(self.proxies)
+	local n = #self.proxies
 	return function ()
 		i = i + 1
 		if i <= n then return self.proxies[i] end
