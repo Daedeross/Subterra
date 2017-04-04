@@ -1,27 +1,35 @@
 param (
-    [switch] $NoClean,
-    [switch] $NoPublish,
+    [parameter(Position=0, Mandatory=$true)]
+    [string] $Tag,
     [string] $InfoPath = "config/buildinfo.json",
-    [string] $SourceFolder = "src"
+    [string] $SourceFolder = "src",
+    [string] $OutputPath = ""
 )
+
+# check for $Tag
+$tags = git tag
+
+# if ([string]::IsNullOrWhiteSpace($Tag) -or [string]::IsNullOrWhiteSpace($tags) -or -not ($tags.split([Environment]::NewLine) -contains $Tag))
+# {
+#     Write-Output "Specified tag does not exist."
+#     exit
+# }
 
 $buildInfo = Get-Content "$InfoPath" | ConvertFrom-Json
 
-$resolvedPath = rvpa $buildInfo.output_directory
-$modsDir = $resolvedPath.ToString()
+$buildInfo.info.version = $Tag
 
-if(!$NoClean) {
-    $glob = "$modsDir\" + $buildInfo.info.name + "_*"
-    $oldDirs = ls -Path $glob -Name
-    foreach ($dir in $oldDirs)
-    {
-        rmdir "$modsDir\$dir" -Recurse
-    }
-}
+$ReleaseName = $buildInfo.info.name + "_" + $buildInfo.info.version
+$ZipPath =  $ReleaseName + ".zip"
 
-if (!$NoPublish) {
-    $newDir = "$modsDir\" + $buildInfo.info.name + "_" + $buildInfo.info.version
-    echo "$newDir"
-    cp -Path "$SourceFolder" -Recurse -Destination "$newDir"
-    ConvertTo-Json $buildInfo.info | Set-Content "$newDir\info.json"
-}
+Write-Output "Makng Temp Directory: $ReleaseName"
+mkdir $ReleaseName
+
+Write-Output "Copying files to temp location"
+Copy-Item -Path "$SourceFolder\*" -Recurse -Destination "$ReleaseName"
+ConvertTo-Json $buildInfo.info | Set-Content "$ReleaseName\info.json"
+
+Write-Output "Making Zip File"
+Compress-Archive -Path  $ReleaseName -DestinationPath "$ReleaseName.zip"
+
+Remove-Item $ReleaseName -Recurse

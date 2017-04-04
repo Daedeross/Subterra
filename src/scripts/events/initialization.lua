@@ -102,7 +102,7 @@ function addPlayerProxy(i)
             name = p.name,
             index = i,
             player = p,
-            on_pad = false,
+            on_pad = -1,
         }
         global.player_proxies[i] = proxy
     end

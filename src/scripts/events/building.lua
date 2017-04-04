@@ -70,13 +70,19 @@ function AddTelepadProxy(pad, surface)
     local is_down = string.find(pad.name, "%-down") ~= nil
     local layer = global.layers[sname]
 
-    local target_layer = is_down and layer.layer_below or layer.layer_above
-    local target_name = "subterra-telepad-" .. (is_down and "up" or "down")
+    local target_layer
+    if is_down then 
+        target_layer = layer.layer_below
+    else
+        target_layer = layer.layer_above
+    end
     
     -- check if target layer exists
     if target_layer == nil then
         return false
     end
+    
+    local target_name = "subterra-telepad-" .. (is_down and "up" or "down")
 
     -- check if target location is free
     local target_surface = target_layer.surface
@@ -149,7 +155,7 @@ function add_belt_proxy(belt, surface)
         input = belt,
         output = target_entity,
         target_layer = target_layer,
-        swapped_last = true
+        rotated_last = true
     }
     global.belt_inputs[belt.unit_number] = belt_proxy
     global.belt_outputs[target_entity.unit_number] = belt_proxy

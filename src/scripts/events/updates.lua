@@ -1,6 +1,6 @@
 function OnTick(event)
     CheckBelts()
-    if event.tick % 30 == 0 then
+    if event.tick % 15 == 0 then
         CheckPlayerPads()
     end
 end
@@ -12,12 +12,12 @@ function CheckPlayerPads()
         local qt = global.layers[sname].telepads
         local pad = qt:check_proxy_collision(player.character.bounding_box)
         if pad then
-            if not p.on_pad then
-                p.on_pad = true
+            if p.on_pad ~= pad.entity.unit_number then
                 player.teleport(player.position, pad.target_layer.surface.name)
+                p.on_pad = pad.target_pad.entity.unit_number
             end
         else
-            p.on_pad = false
+            p.on_pad = -1
         end
     end
 end

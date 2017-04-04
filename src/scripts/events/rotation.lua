@@ -44,28 +44,25 @@ function swap_belt_elevator(belt_proxy, direction)
 
     global.belt_inputs[input.unit_number] = belt_proxy
     global.belt_outputs[output.unit_number] = belt_proxy
-
-    belt_proxy.swapped_last = true
 end
 
 function rotate_belt (belt)
-    local direction = (belt.direction + 6) % 8
+    local direction
     local proxy = global.belt_inputs[belt.unit_number]
     if proxy == nil then
         proxy = global.belt_outputs[belt.unit_number] 
     end
     if proxy ~= nil then
-        if proxy.swapped_last then
-            game.players[1].print(tostring(direction))
-            proxy.input.direction = (direction + 2) % 8
-            proxy.output.direction = proxy.input.direction
-            proxy.swapped_last = false
+        if proxy.rotated_last then
+            direction = (belt.direction + 6) % 8
+            proxy.rotated_last = false
         else
-            game.players[1].print(tostring(direction))
-            game.players[1].print("swap")
-            swap_belt_elevator(proxy, direction)
-            proxy.swapped_last = true
+            direction = belt.direction
+            proxy.rotated_last = true
         end
+        --game.players[1].print(tostring(direction))
+        --game.players[1].print("swap")
+        swap_belt_elevator(proxy, direction)
     end
 end
 
