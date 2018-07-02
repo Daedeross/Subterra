@@ -7,7 +7,7 @@ param (
     [string] $SourceFolder = "src"
 )
 
-$buildInfo = Get-Content "$InfoPath" | ConvertFrom-Json
+$buildInfo = Get-Content "$InfoPath" -Encoding UTF8 | ConvertFrom-Json
 
 if (-not [string]::IsNullOrWhiteSpace($Version))
 {
@@ -22,7 +22,7 @@ if(!$NoClean) {
     $oldDirs = Get-ChildItem -Path $glob -Name
     foreach ($dir in $oldDirs)
     {
-        Remove-Item "$modsDir\$dir" -Recurse
+        Remove-Item "$modsDir\$dir" -Recurse -Force
     }
 }
 
@@ -30,5 +30,5 @@ if (!$NoPublish) {
     $newDir = "$modsDir\" + $buildInfo.info.name + "_" + $buildInfo.info.version
     Write-Output "$newDir"
     Copy-Item -Path "$SourceFolder" -Recurse -Destination "$newDir"
-    ConvertTo-Json $buildInfo.info | Set-Content "$newDir\info.json"
+    ConvertTo-Json $buildInfo.info | % { [System.Text.RegularExpressions.Regex]::Unescape($_) } | Set-Content "$newDir\info.json" -Encoding UTF8
 }

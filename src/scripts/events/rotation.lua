@@ -70,19 +70,11 @@ rotate_funcs["subterra-belt-up"] = rotate_belt
 rotate_funcs["subterra-belt-down"] = rotate_belt
 rotate_funcs["subterra-belt-out"] = rotate_belt
 
--- function swap_telepads (proxy)
-
--- end
-
--- function rotate_telepad(pad)
---     local q_tree = global.layers[pad.surface.name].swap_telepads
---     local proxy = q_tree:
--- end
-
-function OnPlayerRotatedEntity(event)
+register_event(defines.events.on_player_rotated_entity,
+function (event)
     local entity = event.entity
     local func = rotate_funcs[entity.name]
     if func ~= nil then
         func(entity)
     end
-end
+end)
