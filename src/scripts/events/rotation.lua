@@ -39,6 +39,10 @@ function swap_belt_elevator(belt_proxy, direction)
     }
     belt_proxy.input = input
     belt_proxy.output = output
+    belt_proxy.in_line1 = input.get_transport_line(1)
+    belt_proxy.in_line2 = input.get_transport_line(2)
+    belt_proxy.out_line1 = output.get_transport_line(1)
+    belt_proxy.out_line2 = output.get_transport_line(2)
     -- update target layer
     belt_proxy.target_layer = global.layers[in_sname]
 
