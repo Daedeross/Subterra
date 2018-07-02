@@ -5,10 +5,12 @@
 --===================================--
 
 require ("util")
+require 'scripts/utils'
 
-function OnBuiltEntity(event)
+register_event(defines.events.on_built_entity,
+function (event)
     local p_index = event.player_index
-    local player = game.players[event.player_index]
+    local player = game.players[p_index]
     --local p = game.players[p_index]
     local surface = player.surface
     local level = string.match(surface.name, "underground_(%d)")
@@ -17,7 +19,7 @@ function OnBuiltEntity(event)
     else
         handle_underground_placement(event, player, level)
     end
-end
+end)
 
 function destroy_and_return(built_entity, placing_entity)
     local prod
@@ -36,7 +38,7 @@ function handle_surface_placement(event, p)
     -- debug(ent.name)
     -- debug(string.find(ent.name, "subterra%-belt"))
     if string.find(ent.name, "telepad") ~= nil then
-        if not AddTelepadProxy(ent, p.surface) then
+        if not add_telepad_proxy(ent, p.surface) then
             destroy_and_return(ent, p)
         end
     elseif string.find(ent.name, "subterra%-belt") ~= nil then
@@ -52,7 +54,7 @@ function handle_underground_placement(event, p, level)
 
     if global.underground_entities[ent.name] then
         if string.find(ent.name, "telepad") ~= nil then
-            if not AddTelepadProxy(ent, p.surface) then
+            if not add_telepad_proxy(ent, p.surface) then
                 destroy_and_return(ent, p)
             end
         elseif string.find(ent.name, "subterra%-belt") ~= nil then
@@ -65,7 +67,7 @@ function handle_underground_placement(event, p, level)
     end
 end
 
-function AddTelepadProxy(pad, surface)
+function add_telepad_proxy(pad, surface)
     local sname = surface.name
     local is_down = string.find(pad.name, "%-down") ~= nil
     local layer = global.layers[sname]
@@ -155,23 +157,34 @@ function add_belt_proxy(belt, surface)
         input = belt,
         output = target_entity,
         target_layer = target_layer,
+        in_line1 = belt.get_transport_line(1),
+        in_line2 = belt.get_transport_line(2),
+        out_line1 = target_entity.get_transport_line(1),
+        out_line2 = target_entity.get_transport_line(2),
         rotated_last = true
     }
+
+    for i, v in pairs(belt_proxy) do
+        print(i .. ":" .. tostring(v))
+    end
+
     global.belt_inputs[belt.unit_number] = belt_proxy
     global.belt_outputs[target_entity.unit_number] = belt_proxy
     return true
 end
 
-function OnEntityDied(event)
+register_event(defines.events.on_entity_died,
+function (event)
     local name = event.entity.prototype.name
     if string.find(name, "telepad") ~= nil then
         handle_remove_telepad(event.entity)
     elseif string.find(name, "subterra%-belt") ~= nil then
         handle_remove_belt_elevator(event.entity)
     end
-end
+end)
 
-function OnPrePlayerMinedItem(event)
+register_event(defines.events.on_pre_player_mined_item,
+function (event)
     local name = event.entity.prototype.name
     if string.find(name, "telepad") ~= nil then
         handle_remove_telepad(event.entity)
@@ -179,16 +192,17 @@ function OnPrePlayerMinedItem(event)
         debug(event.player_index)
         handle_remove_belt_elevator(event.entity, game.players[event.player_index])
     end
-end
+end)
 
-function OnPreRobotMinedItem(event)
+register_event(defines.events.on_robot_pre_mined,
+function (event)
     local name = event.entity.prototype.name
     if string.find(name, "telepad") ~= nil then
         handle_remove_telepad(event.entity)
     elseif string.find(name, "subterra%-belt") ~= nil then
         handle_remove_belt_elevator(event.entity)
     end
-end
+end)
 
 function handle_remove_telepad(entity)
     local sname = entity.surface.name
@@ -202,20 +216,16 @@ function handle_remove_belt_elevator(belt, entity)
     local proxy = global.belt_inputs[belt.unit_number] or global.belt_outputs[belt.unit_number]
     local in_id = proxy.input.unit_number
     local out_id = proxy.output.unit_number
-    local mine_results = proxy.input.name -- naming convention, entity is name same as item that places it
+    local mine_results = proxy.input.name -- naming convention, entity is named same as item that places it
+    global.belt_inputs[in_id] = nil
+    global.belt_outputs[out_id] = nil
     if belt ~= proxy.input then
         proxy.input.destroy()
     else 
         proxy.output.destroy()
     end
-    global.belt_inputs[in_id] = nil
-    global.belt_outputs[out_id] = nil
-    debug(entity)
+    -- debug(entity)
     if entity ~= nil then
         entity.insert({name=mine_results})
     end
-end
-
-function debug(x)
-    game.players[1].print(tostring(x))
 end
