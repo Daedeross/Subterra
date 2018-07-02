@@ -17,7 +17,7 @@ if (-not [string]::IsNullOrWhiteSpace($Version))
 $resolvedPath = Resolve-Path $buildInfo.output_directory
 $modsDir = $resolvedPath.ToString()
 
-if(!$NoClean) {
+if(-not $NoClean) {
     $glob = "$modsDir\" + $buildInfo.info.name + "_*"
     $oldDirs = Get-ChildItem -Path $glob -Name
     foreach ($dir in $oldDirs)
@@ -26,7 +26,7 @@ if(!$NoClean) {
     }
 }
 
-if (!$NoPublish) {
+if (-not $NoPublish) {
     $newDir = "$modsDir\" + $buildInfo.info.name + "_" + $buildInfo.info.version
     Write-Output "$newDir"
     Copy-Item -Path "$SourceFolder" -Recurse -Destination "$newDir"
