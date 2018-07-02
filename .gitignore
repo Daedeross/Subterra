@@ -41,3 +41,6 @@ luac.out
 
 # Factorio stuff
 mod-list.json
+
+# VSCode
+.vscode/*
