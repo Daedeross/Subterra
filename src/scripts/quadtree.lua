@@ -226,7 +226,7 @@ function QuadtreeNode:check_proxy_collision (bbox, remove)
 end
 
 -- if the proxy to add is outside the extents of the tree,
--- then create a new root node and make 'this' one of its
+-- then create a new root node and make 'self' one of its
 -- children. The new root is thus twice the dimensions (4x the area).
 -- if bbox is not outside the node, does nothing
 function QuadtreeNode:expand(bbox)
@@ -334,11 +334,17 @@ function Quadtree:new(o)
 	return qt
 end
 
+-- adds a proxy withouth checking for collision
+-- with an existing proxy first, thus allowing overlap
 function Quadtree:add_proxy_unsafe(proxy)
 	self.root = self.root:expand(proxy.bbox)
 	self.root:add_proxy(proxy)
 end
 
+-- Tries to add a proxy.
+-- Returns true of the proxy is successfuly added
+-- and false if the new proxy collides with an existing one.
+-- Will not add the proxy in the case of collision.
 function Quadtree:add_proxy(proxy)
 	if self.root:check_proxy_collision(proxy.bbox) then
 		return false
@@ -347,10 +353,18 @@ function Quadtree:add_proxy(proxy)
 	return true
 end
 
+-- Removes the first proxy from the q-tree which collides
+-- with the provided bounding box
 function Quadtree:remove_proxy(bbox)
 	return self.root:check_proxy_collision(bbox, true)
 end
 
+-- Returns the first proxy that collides with the bbox
+-- Returns nil if no collision
+--
+-- Note: to ensure that the returned proxy is the only one
+-- that collides with the bbox, do not use :add_proxy_unsafe
+-- an use bbox smaller than the that of the proxies contained within
 function Quadtree:check_proxy_collision(bbox)
 	return self.root:check_proxy_collision (bbox, false)
 end
@@ -359,14 +373,25 @@ function Quadtree:rebuild_metatables()
 	QuadtreeNode:rebuild_metatables(self.root)
 end
 
+-- iterates through all proxies in the tree using
+-- a depth-first tree-walk
 function Quadtree:proxies()
-	local function yield_node(node)
-		for _, p in pairs(node.proxies) do
-			coroutine.yield(p)
+	local function yield_node(node, set)
+		if node.proxies then
+			for _, p in pairs(node.proxies) do
+				if not set[p] then -- check if proxy has already been returned (large proxies may be in more that 1 leaf)
+					set[p] = true
+					coroutine.yield(p)
+				end
+			end
 		end
-		for _, child in pairs(node.children) do
-			yield_node(child)
+		if node.children then
+			for _, child in pairs(node.children) do
+				if child.proxies or child.children then
+					yield_node(child, set)
+				end
+			end
 		end
 	end
-	return coroutine.wrap(function() yield_node(self.root) end)
+	return coroutine.wrap(function() yield_node(self.root, {}) end)
 end
