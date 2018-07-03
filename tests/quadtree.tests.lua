@@ -1,5 +1,6 @@
 package.path = package.path .. ";../?.lua"
 require 'src.scripts.quadtree'
+require 'src.scripts.utils'
 
 TelepadQTree = Quadtree:new()
 --print(TelepadQTree.root) 
@@ -65,36 +66,50 @@ TelepadQTree:rebuild_metatables()
 
 print("rebuild complete")
 
-local start_time = os.clock()
+if true then
+    local start_time = os.clock()
 
-for i = 1, test_count do	
-    local hit = TelepadQTree:check_proxy_collision(CheckList[i])
-    if hit ~= nil then hits = hits + 1 end
-end
-local end_time = os.clock()
-local qtree_time = end_time - start_time
+    for i = 1, test_count do	
+        local hit = TelepadQTree:check_proxy_collision(CheckList[i])
+        if hit ~= nil then hits = hits + 1 end
+    end
+    local end_time = os.clock()
+    local qtree_time = end_time - start_time
 
--- naive run
-local n_hits = 0
-start_time = os.clock()
-for _,bbox in pairs(CheckList) do
-    for _,p in pairs(ProxyList) do
-        if not (
-            bbox.left_top.x > p.bbox.right_bottom.x or
-            bbox.left_top.y > p.bbox.right_bottom.y or
-            bbox.right_bottom.x < p.bbox.left_top.x or
-            bbox.right_bottom.y < p.bbox.left_top.y
-            ) then
-            n_hits = n_hits + 1
-            --break
+    -- naive run
+    local n_hits = 0
+    start_time = os.clock()
+    for _,bbox in pairs(CheckList) do
+        for _,p in pairs(ProxyList) do
+            if not (
+                bbox.left_top.x > p.bbox.right_bottom.x or
+                bbox.left_top.y > p.bbox.right_bottom.y or
+                bbox.right_bottom.x < p.bbox.left_top.x or
+                bbox.right_bottom.y < p.bbox.left_top.y
+                ) then
+                n_hits = n_hits + 1
+                --break
+            end
         end
     end
-end
-end_time = os.clock()
-local n_time = end_time - start_time
+    end_time = os.clock()
+    local n_time = end_time - start_time
 
-print("# of hits = " .. tostring(n_hits))
-print("# of hits = " .. tostring(hits))
-print(tostring(proxy_count) .. " objects testeded " .. tostring(test_count) .. " times")
-print("in " .. tostring(n_time) .. " seconds using naive approach")
-print("and " .. tostring(qtree_time) .. " seconds using a quadtree")
+    print("# of hits = " .. tostring(n_hits))
+    print("# of hits = " .. tostring(hits))
+    print(tostring(proxy_count) .. " objects testeded " .. tostring(test_count) .. " times")
+    print("in " .. tostring(n_time) .. " seconds using naive approach")
+    print("and " .. tostring(qtree_time) .. " seconds using a quadtree")
+end
+
+local i = 0
+local names = {}
+for p in TelepadQTree:proxies() do
+    i = i + 1
+    if get_member_safe(names, p.name) then
+        print(p.name)
+    else
+        names[p.name] = true
+    end
+end
+print ("iterated through " .. i .. "proxies")
