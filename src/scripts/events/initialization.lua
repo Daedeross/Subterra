@@ -9,12 +9,16 @@ require 'scripts/utils'
 --MAX_LAYER_COUNT = 2
 
 --============================================================================--
--- InitializeSubterra()
+-- initialize_subterra()
 --
 -- initiate mod and generate underground surface
 -- wired in control.lua:game.on_init
 --============================================================================--
-function InitializeSubterra ()
+function initialize_subterra ()
+    print("Starting SubTerra Initialization")
+    for n,_ in pairs(subterra.config.starting_entities) do
+        print(n)
+    end
     -- copy map settings
     local gen_settings = table.deepcopy(game.surfaces['nauvis'].map_gen_settings)
     -- remove resources from settings
@@ -30,7 +34,7 @@ function InitializeSubterra ()
         if game.surfaces[layer_name] == nil then
             game.create_surface(layer_name, gen_settings)
             game.surfaces[layer_name].daytime = 0.5
-            game.surfaces[layer_name].freeze_daytime(true)
+            game.surfaces[layer_name].freeze_daytime = true
         end
         if remote.interfaces["RSO"] then
             remote.call("RSO", "ignoreSurface", layer_name)
@@ -39,9 +43,10 @@ function InitializeSubterra ()
     
     -- create player proxies
     global.player_proxies = {}
-    
+    print("Player Count: " .. tostring(# game.players))
     for i, p in pairs(game.players) do
-       addPlayerProxy(i, p)
+       print(p.name)
+       add_player_proxy(i)
     end
 
     -- initialize layers container
@@ -83,37 +88,11 @@ function InitializeSubterra ()
 
     -- set underground enitity list
     global.underground_entities = table.deepcopy(subterra.config.starting_entities)
+
+    print("SubTerra Initialization Complete")
 end
 
---============================================================================--
--- OnPlayerJoined()
---
--- add player to needed data structures
--- wired in control.lua:
---============================================================================--
-function OnPlayerJoined(event)
-    addPlayerProxy(event.player_index)
-end
-
-function addPlayerProxy(i)
-    local p = game.players[i]
-    if global.player_proxies[i] == nil then
-        local proxy = {
-            name = p.name,
-            index = i,
-            player = p,
-            on_pad = -1,
-        }
-        global.player_proxies[i] = proxy
-    end
-end
-
-function OnPlayerLeft(event)
-    global.player_proxies[event.player_index] = nil
-end
-
-function OnLoad()
-    --game.players[1].print("onload")
+function on_load()
     for _, layer in pairs(global.layers) do
         local pads = layer.telepads
         if getmetatable(pads) == nil then

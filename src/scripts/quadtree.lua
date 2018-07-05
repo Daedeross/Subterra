@@ -13,7 +13,6 @@
 
 --QuadtreeNode
 
-
 if MAX_ITEMS_PER_QUADTREE_NODE == nil then
 	MAX_ITEMS_PER_QUADTREE_NODE = 8	-- this will eventually be in a config file
 end
