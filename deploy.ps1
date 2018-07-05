@@ -20,16 +20,16 @@ $buildInfo = Get-Content "$InfoPath" | ConvertFrom-Json
 $buildInfo.info.version = $Tag
 
 $ReleaseName = $buildInfo.info.name + "_" + $buildInfo.info.version
-$ZipPath =  $ReleaseName + ".zip"
 
 Write-Output "Makng Temp Directory: $ReleaseName"
 mkdir $ReleaseName
 
 Write-Output "Copying files to temp location"
 Copy-Item -Path "$SourceFolder\*" -Recurse -Destination "$ReleaseName"
-ConvertTo-Json $buildInfo.info | Set-Content "$ReleaseName\info.json"
+ConvertTo-Json $buildInfo.info | % { [System.Text.RegularExpressions.Regex]::Unescape($_) } | Set-Content "$ReleaseName\info.json" -Encoding UTF8
 
 Write-Output "Making Zip File"
 Compress-Archive -Path  $ReleaseName -DestinationPath "$ReleaseName.zip"
 
 Remove-Item $ReleaseName -Recurse
+

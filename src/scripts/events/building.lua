@@ -1,7 +1,8 @@
 --===================================--
 -- building.lua
 --===================================--
--- 
+-- Handle build/mine/destroy for
+-- Subterra entities.
 --===================================--
 
 require ("util")
@@ -11,10 +12,9 @@ register_event(defines.events.on_built_entity,
 function (event)
     local p_index = event.player_index
     local player = game.players[p_index]
-    --local p = game.players[p_index]
     local surface = player.surface
     local level = string.match(surface.name, "underground_(%d)")
-    if level == nil then
+    if not level then
         handle_surface_placement(event, player)
     else
         handle_underground_placement(event, player, level)

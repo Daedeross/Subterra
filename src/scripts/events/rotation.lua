@@ -56,7 +56,7 @@ function rotate_belt (belt)
     if proxy == nil then
         proxy = global.belt_outputs[belt.unit_number] 
     end
-    if proxy ~= nil then
+    if proxy then
         if proxy.rotated_last then
             direction = (belt.direction + 6) % 8
             proxy.rotated_last = false
@@ -64,8 +64,8 @@ function rotate_belt (belt)
             direction = belt.direction
             proxy.rotated_last = true
         end
-        --game.players[1].print(tostring(direction))
-        --game.players[1].print("swap")
+        --debug(tostring(direction))
+        --debug("swap")
         swap_belt_elevator(proxy, direction)
     end
 end
@@ -78,7 +78,7 @@ register_event(defines.events.on_player_rotated_entity,
 function (event)
     local entity = event.entity
     local func = rotate_funcs[entity.name]
-    if func ~= nil then
+    if func then
         func(entity)
     end
 end)
