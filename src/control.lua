@@ -19,26 +19,5 @@ script.on_init(initialize_subterra)
 -- resetup metatables and stuff
 script.on_load(on_load)
 
+-- Wire all registered event callbacks
 wire_all_events()
-
--- player_proxies' maint
--- script.on_event(defines.events.on_player_joined_game, OnPlayerJoined)
-
--- Event subscriptions
--- script.on_event(defines.events.on_chunk_generated, OnChunkGenerated)
-
--- script.on_event(defines.events.on_player_joined_game, OnPlayerJoined)
-
--- script.on_event(defines.events.on_built_entity, OnBuiltEntity)
-
--- script.on_event(defines.events.on_entity_died, OnEntityDied)
-
--- script.on_event(defines.events.on_pre_player_mined_item, OnPrePlayerMinedItem)
-
--- script.on_event(defines.events.on_robot_pre_mined, OnPreRobotMinedItem)
-
--- script.on_event(defines.events.on_player_joined_game, OnPlayerJoined)
-
--- script.on_event(defines.events.on_player_left_game, OnPlayerLeft)
-
--- script.on_event(defines.events.on_player_rotated_entity, OnPlayerRotatedEntity)

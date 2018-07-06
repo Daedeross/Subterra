@@ -19,3 +19,6 @@ subterra.config.starting_entities["subterra-belt-up"] = true
 subterra.config.starting_entities["subterra-belt-down"] = true
 subterra.config.starting_entities["subterra-belt-out"] = true
 subterra.config.starting_entities["transport-belt"] = true
+subterra.config.starting_entities["inserter"] = true
+subterra.config.starting_entities["straight-rail"] = true
+subterra.config.starting_entities["curved-rail"] = true

@@ -2,9 +2,10 @@ require 'scripts/utils'
 
 if not subterra.tick_events then subterra.tick_events = {} end
 
+-- event fired every half second
+-- Teleports players if standin on an elevator
 register_nth_tick_event (15,
 function (event)
-    --print(tostring(# global.player_proxies))
     for i, p in pairs(global.player_proxies) do
         local player = p.player
         if player.connected then

@@ -40,6 +40,7 @@ function register_event (id, callback)
         id = id,
         callback = callback
     })
+    print("Registered callback for event #" .. id)
 end
 
 --============================================================================--
@@ -58,6 +59,7 @@ function register_nth_tick_event (tick, callback)
         tick = tick,
         callback = callback
     })
+    print("Registered nth-tick callback for tick count " .. tick)
 end
 
 --============================================================================--
@@ -67,6 +69,7 @@ end
 -- to be called in control.lua
 --============================================================================--
 function wire_all_events()
+    print("Wiring events")
     -- on_nth_tick events
     if subterra.tick_events then
         local events = {}
@@ -87,7 +90,7 @@ function wire_all_events()
         for n, callbacks in pairs(events) do
             if counts[n] == 1 then
                 script.on_nth_tick(n, callbacks[1])
-                print("registered nth tick event for n = " .. n)
+                print("Wired nth tick event for n = " .. n)
             elseif counts[n] > 1 then
                 script.on_nth_tick(n,
                 function(event)
@@ -125,7 +128,7 @@ function wire_all_events()
                 end
             end)
         end
-        print("registered callback(s) for event:" .. id)
+        print("Wired " .. counts[id] .. " callback(s) for event id:" .. id)
     end
 end
 
