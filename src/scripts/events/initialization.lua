@@ -2,7 +2,6 @@
 -- initialization.lua
 --============================================================================--
 
-
 require 'util'
 require ('config')
 require 'scripts/utils'

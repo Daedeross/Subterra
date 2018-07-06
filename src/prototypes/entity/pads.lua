@@ -1,5 +1,5 @@
 data:extend({
-    {
+{
     type = "lamp",
     name = "subterra-telepad-up",
     icon = "__subterra__/graphics/entities/telepad/telepad-up-icon.png",
@@ -38,8 +38,8 @@ data:extend({
         height = 102,
         shift = {0, 0}
     }
-    },
-    {
+},
+{
     type = "lamp",
     name = "subterra-telepad-down",
     icon = "__subterra__/graphics/entities/telepad/telepad-down-icon.png",
@@ -64,7 +64,7 @@ data:extend({
     },
     picture_off =
     {
-        filename = "__subterra__/graphics/entities/telepad/telepad-down.png",
+        filename = "__subterra__/graphics/entities/telepad/stairs-down.png",
         priority = "high",
         width = 99,
         height = 102,
@@ -72,11 +72,11 @@ data:extend({
     },
     picture_on =
     {
-        filename = "__subterra__/graphics/entities/telepad/telepad-down.png",
+        filename = "__subterra__/graphics/entities/telepad/stairs-down.png",
         priority = "high",
         width = 99,
         height = 102,
         shift = {0, 0}
     }
-    }
+}
 })

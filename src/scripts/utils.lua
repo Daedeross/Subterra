@@ -12,7 +12,7 @@ end
 
 function add_player_proxy(i)
     local p = game.players[i]
-    if global.player_proxies[i] == nil and p.connected and p.character ~= nil then
+    if global.player_proxies[i] == nil and p.connected and p.character then
         local proxy = {
             name = p.name,
             index = i,
