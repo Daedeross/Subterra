@@ -13,6 +13,7 @@
 
 --QuadtreeNode
 
+
 if MAX_ITEMS_PER_QUADTREE_NODE == nil then
 	MAX_ITEMS_PER_QUADTREE_NODE = 8	-- this will eventually be in a config file
 end
@@ -225,7 +226,7 @@ function QuadtreeNode:check_proxy_collision (bbox, remove)
 end
 
 -- if the proxy to add is outside the extents of the tree,
--- then create a new root node and make 'self' one of its
+-- then create a new root node and make 'this' one of its
 -- children. The new root is thus twice the dimensions (4x the area).
 -- if bbox is not outside the node, does nothing
 function QuadtreeNode:expand(bbox)
@@ -312,7 +313,7 @@ end
 
 -- TODO: does not recurse down the tree
 -- returns an inerator over all_proxies under the node
-function QuadtreeNode:direct_proxies()
+function QuadtreeNode:get_all_proxies()
 	local i
 	local n = #self.proxies
 	return function ()
@@ -333,17 +334,11 @@ function Quadtree:new(o)
 	return qt
 end
 
--- adds a proxy withouth checking for collision
--- with an existing proxy first, thus allowing overlap
 function Quadtree:add_proxy_unsafe(proxy)
 	self.root = self.root:expand(proxy.bbox)
 	self.root:add_proxy(proxy)
 end
 
--- Tries to add a proxy.
--- Returns true of the proxy is successfuly added
--- and false if the new proxy collides with an existing one.
--- Will not add the proxy in the case of collision.
 function Quadtree:add_proxy(proxy)
 	if self.root:check_proxy_collision(proxy.bbox) then
 		return false
@@ -352,18 +347,10 @@ function Quadtree:add_proxy(proxy)
 	return true
 end
 
--- Removes the first proxy from the q-tree which collides
--- with the provided bounding box
 function Quadtree:remove_proxy(bbox)
 	return self.root:check_proxy_collision(bbox, true)
 end
 
--- Returns the first proxy that collides with the bbox
--- Returns nil if no collision
---
--- Note: to ensure that the returned proxy is the only one
--- that collides with the bbox, do not use :add_proxy_unsafe
--- an use bbox smaller than the that of the proxies contained within
 function Quadtree:check_proxy_collision(bbox)
 	return self.root:check_proxy_collision (bbox, false)
 end
@@ -372,25 +359,103 @@ function Quadtree:rebuild_metatables()
 	QuadtreeNode:rebuild_metatables(self.root)
 end
 
--- iterates through all proxies in the tree using
--- a depth-first tree-walk
-function Quadtree:proxies()
-	local function yield_node(node, set)
-		if node.proxies then
-			for _, p in pairs(node.proxies) do
-				if not set[p] then -- check if proxy has already been returned (large proxies may be in more that 1 leaf)
-					set[p] = true
-					coroutine.yield(p)
+TelepadQTree = Quadtree:new()
+--print(TelepadQTree.root) 
+
+ProxyList = {}
+CheckList = {}
+
+if DEBUG then
+	math.randomseed( os.time() )
+	local proxy_count = 1000
+	local min = -9000
+	local max =  9000
+	for i=1,proxy_count do
+		local new_proxy = {}
+		repeat
+			local half_height = math.random(100,100)
+			local half_width  = math.random(100,100) 
+			local position = { x = math.random(min, max), y = math.random(min, max) }
+			local left   = position.x - half_width
+			local top    = position.y - half_height
+			local right  = position.x + half_width
+			local bottom = position.y + half_height
+			new_proxy = {
+				name="proxy" .. tostring(i),
+				bbox = {
+					left_top = {x=left,y=top},
+					right_bottom = {x=right,y=bottom},
+				}
+			}
+		until TelepadQTree:add_proxy(new_proxy)  
+		ProxyList[i] = new_proxy
+	end
+	local hits = 0
+	local test_count = 50000
+	for i = 1,test_count do
+		local position = { x = math.random(min, max), y = math.random(min, max) }
+		local bbox = {
+			left_top = { x=position.x - 1, y=position.y - 1 },
+			right_bottom = { x=position.x + 1, y=position.y + 1 }
+		}
+		CheckList[i] = bbox
+	end
+
+	print("now attempting to clear metatables...")
+
+	function clear_metatable(o)
+		if o ~= nil then
+			if o.children ~= nil then
+				for _,c in pairs(o.children) do
+					clear_metatable(c)
 				end
 			end
+			setmetatable(0, nil)
 		end
-		if node.children then
-			for _, child in pairs(node.children) do
-				if child.proxies or child.children then
-					yield_node(child, set)
-				end
+	end
+
+	setmetatable(TelepadQTree, nil)
+
+	print("metatables are cleared")
+	print("attempting to rebuild them")
+
+	setmetatable(TelepadQTree, Quadtree)
+	TelepadQTree:rebuild_metatables()
+
+	print("rebuild complete")
+
+	local start_time = os.clock()
+
+	for i = 1, test_count do	
+		local hit = TelepadQTree:check_proxy_collision(CheckList[i])
+		if hit ~= nil then hits = hits + 1 end
+	end
+	local end_time = os.clock()
+	local qtree_time = end_time - start_time
+
+	-- naive run
+	local n_hits = 0
+	start_time = os.clock()
+	for _,bbox in pairs(CheckList) do
+		for _,p in pairs(ProxyList) do
+			if not (
+			   bbox.left_top.x > p.bbox.right_bottom.x or
+			   bbox.left_top.y > p.bbox.right_bottom.y or
+			   bbox.right_bottom.x < p.bbox.left_top.x or
+			   bbox.right_bottom.y < p.bbox.left_top.y
+				) then
+				n_hits = n_hits + 1
+				--break
 			end
 		end
 	end
-	return coroutine.wrap(function() yield_node(self.root, {}) end)
+	end_time = os.clock()
+	local n_time = end_time - start_time
+
+	print("# of hits = " .. tostring(n_hits))
+	print("# of hits = " .. tostring(hits))
+	print(tostring(proxy_count) .. " objects testeded " .. tostring(test_count) .. " times")
+	print("in " .. tostring(n_time) .. " seconds using naive approach")
+	print("and " .. tostring(qtree_time) .. " seconds using a quadtree")
+
 end

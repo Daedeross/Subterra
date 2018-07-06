@@ -66,16 +66,16 @@ data:extend({
     {
         filename = "__subterra__/graphics/entities/telepad/stairs-down.png",
         priority = "high",
-        width = 99,
-        height = 102,
+        width = 219,
+        height = 215,
         shift = {0, 0}
     },
     picture_on =
     {
         filename = "__subterra__/graphics/entities/telepad/stairs-down.png",
         priority = "high",
-        width = 99,
-        height = 102,
+        width = 219,
+        height = 215,
         shift = {0, 0}
     }
 }
