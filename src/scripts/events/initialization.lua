@@ -5,6 +5,7 @@
 require 'util'
 require ('config')
 require 'scripts/utils'
+require 'scripts.quadtree'
 --MAX_LAYER_COUNT = 2
 
 --============================================================================--
@@ -65,6 +66,10 @@ function initialize_subterra ()
             surface = game.surfaces[l_name],
             telepads = Quadtree:new()
         }
+        print("Pad meta...")
+        print(getmetatable(layer.telepads))
+        print(getmetatable(layer.telepads).name)
+        print(layer.telepads:check_proxy_collision(make_bbox(0, 0, 1, 1)))
         table.insert(global.layers, layer)
         global.layers[l_name] = layer
     end
@@ -92,9 +97,10 @@ function initialize_subterra ()
 end
 
 function on_load()
+    print("OnLoad")
     for _, layer in pairs(global.layers) do
         local pads = layer.telepads
-        if getmetatable(pads) == nil then
+        if not getmetatable(pads) then
             setmetatable(pads, Quadtree)
 	        pads:rebuild_metatables()
         end

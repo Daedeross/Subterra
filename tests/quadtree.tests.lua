@@ -65,6 +65,7 @@ setmetatable(TelepadQTree, Quadtree)
 TelepadQTree:rebuild_metatables()
 
 print("rebuild complete")
+print(getmetatable(TelepadQTree).name)
 
 if true then
     local start_time = os.clock()
@@ -106,7 +107,7 @@ local i = 0
 local names = {}
 for p in TelepadQTree:proxies() do
     i = i + 1
-    if get_member_safe(names, p.name) then
+    if names[p.name] then
         print(p.name)
     else
         names[p.name] = true

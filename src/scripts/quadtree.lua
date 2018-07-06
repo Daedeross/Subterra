@@ -33,7 +33,7 @@ function make_bbox(left, top, right, bottom)
 	}
 end
 
-QuadtreeNode = {}
+QuadtreeNode = { __index = QuadtreeNode }
 
 function QuadtreeNode:new (bbox)
 	local qt = {
@@ -322,7 +322,10 @@ function QuadtreeNode:direct_proxies()
 end
 
 -- management class for the QuadtreeNodes
-Quadtree = {}
+Quadtree = {
+	name = "Quadtree",
+	__index = Quadtree
+}
 
 function Quadtree:new(o)
 	local qt = o or {
@@ -369,28 +372,29 @@ function Quadtree:check_proxy_collision(bbox)
 end
 
 function Quadtree:rebuild_metatables()
-	QuadtreeNode:rebuild_metatables(self.root)
+	print("rebuild" .. tostring(self.root))
+	--QuadtreeNode:rebuild_metatables(self.root)
 end
 
 -- iterates through all proxies in the tree using
 -- a depth-first tree-walk
-function Quadtree:proxies()
-	local function yield_node(node, set)
-		if node.proxies then
-			for _, p in pairs(node.proxies) do
-				if not set[p] then -- check if proxy has already been returned (large proxies may be in more that 1 leaf)
-					set[p] = true
-					coroutine.yield(p)
-				end
-			end
-		end
-		if node.children then
-			for _, child in pairs(node.children) do
-				if child.proxies or child.children then
-					yield_node(child, set)
-				end
-			end
-		end
-	end
-	return coroutine.wrap(function() yield_node(self.root, {}) end)
-end
+-- function Quadtree:proxies()
+-- 	local function yield_node(node, set)
+-- 		if node.proxies then
+-- 			for _, p in pairs(node.proxies) do
+-- 				if not set[p] then -- check if proxy has already been returned (large proxies may be in more that 1 leaf)
+-- 					set[p] = true
+-- 					coroutine.yield(p)
+-- 				end
+-- 			end
+-- 		end
+-- 		if node.children then
+-- 			for _, child in pairs(node.children) do
+-- 				if child.proxies or child.children then
+-- 					yield_node(child, set)
+-- 				end
+-- 			end
+-- 		end
+-- 	end
+-- 	return coroutine.wrap(function() yield_node(self.root, {}) end)
+-- end

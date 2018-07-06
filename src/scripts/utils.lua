@@ -1,3 +1,4 @@
+if not subterra then subterra = {} end
 if not subterra.events then subterra.events = {} end
 if not subterra.tick_events then subterra.tick_events = {} end
 
