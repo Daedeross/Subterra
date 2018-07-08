@@ -15,8 +15,11 @@ require 'scripts/utils'
 --============================================================================--
 function initialize_subterra ()
     print("Starting SubTerra Initialization")
+
+    local top_surface = game.surfaces['nauvis']
+
     -- copy map settings
-    local gen_settings = table.deepcopy(game.surfaces['nauvis'].map_gen_settings)
+    local gen_settings = table.deepcopy(top_surface.map_gen_settings)
     -- remove resources from settings
     for _, r in pairs(gen_settings.autoplace_controls) do
         r.frequency = 'very-low'
@@ -50,7 +53,7 @@ function initialize_subterra ()
     table.insert(global.layers, {
             index = 1,
             layer_above = nil,
-            surface = game.surfaces["nauvis"],
+            surface = top_surface,
             telepads = Quadtree:new()
         })
     global.layers["nauvis"] = global.layers[1]
@@ -66,10 +69,35 @@ function initialize_subterra ()
         global.layers[l_name] = layer
     end
 
+    -- get currently generated surface chunks
+    local minx = -2147483648 -- sentinels
+    local miny = -2147483648 
+    local maxx = 2147483647
+    local maxy = 2147483647 
+
+    for chunk in top_surface.get_chunks() do
+       minx = math.max(minx, chunk.x)
+       miny = math.max(miny, chunk.y)
+       maxx = math.min(maxx, chunk.x)
+       maxy = math.min(maxy, chunk.y)
+    end
+
+    local middle = {
+        maxx + minx * 16,
+        maxy + miny * 16
+    }
+    local radius = math.max(10, math.max(maxx - minx, maxy - miny) / 2)
+
+    print("World Rect: {" .. middle[1] .. ", " .. middle[2] .. "} radius = " .. radius .. "\n")
+    print("X: " .. minx .. ", " .. maxx)
+    print("Y: " .. miny .. ", " .. maxy)
+    print("")
+
     -- set adjacency and kickstart chunk generation
     global.layers[1].layer_below = global.layers[2]
     for i = 2, subterra.config.MAX_LAYER_COUNT do
-        global.layers[i].surface.request_to_generate_chunks({0,0}, 10)
+        --global.layers[i].surface.request_to_generate_chunks({0,0}, 10)
+        global.layers[i].surface.request_to_generate_chunks(middle, radius)
         global.layers[i].layer_above = global.layers[i-1]
         if i < subterra.config.MAX_LAYER_COUNT then
             global.layers[i].layer_below = global.layers[i+1]

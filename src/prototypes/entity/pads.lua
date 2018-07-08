@@ -14,7 +14,9 @@ data:extend({
     energy_source =
     {
         type = "electric",
-        usage_priority = "secondary-input"
+        usage_priority = "secondary-input",
+        render_no_power_icon = false,
+        render_no_network_icon = false
     },
     energy_usage_per_tick = "5KW",
     light = 
@@ -56,7 +58,9 @@ data:extend({
     energy_source =
     {
         type = "electric",
-        usage_priority = "secondary-input"
+        usage_priority = "secondary-input",
+        render_no_power_icon = false,
+        render_no_network_icon = false
     },
     energy_usage_per_tick = "5KW",
     light = 

@@ -7,7 +7,7 @@ register_configuration_event(
 function (config)
     local mod = config.mod_changes["subterra"]
     if mod then
-        return mod.old_version < "0.3.0"
+        return mod.old_version and mod.old_version < "0.3.0"
     end
     return false
 end,

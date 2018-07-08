@@ -25,6 +25,32 @@ function (event)
     end
 end)
 
+register_event(defines.events.script_raised_built,
+function (event)
+    local p_index = event.player_index
+    local player = game.players[p_index]
+    local surface = player.surface
+    local level = string.match(surface.name, "underground_(%d)")
+    if not level then
+        handle_surface_placement(event, player)
+    else
+        handle_underground_placement(event, player, level)
+    end
+end)
+
+register_event(defines.events.script_raised_revive,
+function (event)
+    local p_index = event.player_index
+    local player = game.players[p_index]
+    local surface = player.surface
+    local level = string.match(surface.name, "underground_(%d)")
+    if not level then
+        handle_surface_placement(event, player)
+    else
+        handle_underground_placement(event, player, level)
+    end
+end)
+
 function destroy_and_return(built_entity, placing_entity)
     local prod
     if built_entity.prototype.mineable_properties.products then
@@ -272,6 +298,15 @@ end)
 -- end)
 
 register_event(defines.events.on_robot_mined_entity,
+function (event)
+    local ent = event.entity
+    local callback = remove_events[ent.prototype.name]
+    if callback then
+        callback(ent, event.robot, event.buffer)
+    end
+end)
+
+register_event(defines.events.script_raised_destroy,
 function (event)
     local ent = event.entity
     local callback = remove_events[ent.prototype.name]

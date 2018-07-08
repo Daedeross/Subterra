@@ -16,6 +16,7 @@ if (-not [string]::IsNullOrWhiteSpace($Version))
 
 $resolvedPath = Resolve-Path $buildInfo.output_directory
 $modsDir = $resolvedPath.ToString()
+$Utf8NoBomEncoding = New-Object System.Text.UTF8Encoding $False
 
 if(-not $NoClean) {
     $glob = "$modsDir\" + $buildInfo.info.name + "_*"
@@ -30,5 +31,5 @@ if (-not $NoPublish) {
     $newDir = "$modsDir\" + $buildInfo.info.name + "_" + $buildInfo.info.version
     Write-Output "$newDir"
     Copy-Item -Path "$SourceFolder" -Recurse -Destination "$newDir"
-    ConvertTo-Json $buildInfo.info | % { [System.Text.RegularExpressions.Regex]::Unescape($_) } | Set-Content "$newDir\info.json" -Encoding UTF8
+    ConvertTo-Json $buildInfo.info | % { [System.Text.RegularExpressions.Regex]::Unescape($_) } | % { [System.IO.File]::WriteAllLines("$newDir\info.json", $_, $Utf8NoBomEncoding) }
 }
