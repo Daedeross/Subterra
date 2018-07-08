@@ -8,6 +8,10 @@
 require ("util")
 require 'scripts/utils'
 
+surface_build_events = {}
+underground_build_events = {}
+remove_events = {}
+
 register_event(defines.events.on_built_entity,
 function (event)
     local p_index = event.player_index
@@ -34,16 +38,9 @@ end
 
 function handle_surface_placement(event, p)
     local ent = event.created_entity
-    -- debug("place")
-    -- debug(ent.name)
-    -- debug(string.find(ent.name, "subterra%-belt"))
-    if string.find(ent.name, "telepad") ~= nil then
-        if not add_telepad_proxy(ent, p.surface) then
-            destroy_and_return(ent, p)
-        end
-    elseif string.find(ent.name, "subterra%-belt") ~= nil then
-        debug("belt")
-        if not add_belt_proxy(ent, p.surface) then
+    local callback = surface_build_events[ent.name]
+    if callback then
+        if not callback(ent, p.surface) then
             destroy_and_return(ent, p)
         end
     end
@@ -51,16 +48,12 @@ end
 
 function handle_underground_placement(event, p, level)
     local ent = event.created_entity
-
-    if global.underground_entities[ent.name] then
-        if string.find(ent.name, "telepad") ~= nil then
-            if not add_telepad_proxy(ent, p.surface) then
-                destroy_and_return(ent, p)
-            end
-        elseif string.find(ent.name, "subterra%-belt") ~= nil then
-            if not add_belt_proxy(ent, p.surface) then
-                destroy_and_return(ent, p)
-            end
+    print(ent.name)
+    local callback = underground_build_events[ent.name]
+    print(callback)
+    if callback then
+        if not callback(ent, p.surface) then
+            destroy_and_return(ent, p)
         end
     else
         destroy_and_return(ent, p)
@@ -123,18 +116,21 @@ function add_telepad_proxy(pad, surface)
     return true
 end
 
+underground_build_events["subterra-telepad-up"] = add_telepad_proxy
+underground_build_events["subterra-telepad-down"] = add_telepad_proxy
+surface_build_events["subterra-telepad-up"] = add_telepad_proxy
+surface_build_events["subterra-telepad-down"] = add_telepad_proxy
+
 function add_belt_proxy(belt, surface)
     local sname = surface.name
     local is_down = string.find(belt.name, "%-down") ~= nil
-    --local is_in = string.find(belt.name, "%-in") ~= nil
     local layer = global.layers[sname]
 
     local target_layer = is_down and layer.layer_below or layer.layer_above
     local target_name = "subterra-belt-out" -- later if I add more speeds, this will actually be variable
-    
-    -- debug(target_layer)
+
     -- check if target layer exists
-    if target_layer == nil then
+    if not target_layer then
         return false
     end
 
@@ -164,43 +160,132 @@ function add_belt_proxy(belt, surface)
         rotated_last = true
     }
 
-    for i, v in pairs(belt_proxy) do
-        print(i .. ":" .. tostring(v))
-    end
+    -- for i, v in pairs(belt_proxy) do
+    --     print(i .. ":" .. tostring(v))
+    -- end
 
     global.belt_inputs[belt.unit_number] = belt_proxy
     global.belt_outputs[target_entity.unit_number] = belt_proxy
     return true
 end
 
+underground_build_events["subterra-belt-up"] = add_belt_proxy
+underground_build_events["subterra-belt-down"] = add_belt_proxy
+underground_build_events["subterra-belt-out"] = add_belt_proxy
+surface_build_events["subterra-belt-up"] = add_belt_proxy
+surface_build_events["subterra-belt-down"] = add_belt_proxy
+surface_build_events["subterra-belt-out"] = add_belt_proxy
+
+function add_power_proxy(placed, surface)
+    local sname = surface.name
+    local is_down = string.find(placed.name, "%-down") ~= nil
+    local layer = global.layers[sname]
+
+    local target_layer = is_down and layer.layer_below or layer.layer_above
+    local target_name = "subterra-power-" .. (is_down and "up" or "down")
+
+    -- check if target layer exists
+    if not target_layer then
+        return false
+    end
+
+    -- check if target location is free
+    local target_surface = target_layer.surface
+    if not target_surface.can_place_entity{name = target_name, position = placed.position} then
+        return false
+    end
+
+    local target_entity = target_surface.create_entity{
+        name = target_name,
+        position = placed.position,
+        force = placed.force,
+        direction = placed.direction
+    }
+
+    -- electic interfaces
+    local input = surface.create_entity{
+        name = "subterra-power-in",
+        position = placed.position,
+        force = placed.force,
+        direction = placed.direction
+    }
+
+    local output = target_surface.create_entity{
+        name = "subterra-power-out",
+        position = placed.position,
+        force = placed.force,
+        direction = placed.direction
+    }
+
+    local top_surface = is_down and surface or target_surface
+    local bottom_surface = is_down and target_surface or surface
+    local pole_top = top_surface.create_entity{
+        name = "subterra-power-pole",
+        position = placed.position,
+        force = placed.force,
+        direction = placed.direction
+    }
+    local pole_bottom = bottom_surface.create_entity{
+        name = "subterra-power-pole",
+        position = placed.position,
+        force = placed.force,
+        direction = placed.direction
+    }
+    
+    local power_proxy = {
+        input = input,
+        output = output,
+        top = is_down and placed or target_entity,
+        bottom = is_down and target_entity or placed,
+        pole_top = pole_top,
+        pole_bottom = pole_bottom,
+        target_layer = target_layer
+    }
+
+    global.power_inputs[placed.unit_number] = power_proxy
+    global.power_outputs[target_entity.unit_number] = power_proxy
+    return true
+end
+
+underground_build_events["subterra-power-up"] = add_power_proxy
+underground_build_events["subterra-power-down"] = add_power_proxy
+surface_build_events["subterra-power-up"] = function() return false end
+surface_build_events["subterra-power-down"] = add_power_proxy
+
 register_event(defines.events.on_entity_died,
 function (event)
-    local name = event.entity.prototype.name
-    if string.find(name, "telepad") ~= nil then
-        handle_remove_telepad(event.entity)
-    elseif string.find(name, "subterra%-belt") ~= nil then
-        handle_remove_belt_elevator(event.entity)
+    local ent = event.entity
+    local callback = remove_events[ent.prototype.name]
+    if callback then
+        callback(ent)
     end
 end)
 
-register_event(defines.events.on_pre_player_mined_item,
+register_event(defines.events.on_player_mined_entity,
 function (event)
-    local name = event.entity.prototype.name
-    if string.find(name, "telepad") ~= nil then
-        handle_remove_telepad(event.entity)
-    elseif string.find(name, "subterra%-belt") ~= nil then
-        debug(event.player_index)
-        handle_remove_belt_elevator(event.entity, game.players[event.player_index])
+    local ent = event.entity
+    local callback = remove_events[ent.prototype.name]
+    if callback then
+        callback(ent, game.players[event.player_index], event.buffer)
     end
 end)
 
-register_event(defines.events.on_robot_pre_mined,
+-- register_event(defines.events.on_pre_player_mined_item,
+-- function (event)
+--     print("BAR")
+--     local ent = event.entity
+--     local callback = remove_events[ent.prototype.name]
+--     if callback then
+--         callback(ent, game.players[event.player_index])
+--     end
+-- end)
+
+register_event(defines.events.on_robot_mined_entity,
 function (event)
-    local name = event.entity.prototype.name
-    if string.find(name, "telepad") ~= nil then
-        handle_remove_telepad(event.entity)
-    elseif string.find(name, "subterra%-belt") ~= nil then
-        handle_remove_belt_elevator(event.entity)
+    local ent = event.entity
+    local callback = remove_events[ent.prototype.name]
+    if callback then
+        callback(ent, event.robot, event.buffer)
     end
 end)
 
@@ -212,20 +297,78 @@ function handle_remove_telepad(entity)
     proxy.target_pad.entity.destroy()
 end
 
-function handle_remove_belt_elevator(belt, entity)
+function handle_remove_belt_elevator(belt, removing_entity, buffer)
     local proxy = global.belt_inputs[belt.unit_number] or global.belt_outputs[belt.unit_number]
     local in_id = proxy.input.unit_number
     local out_id = proxy.output.unit_number
     local mine_results = proxy.input.name -- naming convention, entity is named same as item that places it
+    global.belt_inputs[in_id].removed = true
+    global.belt_outputs[out_id].removed = true
     global.belt_inputs[in_id] = nil
     global.belt_outputs[out_id] = nil
+
     if belt ~= proxy.input then
         proxy.input.destroy()
     else 
         proxy.output.destroy()
     end
-    -- debug(entity)
-    if entity ~= nil then
-        entity.insert({name=mine_results})
+    -- debug(removing_entity)
+    if removing_entity then
+        if buffer then
+            buffer.clear()
+            buffer.insert({name=mine_results})
+        else
+            removing_entity.insert({name=mine_results})
+        end
+    end
+end
+
+function handle_remove_power_interface(mined, removing_entity, buffer)
+    local proxy = global.power_inputs[mined.unit_number] or global.power_outputs[mined.unit_number]
+    local top_id = proxy.top.unit_number
+    local bottom_id = proxy.output.unit_number
+    local mine_results = mined.name  -- naming convention, entity is named same as item that places it
+    global.power_inputs[top_id] = nil
+    global.power_outputs[bottom_id] = nil
+
+    proxy.input.destroy()
+    proxy.output.destroy()
+    proxy.pole_top.destroy()
+    proxy.pole_bottom.destroy()
+
+    if mined == proxy.top then
+        proxy.bottom.destroy()
+    else 
+        proxy.top.destroy()
+    end
+    -- debug(removing_entity)
+    if removing_entity then
+        if buffer then
+            buffer.clear()
+            buffer.insert({name=mine_results})
+        else
+            removing_entity.insert({name=mine_results})
+        end
+    end
+end
+
+remove_events["subterra-telepad-up"] = handle_remove_telepad
+remove_events["subterra-telepad-down"] = handle_remove_telepad
+remove_events["subterra-belt-up"] = handle_remove_belt_elevator
+remove_events["subterra-belt-down"] = handle_remove_belt_elevator
+remove_events["subterra-belt-out"] = handle_remove_belt_elevator
+remove_events["subterra-power-up"] = handle_remove_power_interface
+remove_events["subterra-power-down"] = handle_remove_power_interface
+
+function simple_build(entity, surface)
+    return true
+end
+
+if subterra.config.underground_entities then
+    for name, _ in pairs(subterra.config.underground_entities) do
+        if not underground_build_events[name] then
+            print("Allowing '".. name .. "' to be built underground")
+            underground_build_events[name] = simple_build
+        end
     end
 end

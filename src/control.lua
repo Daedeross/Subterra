@@ -6,6 +6,7 @@ require("util")
 require("config")
 require("scripts.utils")
 require("scripts.events.initialization")
+require("scripts.events.configuration")
 require("scripts.events.generation")
 require("scripts.events.building")
 require("scripts.events.players")
@@ -21,3 +22,8 @@ script.on_load(on_load)
 
 -- Wire all registered event callbacks
 wire_all_events()
+
+-- script.on_event(defines.events.on_player_mined_entity,
+-- function(event)
+--     print("BABABABA")
+-- end)

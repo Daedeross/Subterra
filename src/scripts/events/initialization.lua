@@ -81,12 +81,14 @@ function initialize_subterra ()
         end
     end
 
-    -- initialize belt-elevator container
-    global.belt_inputs = {}
-    global.belt_outputs = {}
+    -- initialize proxy containers
+    if not global.belt_inputs then global.belt_inputs = {} end
+    if not global.belt_outputs then global.belt_outputs = {} end
+    if not global.power_inputs then global.power_inputs = {} end
+    if not global.power_outputs then global.power_outputs = {} end
 
     -- set underground enitity list
-    global.underground_entities = table.deepcopy(subterra.config.starting_entities)
+    global.underground_entities = table.deepcopy(subterra.config.underground_entities)
 
     print("SubTerra Initialization Complete")
 end

@@ -32,27 +32,55 @@ local INSERT_POS = {
 	["underground-belt"] = 0.21875, -- 0.5 - 9/32
 }
 
+-- belts
 register_event(defines.events.on_tick,
 function (event)
     for _,b in pairs(global.belt_inputs) do
-        -- local type = b.input.type
-        local in1 = b.in_line1
-        local in2 = b.in_line2
-        local out1 = b.out_line1
-        local out2 = b.out_line2
-        local c1 = # in1
-        local c2 = # in2
-        if c1 > 0 then
-            local n = in1[1].name
-            if out1.insert_at_back({name=n}) then
-                in1.remove_item({name=n})
+        if b.input.valid and b.output.valid then
+            --local type = b.input.type
+            local in1 = b.in_line1
+            local in2 = b.in_line2
+            local out1 = b.out_line1
+            local out2 = b.out_line2
+            local c1 = # in1
+            local c2 = # in2
+            if c1 > 0 then
+                local n = in1[1].name
+                if out1.insert_at_back({name=n}) then
+                    in1.remove_item({name=n})
+                end
             end
-        end
-        if c2 > 0 then
-            local n = in2[1].name
-            if out2.insert_at_back({name=n}) then
-                in2.remove_item({name=n})
+            if c2 > 0 then
+                local n = in2[1].name
+                if out2.insert_at_back({name=n}) then
+                    in2.remove_item({name=n})
+                end
             end
         end
     end 
 end)
+
+-- power
+local function transfer_power(from, to)
+	if not (from.valid and to.valid) then return end
+	local energy = from.energy + to.energy
+    local ebs = to.electric_buffer_size
+	if energy > ebs then
+		to.energy = ebs
+		from.energy = energy - ebs
+	else
+		to.energy = energy
+		from.energy = 0
+	end
+end
+
+register_event(defines.events.on_tick,
+function (event)
+    for _,p in pairs(global.power_inputs) do
+        if p.input.valid and p.output.valid then
+            transfer_power(p.input, p.output)
+        end
+    end 
+end)
+
+

@@ -24,19 +24,21 @@ data:extend({
     },
     picture_off =
     {
-        filename = "__subterra__/graphics/entities/telepad/telepad-up.png",
+        filename = "__subterra__/graphics/entities/telepad/stairs-up.png",
         priority = "high",
-        width = 99,
-        height = 102,
-        shift = {0, 0}
+        width = 219,
+        height = 215,
+        shift = {0, -0.5},
+        scale = 0.75
     },
     picture_on =
     {
-        filename = "__subterra__/graphics/entities/telepad/telepad-up.png",
+        filename = "__subterra__/graphics/entities/telepad/stairs-up.png",
         priority = "high",
-        width = 99,
-        height = 102,
-        shift = {0, 0}
+        width = 219,
+        height = 215,
+        shift = {0, -0.5},
+        scale = 0.75
     }
 },
 {
@@ -68,7 +70,8 @@ data:extend({
         priority = "high",
         width = 219,
         height = 215,
-        shift = {0, 0}
+        shift = {0, 0.25},
+        scale = 0.75
     },
     picture_on =
     {
@@ -76,7 +79,8 @@ data:extend({
         priority = "high",
         width = 219,
         height = 215,
-        shift = {0, 0}
+        shift = {0, 0.25},
+        scale = 0.75
     }
 }
 })

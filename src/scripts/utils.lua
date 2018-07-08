@@ -1,5 +1,19 @@
 if not subterra.events then subterra.events = {} end
 if not subterra.tick_events then subterra.tick_events = {} end
+if not subterra.config_events then subterra.config_events = {} end
+
+S_ROOT = "__subterra__"
+
+_blank = S_ROOT .. "/graphics/blank.png"
+function blank_picture()
+    return {
+        filename = _blank,
+        priority = "high",
+		width = 1,
+		height = 1,
+		frame_count = 1,
+    }
+end
 
 function get_member_safe( t, key )
     local call_result, value = pcall( function () return t[key] end )
@@ -63,6 +77,26 @@ function register_nth_tick_event (tick, callback)
 end
 
 --============================================================================--
+-- register_configuration_event(predicate, callback)
+--
+-- registers an event to be wired up automatically by wire_all_events() below
+--
+-- param predicate (uint): A function that returns true if [param]:callback
+--      is to run. Given (ConfigurationChangedData) as a prameter
+-- param callback (function): function to fire if [param]:predicate returns
+--      true.  Given (ConfigurationChangedData) as a prameter
+--
+-- remarks: All registered predicates will be called
+--============================================================================--
+function register_configuration_event(predicate, callback)
+    table.insert(subterra.config_events, {
+        predicate = predicate,
+        callback = callback
+    })
+    print("Registered configuration callback")
+end
+
+--============================================================================--
 -- wire_all_events()
 --
 -- wires all events registerd using the register_event above and the on_tick events
@@ -70,6 +104,15 @@ end
 --============================================================================--
 function wire_all_events()
     print("Wiring events")
+    -- configuration_changed events
+    if subterra.config_events and #(subterra.config_events) > 0 then
+        script.on_configuration_changed(function(config_data)
+            for _, event in pairs(subterra.config_events) do
+                if event.predicate(config_data) then event.callback(config_data) end
+            end
+        end)
+    end
+
     -- on_nth_tick events
     if subterra.tick_events then
         local events = {}
@@ -121,7 +164,7 @@ function wire_all_events()
         if counts[id] == 1 then
             script.on_event(id, callbacks[1])
         elseif counts[id] > 1 then
-            script.on_nth_tick(id,
+            script.on_event(id,
             function(event)
                 for _, callback in pairs(callbacks) do
                     callback(event)
