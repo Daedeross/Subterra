@@ -67,6 +67,7 @@ function handle_surface_placement(event, p)
     local callback = surface_build_events[ent.name]
     if callback then
         if not callback(ent, p.surface) then
+            p.print{"message.building-conflict", {"entity-name."..ent.name}}
             destroy_and_return(ent, p)
         end
     end
@@ -77,9 +78,12 @@ function handle_underground_placement(event, p, level)
     local callback = underground_build_events[ent.name]
     if callback then
         if not callback(ent, p.surface) then
+            --p.print{"message.building-conflict", ent.name}
+            p.print{"message.building-conflict", {"entity-name."..ent.name}}
             destroy_and_return(ent, p)
         end
     else
+        p.print{"message.building-blacklist", {"entity-name."..ent.name}}
         destroy_and_return(ent, p)
     end
 end
@@ -88,6 +92,11 @@ function add_telepad_proxy(pad, surface)
     local sname = surface.name
     local is_down = string.find(pad.name, "%-down") ~= nil
     local layer = global.layers[sname]
+
+    -- to prevent entity from being buld on other mods' surfaces
+    if not layer then
+        return false
+    end
 
     local target_layer
     if is_down then 
@@ -137,6 +146,8 @@ function add_telepad_proxy(pad, surface)
     pad_proxy.target_pad = target_proxy
     target_layer.telepads:add_proxy(target_proxy)
 
+    print ("PLACED")
+
     return true
 end
 
@@ -149,6 +160,11 @@ function add_belt_proxy(belt, surface)
     local sname = surface.name
     local is_down = string.find(belt.name, "%-down") ~= nil
     local layer = global.layers[sname]
+
+    -- to prevent entity from being buld on other mods' surfaces
+    if not layer then
+        return false
+    end
 
     local target_layer = is_down and layer.layer_below or layer.layer_above
     local target_name = "subterra-belt-out" -- later if I add more speeds, this will actually be variable
@@ -199,6 +215,11 @@ function add_power_proxy(placed, surface)
     local is_down = string.find(placed.name, "%-down") ~= nil
     local layer = global.layers[sname]
 
+    -- to prevent entity from being buld on other mods' surfaces
+    if not layer then
+        return false
+    end
+
     local target_layer = is_down and layer.layer_below or layer.layer_above
     local target_name = "subterra-power-" .. (is_down and "up" or "down")
 
@@ -237,6 +258,7 @@ function add_power_proxy(placed, surface)
 
     local top_surface = is_down and surface or target_surface
     local bottom_surface = is_down and target_surface or surface
+    -- hidden power poles
     local pole_top = top_surface.create_entity{
         name = "subterra-power-pole",
         position = placed.position,

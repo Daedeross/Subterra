@@ -4,19 +4,24 @@ if not subterra.tick_events then subterra.tick_events = {} end
 
 -- event fired every half second
 -- Teleports players if standin on an elevator
-register_nth_tick_event (15,
+register_nth_tick_event (5,
 function (event)
     for i, p in pairs(global.player_proxies) do
         local player = p.player
         if player.connected then
             local sname = player.surface.name
-            local qt = global.layers[sname].telepads
-            local pad = qt:check_proxy_collision(player.character.bounding_box)
-            if pad then
-                if p.on_pad ~= pad.entity.unit_number then
-                    player.teleport(player.position, pad.target_layer.surface.name)
-                    print("Teleported player:" .. player.name)
-                    p.on_pad = pad.target_pad.entity.unit_number
+            local layer = global.layers[sname]
+            local qt = layer and layer.telepads
+            if qt then
+                local pad = qt:check_proxy_collision(player.character.bounding_box)
+                if pad then
+                    if p.on_pad ~= pad.entity.unit_number then
+                        player.teleport(player.position, pad.target_layer.surface.name)
+                        print("Teleported player:" .. player.name)
+                        p.on_pad = pad.target_pad.entity.unit_number
+                    end
+                else
+                    p.on_pad = -1
                 end
             else
                 p.on_pad = -1
