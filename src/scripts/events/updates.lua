@@ -61,6 +61,7 @@ function (event)
 end)
 
 -- power
+-- Source: https://github.com/MagmaMcFry/Factorissimo2
 local function transfer_power(from, to)
 	if not (from.valid and to.valid) then return end
 	local energy = from.energy + to.energy

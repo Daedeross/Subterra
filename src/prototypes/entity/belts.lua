@@ -7,7 +7,7 @@ data:extend({
     name = "subterra-belt-out",
     icon = "__base__/graphics/icons/underground-belt.png",
     icon_size = 32,
-    flags = {"placeable-neutral", "player-creation"},
+    flags = { },
     minable = {hardness = 0.2, mining_time = 0.5, result = "subterra-belt-out"},
     max_health = 60,
     corpse = "small-remnants",

@@ -15,9 +15,6 @@ require 'scripts/utils'
 --============================================================================--
 function initialize_subterra ()
     print("Starting SubTerra Initialization")
-    for n,_ in pairs(subterra.config.starting_entities) do
-        print(n)
-    end
     -- copy map settings
     local gen_settings = table.deepcopy(game.surfaces['nauvis'].map_gen_settings)
     -- remove resources from settings
@@ -44,7 +41,7 @@ function initialize_subterra ()
     global.player_proxies = {}
     print("Player Count: " .. tostring(# game.players))
     for i, p in pairs(game.players) do
-       print(p.name)
+       print("Creating proxy for player:" .. p.name)
        add_player_proxy(i)
     end
 

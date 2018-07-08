@@ -5,8 +5,8 @@ data:extend({
       energy_required = 1,
       ingredients =
       {
-        {"small-electric-pole", 10},
-        {"copper-wire", 6}
+        {"big-electric-pole", 2},
+        {"copper-plate", 10},
       },
       results = {{"subterra-power-down", 1}},
       requester_paste_multiplier = 4
@@ -17,8 +17,8 @@ data:extend({
       energy_required = 1,
       ingredients =
       {
-        {"small-electric-pole", 10},
-        {"copper-wire", 6}
+        {"big-electric-pole", 2},
+        {"copper-plate", 10},
       },
       results = {{"subterra-power-up", 1}},
       requester_paste_multiplier = 4

@@ -48,9 +48,7 @@ end
 
 function handle_underground_placement(event, p, level)
     local ent = event.created_entity
-    print(ent.name)
     local callback = underground_build_events[ent.name]
-    print(callback)
     if callback then
         if not callback(ent, p.surface) then
             destroy_and_return(ent, p)
@@ -134,7 +132,6 @@ function add_belt_proxy(belt, surface)
         return false
     end
 
-    -- debug("placing")
     -- check if target location is free
     local target_surface = target_layer.surface
     if not target_surface.can_place_entity{name = target_name, position = belt.position} then
@@ -147,8 +144,7 @@ function add_belt_proxy(belt, surface)
         force = belt.force,
         direction = belt.direction
     }
-    -- debug("placed target")
-    -- debug(target_entity)
+    
     local belt_proxy = {
         input = belt,
         output = target_entity,
@@ -159,10 +155,6 @@ function add_belt_proxy(belt, surface)
         out_line2 = target_entity.get_transport_line(2),
         rotated_last = true
     }
-
-    -- for i, v in pairs(belt_proxy) do
-    --     print(i .. ":" .. tostring(v))
-    -- end
 
     global.belt_inputs[belt.unit_number] = belt_proxy
     global.belt_outputs[target_entity.unit_number] = belt_proxy
@@ -272,7 +264,6 @@ end)
 
 -- register_event(defines.events.on_pre_player_mined_item,
 -- function (event)
---     print("BAR")
 --     local ent = event.entity
 --     local callback = remove_events[ent.prototype.name]
 --     if callback then
@@ -312,7 +303,7 @@ function handle_remove_belt_elevator(belt, removing_entity, buffer)
     else 
         proxy.output.destroy()
     end
-    -- debug(removing_entity)
+
     if removing_entity then
         if buffer then
             buffer.clear()
@@ -341,7 +332,7 @@ function handle_remove_power_interface(mined, removing_entity, buffer)
     else 
         proxy.top.destroy()
     end
-    -- debug(removing_entity)
+
     if removing_entity then
         if buffer then
             buffer.clear()

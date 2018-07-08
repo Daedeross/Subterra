@@ -64,8 +64,7 @@ function rotate_belt (belt)
             direction = belt.direction
             proxy.rotated_last = true
         end
-        --debug(tostring(direction))
-        --debug("swap")
+        
         swap_belt_elevator(proxy, direction)
     end
 end
