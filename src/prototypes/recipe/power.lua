@@ -26,6 +26,8 @@ data:extend({
     {
       type = "recipe",
       name = "subterra-power-down-ex",
+      allow_as_intermediate = false,
+      allow_intermediates = false,
       ingredients =
       {
         {"subterra-power-up", 1}
@@ -36,6 +38,8 @@ data:extend({
     {
       type = "recipe",
       name = "subterra-power-up-ex",
+      allow_as_intermediate = false,
+      allow_intermediates = false,
       ingredients =
       {
         {"subterra-power-down", 1}

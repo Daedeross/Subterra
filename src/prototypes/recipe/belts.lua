@@ -28,6 +28,8 @@ data:extend({
   {
     type = "recipe",
     name = "subterra-belt-down-ex",
+    allow_as_intermediate = false,
+    allow_intermediates = false,
     ingredients =
     {
       {"subterra-belt-up", 1}
@@ -38,6 +40,8 @@ data:extend({
   {
     type = "recipe",
     name = "subterra-belt-up-ex",
+    allow_as_intermediate = false,
+    allow_intermediates = false,
     ingredients =
     {
       {"subterra-belt-down", 1}

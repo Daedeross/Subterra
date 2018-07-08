@@ -26,6 +26,8 @@ data:extend({
   {
     type = "recipe",
     name = "subterra-telepad-up-ex",
+    allow_as_intermediate = false,
+    allow_intermediates = false,
     ingredients =
     {
       {"subterra-telepad-down", 1}
@@ -36,6 +38,8 @@ data:extend({
   {
     type = "recipe",
     name = "subterra-telepad-down-ex",
+    allow_as_intermediate = false,
+    allow_intermediates = false,
     ingredients =
     {
       {"subterra-telepad-up", 1}
