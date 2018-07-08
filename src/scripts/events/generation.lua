@@ -7,7 +7,8 @@
 require 'util'
 require 'scripts/utils'
 
-function OnChunkGenerated(event)
+register_event(defines.events.on_chunk_generated,
+function (event)
     local bb = event.area
     local surface = event.surface
     local pos = {bb.left_top.x + 16, bb.left_top.y + 16 }
@@ -30,6 +31,7 @@ function OnChunkGenerated(event)
 
     -- clear entities and set tiles if this is a below ground chunk
     if index ~= 1 then
+
         local entities = surface.find_entities(bb)
         for k, e in pairs(entities) do
             if e.type ~= 'player' and -- just in case someone is walking there when it's generating...
@@ -50,6 +52,7 @@ function OnChunkGenerated(event)
             end
         end
         surface.set_tiles(new_tiles)
+        -- remove decoratives
+        surface.destroy_decoratives(bb)
     end
-end
-
+end)

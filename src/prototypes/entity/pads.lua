@@ -1,8 +1,9 @@
 data:extend({
-    {
+{
     type = "lamp",
     name = "subterra-telepad-up",
     icon = "__subterra__/graphics/entities/telepad/telepad-up-icon.png",
+    icon_size = 32,
     flags = {"placeable-neutral", "player-creation"},
     minable = {hardness = 0.1, mining_time = 0.1, result = "subterra-telepad-up"},
     max_health = 55,
@@ -23,25 +24,28 @@ data:extend({
     },
     picture_off =
     {
-        filename = "__subterra__/graphics/entities/telepad/telepad-up.png",
+        filename = "__subterra__/graphics/entities/telepad/stairs-up.png",
         priority = "high",
-        width = 99,
-        height = 102,
-        shift = {0, 0}
+        width = 219,
+        height = 215,
+        shift = {0, -0.5},
+        scale = 0.75
     },
     picture_on =
     {
-        filename = "__subterra__/graphics/entities/telepad/telepad-up.png",
+        filename = "__subterra__/graphics/entities/telepad/stairs-up.png",
         priority = "high",
-        width = 99,
-        height = 102,
-        shift = {0, 0}
+        width = 219,
+        height = 215,
+        shift = {0, -0.5},
+        scale = 0.75
     }
-    },
-    {
+},
+{
     type = "lamp",
     name = "subterra-telepad-down",
     icon = "__subterra__/graphics/entities/telepad/telepad-down-icon.png",
+    icon_size = 32,
     flags = {"placeable-neutral", "player-creation"},
     minable = {hardness = 0.1, mining_time = 0.1, result = "subterra-telepad-down"},
     max_health = 55,
@@ -62,19 +66,21 @@ data:extend({
     },
     picture_off =
     {
-        filename = "__subterra__/graphics/entities/telepad/telepad-down.png",
+        filename = "__subterra__/graphics/entities/telepad/stairs-down.png",
         priority = "high",
-        width = 99,
-        height = 102,
-        shift = {0, 0}
+        width = 219,
+        height = 215,
+        shift = {0, 0.25},
+        scale = 0.75
     },
     picture_on =
     {
-        filename = "__subterra__/graphics/entities/telepad/telepad-down.png",
+        filename = "__subterra__/graphics/entities/telepad/stairs-down.png",
         priority = "high",
-        width = 99,
-        height = 102,
-        shift = {0, 0}
+        width = 219,
+        height = 215,
+        shift = {0, 0.25},
+        scale = 0.75
     }
-    }
+}
 })

@@ -39,6 +39,10 @@ function swap_belt_elevator(belt_proxy, direction)
     }
     belt_proxy.input = input
     belt_proxy.output = output
+    belt_proxy.in_line1 = input.get_transport_line(1)
+    belt_proxy.in_line2 = input.get_transport_line(2)
+    belt_proxy.out_line1 = output.get_transport_line(1)
+    belt_proxy.out_line2 = output.get_transport_line(2)
     -- update target layer
     belt_proxy.target_layer = global.layers[in_sname]
 
@@ -52,7 +56,7 @@ function rotate_belt (belt)
     if proxy == nil then
         proxy = global.belt_outputs[belt.unit_number] 
     end
-    if proxy ~= nil then
+    if proxy then
         if proxy.rotated_last then
             direction = (belt.direction + 6) % 8
             proxy.rotated_last = false
@@ -60,8 +64,7 @@ function rotate_belt (belt)
             direction = belt.direction
             proxy.rotated_last = true
         end
-        --game.players[1].print(tostring(direction))
-        --game.players[1].print("swap")
+        
         swap_belt_elevator(proxy, direction)
     end
 end
@@ -70,19 +73,11 @@ rotate_funcs["subterra-belt-up"] = rotate_belt
 rotate_funcs["subterra-belt-down"] = rotate_belt
 rotate_funcs["subterra-belt-out"] = rotate_belt
 
--- function swap_telepads (proxy)
-
--- end
-
--- function rotate_telepad(pad)
---     local q_tree = global.layers[pad.surface.name].swap_telepads
---     local proxy = q_tree:
--- end
-
-function OnPlayerRotatedEntity(event)
+register_event(defines.events.on_player_rotated_entity,
+function (event)
     local entity = event.entity
     local func = rotate_funcs[entity.name]
-    if func ~= nil then
+    if func then
         func(entity)
     end
-end
+end)
