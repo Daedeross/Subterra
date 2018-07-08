@@ -11,3 +11,8 @@ In Powershell, run `build.ps1`. This will clean out the old mod folder and copy 
 
 ### Windows Deploy
 In Powershell reun `deplpy.ps1 -Tag [Tag Name]`. This will checkout the specified Tag (if it exists) and create a zip package ready to drop into a mods folder. The tag name is identical to the version number built.
+
+## License
+All files in the repository except artwork in the src/graphics folder are under the MIT License.
+
+&copy; Copyright 2016-2018 Bryan C. Jones
