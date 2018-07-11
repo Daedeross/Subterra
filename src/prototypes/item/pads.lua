@@ -21,17 +21,17 @@ data:extend({
         place_result = "subterra-telepad-down",
         stack_size = 50
     },
-    {
-        type = "rail-planner",
-        name = "subterra-rail",
-        icon = "__base__/graphics/icons/rail.png",
-        icon_size = 32,
-        flags = {"goes-to-quickbar"},
-        subgroup = "transport",
-        order = "s[train-system]-s[rail]",
-        place_result = "subterra-straight-rail",
-        stack_size = 100,
-        straight_rail = "subterra-straight-rail",
-        curved_rail = "subterra-curved-rail"
-    },
+    -- {
+    --     type = "rail-planner",
+    --     name = "subterra-rail",
+    --     icon = "__base__/graphics/icons/rail.png",
+    --     icon_size = 32,
+    --     flags = {"goes-to-quickbar"},
+    --     subgroup = "transport",
+    --     order = "s[train-system]-s[rail]",
+    --     place_result = "subterra-straight-rail",
+    --     stack_size = 100,
+    --     straight_rail = "subterra-straight-rail",
+    --     curved_rail = "subterra-curved-rail"
+    -- },
 })

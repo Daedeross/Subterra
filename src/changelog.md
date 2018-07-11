@@ -3,8 +3,14 @@
 ## Know Issues
 - Other mods that place entities and do not raise the `script_raised_built` event may lead to unintended consequences.
 
+## v0.3.3
+### New
+- Added remote calls so other mods can add or remove entities from the underground whitelist
+To add an entity: `remote.call("subterra:entities", "add", %NAME%)` - Replace `%NAME` with the name of the entity (i.e. the name of the prototype)
+To remove an entity: `remote.call("subterra:entities", "remove", %NAME%)` 
+
 ## v0.3.2
-## New
+### New
 - Added some feedback messages for when players are unable to place certain structures
 ### Bugfixes
 - Fixed compatibility with other mods that create additional surfaces (so far tested with Factorissimo2).
