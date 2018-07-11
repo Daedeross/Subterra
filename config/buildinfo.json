@@ -1,8 +1,8 @@
 {
-    "output_directory": "../../Factorio_Dev/mods",
+    "output_directory": "../Factorio_Dev/mods",
     "info":{
         "name": "subterra",
-        "version": "0.3.3",
+        "version": "0.3.4",
         "factorio_version": "0.16",
         "title": "SubTerra",
         "author": "Daedeross",

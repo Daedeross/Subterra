@@ -15,7 +15,7 @@ function (event)
     local layer = global.layers[surface.name]
     -- if the surface name is not a key in global.layers,
     -- then it is a surface from another mod and will be ignored
-    if layer == nil then
+    if not layer then
         return
     end
     local index = layer.index
@@ -36,7 +36,7 @@ function (event)
         for k, e in pairs(entities) do
             if e.type ~= 'player' and -- just in case someone is walking there when it's generating...
                e.type ~= 'item' and
-               not global.underground_entities[e.name]
+               not global.underground_whitelist[e.name]
                then  
                 entities[k].destroy()
             end
