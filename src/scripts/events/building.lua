@@ -17,74 +17,89 @@ function (event)
     local p_index = event.player_index
     local player = game.players[p_index]
     local surface = player.surface
-    local level = string.match(surface.name, "underground_(%d)")
-    if not level then
-        handle_surface_placement(event, player)
+    local layer = global.layers[surface.name]
+    -- if not layer then
+    --     handle_other_placement(event, player)
+    -- else
+    if (not layer) or (layer.index == 1) then
+        handle_surface_placement(event, player, layer)
     else
-        handle_underground_placement(event, player, level)
+        handle_underground_placement(event, player, layer)
     end
 end)
 
-register_event(defines.events.script_raised_built,
-function (event)
+register_event(defines.events.script_raised_built, handle_script_built)
+register_event(defines.events.script_raised_revive, handle_script_built)
+
+function handle_script_built(event)
     local p_index = event.player_index
-    local player = game.players[p_index]
-    local surface = player.surface
-    local level = string.match(surface.name, "underground_(%d)")
-    if not level then
-        handle_surface_placement(event, player)
-    else
-        handle_underground_placement(event, player, level)
+    local player = p_index and game.players[p_index]
+    local entity = event.created_entity
+    
+    if not entity then
+        return -- cant get the entity from this event, so nothing I can do
     end
-end)
 
-register_event(defines.events.script_raised_revive,
-function (event)
-    local p_index = event.player_index
-    local player = game.players[p_index]
-    local surface = player.surface
-    local level = string.match(surface.name, "underground_(%d)")
-    if not level then
-        handle_surface_placement(event, player)
-    else
-        handle_underground_placement(event, player, level)
+    local surface
+    if player then
+        surface = player.surface
+    elseif event.created_entity then
+        surface = event.created_entity.surface
     end
-end)
 
-function destroy_and_return(built_entity, placing_entity)
+    if not surface then
+        return -- cant get the surface from this event, so nothing I can do
+    end
+
+    local layer = global.layers[surface.name]
+    if (not layer) or (layer.index == 1) then
+        handle_surface_placement(event.entity, player, layer)
+    else
+        handle_underground_placement(event.entity, player, layer)
+    end
+end
+
+function destroy_and_return(built_entity, creator)
     local prod
     if built_entity.prototype.mineable_properties.products then
         prod = built_entity.prototype.mineable_properties.products[1].name
     else
         prod = built_entity.name
     end
-    placing_entity.insert{name = prod, count = 1}
+    creator.insert{name = prod, count = 1}
     built_entity.destroy()
 end
 
-function handle_surface_placement(event, p)
-    local ent = event.created_entity
-    local callback = surface_build_events[ent.name]
+function handle_surface_placement(entity, creator, layer)
+    local ent_name = entity.name
+    local callback = surface_build_events[ent_name]
     if callback then
-        if not callback(ent, p.surface) then
-            p.print{"message.building-conflict", {"entity-name."..ent.name}}
-            destroy_and_return(ent, p)
+        if not layer then
+            creator.print{"building-surface-blacklist", {"entity-name."..ent_name}}
+            destroy_and_return(entity, creator)
+        end
+        if not callback(entity, creator.surface) then
+            creator.print{"message.building-conflict", {"entity-name."..ent_name}}
+            destroy_and_return(entity, creator)
         end
     end
 end
 
 function handle_underground_placement(event, p, level)
     local ent = event.created_entity
-    local callback = underground_build_events[ent.name]
+    local ent_name = ent.name
+    local callback = underground_build_events[ent_name]
     if callback then
-        if not callback(ent, p.surface) then
-            --p.print{"message.building-conflict", ent.name}
-            p.print{"message.building-conflict", {"entity-name."..ent.name}}
+        if not callback(ent, p.surface) then 
+            p.print{"message.building-conflict", {"entity-name."..ent_name}}
             destroy_and_return(ent, p)
         end
     else
-        p.print{"message.building-blacklist", {"entity-name."..ent.name}}
-        destroy_and_return(ent, p)
+        print("Tried to place:" .. ent_name)
+        if not global.underground_whitelist[ent_name] then
+            p.print{"message.building-blacklist", {"entity-name."..ent_name}}
+            destroy_and_return(ent, p)
+        end
     end
 end
 
@@ -145,8 +160,6 @@ function add_telepad_proxy(pad, surface)
     }
     pad_proxy.target_pad = target_proxy
     target_layer.telepads:add_proxy(target_proxy)
-
-    print ("PLACED")
 
     return true
 end
@@ -390,13 +403,11 @@ function handle_remove_power_interface(mined, removing_entity, buffer)
         proxy.top.destroy()
     end
 
-    if removing_entity then
-        if buffer then
-            buffer.clear()
-            buffer.insert({name=mine_results})
-        else
-            removing_entity.insert({name=mine_results})
-        end
+    if buffer then
+        buffer.clear()
+        buffer.insert({name=mine_results})
+    elseif removing_entity then
+        removing_entity.insert({name=mine_results})
     end
 end
 
@@ -408,15 +419,15 @@ remove_events["subterra-belt-out"] = handle_remove_belt_elevator
 remove_events["subterra-power-up"] = handle_remove_power_interface
 remove_events["subterra-power-down"] = handle_remove_power_interface
 
-function simple_build(entity, surface)
-    return true
-end
+-- function simple_build(entity, surface)
+--     return true
+-- end
 
-if subterra.config.underground_entities then
-    for name, _ in pairs(subterra.config.underground_entities) do
-        if not underground_build_events[name] then
-            print("Allowing '".. name .. "' to be built underground")
-            underground_build_events[name] = simple_build
-        end
-    end
-end
+-- if subterra.config.underground_entities then
+--     for name, _ in pairs(subterra.config.underground_entities) do
+--         if not underground_build_events[name] then
+--             print("Allowing '".. name .. "' to be built underground")
+--             underground_build_events[name] = simple_build
+--         end
+--     end
+-- end

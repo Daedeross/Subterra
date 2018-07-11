@@ -3,26 +3,17 @@
 -- Max number of layers, including "nauvis" (surface)
 subterra.config.MAX_LAYER_COUNT = 3
 
--- 
--- subterra.config.underground_entities =
--- {
---     "subterra-telepad-up" = true,
---     "subterra-telepad-down" = true,
---     "subterra-belt-up" = true,
---     "subterra-belt-down" = true
--- }
-
 subterra.config.underground_entities = {}
 -- subterra entities
-subterra.config.underground_entities["subterra-telepad-up"] = true
-subterra.config.underground_entities["subterra-telepad-down"] = true
-subterra.config.underground_entities["subterra-belt-up"] = true
-subterra.config.underground_entities["subterra-belt-down"] = true
-subterra.config.underground_entities["subterra-belt-out"] = true
-subterra.config.underground_entities["subterra-power-up"] = true
-subterra.config.underground_entities["subterra-power-down"] = true
-subterra.config.underground_entities["subterra-power-in"] = true
-subterra.config.underground_entities["subterra-power-out"] = true
+-- subterra.config.underground_entities["subterra-telepad-up"] = true
+-- subterra.config.underground_entities["subterra-telepad-down"] = true
+-- subterra.config.underground_entities["subterra-belt-up"] = true
+-- subterra.config.underground_entities["subterra-belt-down"] = true
+-- subterra.config.underground_entities["subterra-belt-out"] = true
+-- subterra.config.underground_entities["subterra-power-up"] = true
+-- subterra.config.underground_entities["subterra-power-down"] = true
+-- subterra.config.underground_entities["subterra-power-in"] = true
+-- subterra.config.underground_entities["subterra-power-out"] = true
 
 -- whitelisted vanilla entities
 

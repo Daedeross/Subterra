@@ -5,7 +5,6 @@
 require 'util'
 require ('config')
 require 'scripts/utils'
---MAX_LAYER_COUNT = 2
 
 --============================================================================--
 -- initialize_subterra()
@@ -113,9 +112,17 @@ function initialize_subterra ()
     if not global.power_outputs then global.power_outputs = {} end
 
     -- set underground enitity list
-    global.underground_entities = table.deepcopy(subterra.config.underground_entities)
+    initialize_underground_whitelist()
 
     print("SubTerra Initialization Complete")
+end
+
+function initialize_underground_whitelist()
+    if not global.underground_whitelist then global.underground_whitelist = {} end
+
+    for name,_ in pairs(subterra.config.underground_entities) do
+        global.underground_whitelist[name] = true
+    end
 end
 
 function on_load()

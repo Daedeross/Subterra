@@ -13,6 +13,7 @@ require("scripts.events.players")
 require("scripts.events.updates")
 require("scripts.events.rotation")
 require("scripts.quadtree")
+require("scripts.interfaces.register")
 
 -- initiate mod and generate underground surface
 script.on_init(initialize_subterra)
