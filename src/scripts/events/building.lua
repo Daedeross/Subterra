@@ -22,9 +22,9 @@ function (event)
     --     handle_other_placement(event, player)
     -- else
     if (not layer) or (layer.index == 1) then
-        handle_surface_placement(event, player, layer)
+        handle_surface_placement(event.created_entity, player, layer)
     else
-        handle_underground_placement(event, player, layer)
+        handle_underground_placement(event.created_entity, player, layer)
     end
 end)
 
@@ -73,6 +73,8 @@ end
 function handle_surface_placement(entity, creator, layer)
     local ent_name = entity.name
     local callback = surface_build_events[ent_name]
+    print("HAI")
+    print(ent_name)
     if callback then
         if not layer then
             creator.print{"building-surface-blacklist", {"entity-name."..ent_name}}
@@ -109,6 +111,7 @@ function add_telepad_proxy(pad, surface)
     local layer = global.layers[sname]
 
     -- to prevent entity from being buld on other mods' surfaces
+    print("PLACE")
     if not layer then
         return false
     end
