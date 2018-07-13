@@ -139,7 +139,7 @@ data:extend({
         circuit_connector_sprites = transport_belt_circuit_connector_sprites,
         circuit_wire_connection_point = transport_belt_circuit_wire_connection_point,
         circuit_wire_max_distance = transport_belt_circuit_wire_max_distance
-}--,
+    }--,
 -- {
 --         type = "transport-belt",
 --         name = "subterra-belt-up-out",

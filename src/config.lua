@@ -14,6 +14,8 @@ subterra.config.underground_entities = {}
 -- subterra.config.underground_entities["subterra-power-down"] = true
 -- subterra.config.underground_entities["subterra-power-in"] = true
 -- subterra.config.underground_entities["subterra-power-out"] = true
+-- subterra.config.underground_entities["subterra-locomotive"] = true
+-- subterra.config.underground_entities["subterra-cargo-wagon"] = true
 
 -- whitelisted vanilla entities
 

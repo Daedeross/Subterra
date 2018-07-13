@@ -9,7 +9,7 @@ data:extend({
     icon_size = 32,
     flags = {"goes-to-quickbar"},
     subgroup = "transport",
-    order = "a[train-system]-f[diesel-locomotive]",
+    order = "a[train-system]-g[subterra-locomotive-" .. level .. "]",
     place_result = "subterra-locomotive-" .. level,
     stack_size = 5
 }

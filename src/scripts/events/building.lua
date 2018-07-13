@@ -78,35 +78,35 @@ function handle_surface_placement(entity, creator, layer)
             creator.print{"building-surface-blacklist", {"entity-name."..ent_name}}
             destroy_and_return(entity, creator)
         end
-        if not callback(entity, creator.surface) then
+        if not callback(ent, creator, layer) then
             creator.print{"message.building-conflict", {"entity-name."..ent_name}}
             destroy_and_return(entity, creator)
         end
     end
 end
 
-function handle_underground_placement(event, p, level)
+function handle_underground_placement(event, creator, layer)
     local ent = event.created_entity
     local ent_name = ent.name
     local callback = underground_build_events[ent_name]
     if callback then
-        if not callback(ent, p.surface) then 
-            p.print{"message.building-conflict", {"entity-name."..ent_name}}
-            destroy_and_return(ent, p)
+        if not callback(ent, creator, layer) then 
+            creator.print{"message.building-conflict", {"entity-name."..ent_name}}
+            destroy_and_return(ent, creator)
         end
     else
         print("Tried to place:" .. ent_name)
         if not global.underground_whitelist[ent_name] then
-            p.print{"message.building-blacklist", {"entity-name."..ent_name}}
-            destroy_and_return(ent, p)
+            creator.print{"message.building-blacklist", {"entity-name."..ent_name}}
+            destroy_and_return(ent, creator)
         end
     end
 end
 
-function add_telepad_proxy(pad, surface)
+function add_telepad_proxy(pad, creator, layer)
+    local surface = layer.surface
     local sname = surface.name
     local is_down = string.find(pad.name, "%-down") ~= nil
-    local layer = global.layers[sname]
 
     -- to prevent entity from being buld on other mods' surfaces
     if not layer then
@@ -169,10 +169,9 @@ underground_build_events["subterra-telepad-down"] = add_telepad_proxy
 surface_build_events["subterra-telepad-up"] = add_telepad_proxy
 surface_build_events["subterra-telepad-down"] = add_telepad_proxy
 
-function add_belt_proxy(belt, surface)
-    local sname = surface.name
+function add_belt_proxy(belt, creator, layer)
+    local surface = layer.surface
     local is_down = string.find(belt.name, "%-down") ~= nil
-    local layer = global.layers[sname]
 
     -- to prevent entity from being buld on other mods' surfaces
     if not layer then
@@ -223,10 +222,9 @@ surface_build_events["subterra-belt-up"] = add_belt_proxy
 surface_build_events["subterra-belt-down"] = add_belt_proxy
 surface_build_events["subterra-belt-out"] = add_belt_proxy
 
-function add_power_proxy(placed, surface)
-    local sname = surface.name
+function add_power_proxy(placed, creator, layer)
+    local surface = layer.surface
     local is_down = string.find(placed.name, "%-down") ~= nil
-    local layer = global.layers[sname]
 
     -- to prevent entity from being buld on other mods' surfaces
     if not layer then
@@ -304,6 +302,34 @@ underground_build_events["subterra-power-up"] = add_power_proxy
 underground_build_events["subterra-power-down"] = add_power_proxy
 surface_build_events["subterra-power-up"] = function() return false end
 surface_build_events["subterra-power-down"] = add_power_proxy
+
+function add_subterra_locomotive(entity, creator, layer) 
+    local surface = layer.surface
+
+    local proto_name = "subterra-locomotive-" .. layer.index
+
+    -- get stuff from entity
+    --train = entity.train
+
+
+    -- destroy placed entity=
+
+    local new_ent = surface.create_entity({
+        name = proto_name,
+        position = entity.position,
+        direction = entity.direction,
+        force = entity.force,
+        fast_replace = entity,
+    })
+
+    print(new_ent.valid)
+    print(entity.valid)
+    entity.destroy()
+
+    return true
+end
+
+underground_build_events["subterra-locomotive-1"] = add_subterra_locomotive
 
 register_event(defines.events.on_entity_died,
 function (event)
