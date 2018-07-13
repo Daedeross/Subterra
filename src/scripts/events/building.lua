@@ -18,6 +18,7 @@ function (event)
     local player = game.players[p_index]
     local surface = player.surface
     local layer = global.layers[surface.name]
+    print(event.created_entity)
     -- if not layer then
     --     handle_other_placement(event, player)
     -- else
@@ -53,9 +54,9 @@ function handle_script_built(event)
 
     local layer = global.layers[surface.name]
     if (not layer) or (layer.index == 1) then
-        handle_surface_placement(event.entity, player, layer)
+        handle_surface_placement(entity, player, layer)
     else
-        handle_underground_placement(event.entity, player, layer)
+        handle_underground_placement(entity, player, layer)
     end
 end
 
@@ -87,20 +88,19 @@ function handle_surface_placement(entity, creator, layer)
     end
 end
 
-function handle_underground_placement(event, p, level)
-    local ent = event.created_entity
-    local ent_name = ent.name
+function handle_underground_placement(entity, p, level)
+    local ent_name = entity.name
     local callback = underground_build_events[ent_name]
     if callback then
-        if not callback(ent, p.surface) then 
+        if not callback(entity, p.surface) then 
             p.print{"message.building-conflict", {"entity-name."..ent_name}}
-            destroy_and_return(ent, p)
+            destroy_and_return(entity, p)
         end
     else
         print("Tried to place:" .. ent_name)
         if not global.underground_whitelist[ent_name] then
             p.print{"message.building-blacklist", {"entity-name."..ent_name}}
-            destroy_and_return(ent, p)
+            destroy_and_return(entity, p)
         end
     end
 end
