@@ -1,5 +1,12 @@
-require ("prototypes.entity.transport-belt-pictures")
-require ("prototypes.entity.circuit-connector-sprites")
+require ("util")
+-- require ("prototypes.entity.transport-belt-pictures")
+-- require ("prototypes.entity.circuit-connector-sprites")
+
+function make_belt_elevator(belt_prototype, suffix)
+    local copy = table.deepcopy(belt_prototype)
+
+    copy.name = "subterra-" .. copy.name .. "-out"
+end
 
 data:extend({
     {

@@ -36,7 +36,7 @@ function (event)
         for k, e in pairs(entities) do
             if e.type ~= 'player' and -- just in case someone is walking there when it's generating...
                e.type ~= 'item' and
-               not global.underground_entities[e.name]
+               not global.underground_whitelist[e.name]
                then  
                 entities[k].destroy()
             end
