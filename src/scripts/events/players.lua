@@ -18,11 +18,31 @@ function (event)
 end)
 
 --============================================================================--
--- on_player_joined()
+-- on_player_respawned()
+--
+-- add player to needed data structures
+--============================================================================--
+register_event(defines.events.on_player_respawned,
+function (event)
+    add_player_proxy(event.player_index, nil)
+end)
+
+--============================================================================--
+-- on_player_left_game()
 --
 -- remove player proxy from player_proxies to save computation
 --============================================================================--
 register_event(defines.events.on_player_left_game,
+function (event)
+    global.player_proxies[event.player_index] = nil
+end)
+
+--============================================================================--
+-- on_player_died()
+--
+-- remove player proxy from player_proxies to save computation
+--============================================================================--
+register_event(defines.events.on_player_died,
 function (event)
     global.player_proxies[event.player_index] = nil
 end)

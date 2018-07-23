@@ -121,7 +121,7 @@ data:extend({
           {"copper-plate", 10},
           {"electronic-circuit", 10},
           {"advanced-circuit", 5},
-          {"assembling-machine-2", 1}
+          {"accumulator", 1}
         },
         result = "subterra-recharger"
       },
@@ -130,10 +130,10 @@ data:extend({
         enabled = false,
         ingredients =
         {
-          {"iron-plate", 20},
-          {"electronic-circuit", 5},
-          {"iron-gear-wheel", 10},
-          {"assembling-machine-1", 1}
+          {"copper-plate", 20},
+          {"electronic-circuit", 20},
+          {"advanced-circuit", 10},
+          {"accumulator", 1}
         },
         result = "subterra-recharger"
       }

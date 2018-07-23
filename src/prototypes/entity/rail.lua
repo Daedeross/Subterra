@@ -1,7 +1,7 @@
-local train_levels  = 3
+local train_levels  = 2
 
 local speed = 1.2
-local speed_mult = 1.5
+local speed_mult = 2
 
 local power = 1000
 local power_mult = 1.5
@@ -10,16 +10,27 @@ local brake = 10
 local brake_mult = 1.2
 
 local friction = 0.5
-local friction_mult = 0.5
+local friction_mult = 0.25
 
 local air = 0.0050
-local air_mult = 0.5
+local air_mult = 0.25
 
 local effectivity = 1.0
-local effectivity_mult = 1.2
+local effectivity_mult = 1.3
 
 function make_train_engine(level, max_speed, max_power, braking_force, friction_force, air_resistance, energy_effectivity)
 data:extend({
+  {
+    type = "item",
+    name = "subterra-locomotive-" .. level,
+    icon = "__base__/graphics/icons/diesel-locomotive.png",
+    icon_size = 32,
+    flags = {"goes-to-quickbar"},
+    subgroup = "transport",
+    order = "a[train-system]-g[subterra-locomotive-" .. level .. "]",
+    place_result = "subterra-locomotive-" .. level,
+    stack_size = 5
+},
 {
     type = "locomotive",
     name = "subterra-locomotive-" ..level,

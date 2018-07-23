@@ -124,18 +124,23 @@ function handle_surface_placement(entity, creator, layer)
     if callback then
         if not layer then
             creator.print{"building-surface-blacklist", {"entity-name."..ent_name}}
-            destroy_and_return(entity, creator)
+            destroy_and_return(entity, creator, creator)
         end
-        if not callback(entity, creator.surface) then
+        if not callback(entity, creator.surface, creator) then
             creator.print{"message.building-conflict", {"entity-name."..ent_name}}
             destroy_and_return(entity, creator)
         end
     end
 end
 
-function handle_underground_placement(entity, p, layer)
+function handle_underground_placement(entity, creator, layer)
     -- clean up any ghost proxies
     check_all_ghosts(layer, entity.bounding_box)
+
+    local player
+    if creator and creator.type == "character" then
+        player = creator
+    end
 
     local ent_name = entity.name
     if ent_name == "entity-ghost" then
@@ -144,14 +149,15 @@ function handle_underground_placement(entity, p, layer)
 
     local callback = underground_build_events[ent_name]
     if callback then
-        if not callback(entity, p.surface) then 
-            p.print{"message.building-conflict", {"entity-name."..ent_name}}
+        local result, message = callback(entity, creator.surface)
+        if not result then
+            if player and message then player.print(message) end
             destroy_and_return(entity, p)
         end
     else
         -- print("Tried to place:" .. ent_name)
         if not global.underground_whitelist[ent_name] then
-            p.print{"message.building-blacklist", {"entity-name."..ent_name}}
+            if player then player.print{"message.building-blacklist", {"entity-name."..ent_name}} end
             destroy_and_return(entity, p)
         end
     end
@@ -173,7 +179,7 @@ function add_telepad_proxy(pad, surface)
 
     -- to prevent entity from being buld on other mods' surfaces
     if not layer then
-        return false
+        return false, {"message.building-surface-blacklist", {"entity-name."..ent_name}}
     end
 
     local target_layer
@@ -185,7 +191,7 @@ function add_telepad_proxy(pad, surface)
     
     -- check if target layer exists
     if target_layer == nil then
-        return false
+        return false, {"building-surface-nil", {"entity-name."..ent_name}}
     end
     
     local target_name = "subterra-telepad-" .. (is_down and "up" or "down")
@@ -193,7 +199,7 @@ function add_telepad_proxy(pad, surface)
     -- check if target location is free
     local target_surface = target_layer.surface
     if not target_surface.can_place_entity{name = target_name, position = pad.position} then
-        return false
+        return false, {"message.building-conflict", {"entity-name."..ent_name}}
     end
 
     if is_ghost then
@@ -269,7 +275,7 @@ function add_belt_proxy(belt, surface)
 
     -- to prevent entity from being bult on other mods' surfaces
     if not layer then
-        return false
+        return false, {"message.building-surface-blacklist", {"entity-name."..ent_name}}
     end
 
     local target_layer = is_down and layer.layer_below or layer.layer_above
@@ -277,13 +283,13 @@ function add_belt_proxy(belt, surface)
 
     -- check if target layer exists
     if not target_layer then
-        return false
+        return false, {"building-surface-nil", {"entity-name."..ent_name}}
     end
 
     -- check if target location is free
     local target_surface = target_layer.surface
     if not target_surface.can_place_entity{name = target_name, position = belt.position} then
-        return false
+        return false, {"message.building-conflict", {"entity-name."..ent_name}}
     end
 
     if is_ghost then 
@@ -356,7 +362,7 @@ function add_power_proxy(placed, surface)
 
     -- to prevent entity from being buld on other mods' surfaces
     if not layer then
-        return false
+        return false, {"message.building-surface-blacklist", {"entity-name."..ent_name}}
     end
 
     local target_layer = is_down and layer.layer_below or layer.layer_above
@@ -364,13 +370,13 @@ function add_power_proxy(placed, surface)
 
     -- check if target layer exists
     if not target_layer then
-        return false
+        return false, {"building-surface-nil", {"entity-name."..ent_name}}
     end
 
     -- check if target location is free
     local target_surface = target_layer.surface
     if not target_surface.can_place_entity{name = target_name, position = placed.position} then
-        return false
+        return false, {"message.building-conflict", {"entity-name."..ent_name}}
     end
 
     if is_ghost then 
@@ -456,6 +462,29 @@ underground_build_events["subterra-power-up"] = add_power_proxy
 underground_build_events["subterra-power-down"] = add_power_proxy
 surface_build_events["subterra-power-up"] = function() return false end
 surface_build_events["subterra-power-down"] = add_power_proxy
+
+function add_locomotive(entity, surface)
+    local ent_name = entity.name
+    local is_ghost = ent_name == "entity-ghost"
+
+    if is_ghost then
+        ent_name = entity.ghost_name
+    end
+    
+    local min_index = subterra.config.locomotive_levels[ent_name]
+    if not min_index then
+        return false
+    end
+    
+    local sname = surface.name   
+    local layer = global.layers[sname]
+    -- to prevent entity from being buld on non-allowed surfaces
+    if not (layer and layer.index >= min_index) then
+        return false, {"message.building-locomotive-level", {"entity-name."..ent_name}, min_index - 1}
+    end
+
+    return true
+end
 
 register_event(defines.events.on_entity_died,
 function (event)

@@ -156,7 +156,6 @@ function on_load()
 
         local pad_ghosts = layer.pad_ghosts
         if pad_ghosts and not getmetatable(pad_ghosts) then
-            print("PAD")
             setmetatable(pad_ghosts, Quadtree)
 	        pad_ghosts:rebuild_metatables()
         end
