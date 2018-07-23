@@ -23,9 +23,9 @@ function (event)
     for i = 1, subterra.config.MAX_LAYER_COUNT do
         if i ~= index then
             local l_surface = global.layers[i].surface
-            if l_surface.is_chunk_generated(pos) then
+            --if l_surface.is_chunk_generated(pos) then
                 l_surface.request_to_generate_chunks(pos, 0)
-            end
+            --end
         end
     end
 
@@ -45,10 +45,10 @@ function (event)
         local new_tiles = {}
         for i=bb.left_top.x, bb.right_bottom.x do
             for j=bb.left_top.y, bb.right_bottom.y do
-                --local old_tile = surface.get_tile(i, j).name
-                --if not (old_tile == "water" or old_tile == "water-green" or old_tile == "deepwater" or old_tile == "deepwater-green") then
+                local old_tile = surface.get_tile(i, j).name
+                if index > 2 or (not (old_tile == "water" or old_tile == "water-green" or old_tile == "deepwater" or old_tile == "deepwater-green")) then
                     table.insert(new_tiles, {name="sub-dirt", position={i,j}})
-                --end
+                end
             end
         end
         surface.set_tiles(new_tiles)

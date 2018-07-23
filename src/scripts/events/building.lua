@@ -99,14 +99,16 @@ function handle_script_built(event)
 end
 
 function destroy_and_return(built_entity, creator)
-    local prod
-    if built_entity.prototype.mineable_properties.products then
-        prod = built_entity.prototype.mineable_properties.products[1].name
-    else
-        prod = built_entity.name
-    end
-    if prod ~= "entity-ghost" then
-        creator.insert{name = prod, count = 1}
+    if creator then
+        local prod
+        if built_entity.prototype.mineable_properties.products then
+            prod = built_entity.prototype.mineable_properties.products[1].name
+        else
+            prod = built_entity.name
+        end
+        if prod ~= "entity-ghost" then
+            creator.insert{name = prod, count = 1}
+        end
     end
     built_entity.destroy()
 end
@@ -120,15 +122,28 @@ function handle_surface_placement(entity, creator, layer)
         ent_name = entity.ghost_prototype.name
     end
 
+    local player
+    if creator and creator.is_player() then
+        player = creator
+    end
+
     local callback = surface_build_events[ent_name]
     if callback then
         if not layer then
-            creator.print{"building-surface-blacklist", {"entity-name."..ent_name}}
-            destroy_and_return(entity, creator, creator)
-        end
-        if not callback(entity, creator.surface, creator) then
-            creator.print{"message.building-conflict", {"entity-name."..ent_name}}
+            if player then player.print{"building-surface-blacklist", {"entity-name."..ent_name}} end
             destroy_and_return(entity, creator)
+        else
+            local result, message = callback(entity, creator.surface, creator) 
+            if not result then
+                if player then
+                    if message then
+                        player.print(message)
+                    else
+                        player.print{"message.building-conflict", {"entity-name."..ent_name}}
+                    end
+                end
+                destroy_and_return(entity, creator)
+            end
         end
     end
 end
@@ -138,7 +153,7 @@ function handle_underground_placement(entity, creator, layer)
     check_all_ghosts(layer, entity.bounding_box)
 
     local player
-    if creator and creator.type == "character" then
+    if creator and creator.is_player() then
         player = creator
     end
 
@@ -152,13 +167,13 @@ function handle_underground_placement(entity, creator, layer)
         local result, message = callback(entity, creator.surface)
         if not result then
             if player and message then player.print(message) end
-            destroy_and_return(entity, p)
+            destroy_and_return(entity, creator)
         end
     else
         -- print("Tried to place:" .. ent_name)
         if not global.underground_whitelist[ent_name] then
             if player then player.print{"message.building-blacklist", {"entity-name."..ent_name}} end
-            destroy_and_return(entity, p)
+            destroy_and_return(entity, creator)
         end
     end
 end
@@ -485,6 +500,17 @@ function add_locomotive(entity, surface)
 
     return true
 end
+
+surface_build_events["subterra-locomotive-1"] = add_locomotive
+surface_build_events["subterra-locomotive-2"] = add_locomotive
+surface_build_events["subterra-locomotive-3"] = add_locomotive
+surface_build_events["subterra-locomotive-4"] = add_locomotive
+surface_build_events["subterra-locomotive-5"] = add_locomotive
+underground_build_events["subterra-locomotive-1"] = add_locomotive
+underground_build_events["subterra-locomotive-2"] = add_locomotive
+underground_build_events["subterra-locomotive-3"] = add_locomotive
+underground_build_events["subterra-locomotive-4"] = add_locomotive
+underground_build_events["subterra-locomotive-5"] = add_locomotive
 
 register_event(defines.events.on_entity_died,
 function (event)

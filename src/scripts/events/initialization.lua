@@ -21,9 +21,11 @@ function initialize_subterra ()
     local gen_settings = table.deepcopy(top_surface.map_gen_settings)
     -- remove resources from settings
     for _, r in pairs(gen_settings.autoplace_controls) do
-        r.frequency = 'very-low'
-        r.size = 'none'
-        r.richness = 'very-poor'
+        if not r.category == "terrain" then
+            r.frequency = 'very-low'
+            r.size = 'none'
+            r.richness = 'very-poor'
+        end
     end
     gen_settings.peaceful_mode = true
     -- create surface(s) with no resources
