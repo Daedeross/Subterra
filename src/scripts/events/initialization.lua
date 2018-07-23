@@ -49,12 +49,23 @@ function initialize_subterra ()
 
     -- initialize layers container
     global.layers = {}
-    table.insert(global.layers, {
-            index = 1,
-            layer_above = nil,
-            surface = top_surface,
-            telepads = Quadtree:new()
-        })
+    local ground = 
+    {
+        index = 1,
+        layer_above = nil,
+        surface = top_surface,
+        telepads = Quadtree:new(),
+        pad_ghosts = Quadtree:new(),
+        belt_ghosts = Quadtree:new(),
+        power_ghosts = Quadtree:new()
+    }
+    ground.telepads:rebuild_index()
+    ground.pad_ghosts:rebuild_index()
+    ground.belt_ghosts:rebuild_index()
+    ground.power_ghosts:rebuild_index()
+    
+    table.insert(global.layers, ground)
+
     global.layers["nauvis"] = global.layers[1]
 
     for i = 2, subterra.config.MAX_LAYER_COUNT do
@@ -62,14 +73,23 @@ function initialize_subterra ()
         local layer = {
             index = i,
             surface = game.surfaces[l_name],
-            telepads = Quadtree:new()
+            telepads = Quadtree:new(),
+            pad_ghosts = Quadtree:new(),
+            belt_ghosts = Quadtree:new(),
+            power_ghosts = Quadtree:new()
         }
+
+        layer.telepads:rebuild_index()
+        layer.pad_ghosts:rebuild_index()
+        layer.belt_ghosts:rebuild_index()
+        layer.power_ghosts:rebuild_index()
+
         table.insert(global.layers, layer)
         global.layers[l_name] = layer
     end
 
     -- get currently generated surface chunks
-    local minx = -2147483648 -- sentinels
+    local minx = -2147483648 -- sentinels, min/max 32-bit 2's compliment
     local miny = -2147483648 
     local maxx = 2147483647
     local maxy = 2147483647 
@@ -108,6 +128,7 @@ function initialize_subterra ()
     -- initialize proxy containers
     if not global.belt_inputs then global.belt_inputs = {} end
     if not global.belt_outputs then global.belt_outputs = {} end
+
     if not global.power_inputs then global.power_inputs = {} end
     if not global.power_outputs then global.power_outputs = {} end
 
@@ -126,11 +147,30 @@ function initialize_underground_whitelist()
 end
 
 function on_load()
-    for _, layer in pairs(global.layers) do
+    for i, layer in pairs(global.layers) do
         local pads = layer.telepads
-        if getmetatable(pads) == nil then
+        if pads and not getmetatable(pads) then
             setmetatable(pads, Quadtree)
-	        pads:rebuild_metatables()
+            pads:rebuild_metatables()
+        end
+
+        local pad_ghosts = layer.pad_ghosts
+        if pad_ghosts and not getmetatable(pad_ghosts) then
+            print("PAD")
+            setmetatable(pad_ghosts, Quadtree)
+	        pad_ghosts:rebuild_metatables()
+        end
+
+        local belt_ghosts = layer.belt_ghosts
+        if belt_ghosts and not getmetatable(belt_ghosts) then
+            setmetatable(belt_ghosts, Quadtree)
+	        belt_ghosts:rebuild_metatables()
+        end
+
+        local power_ghosts = layer.power_ghosts
+        if power_ghosts and not getmetatable(power_ghosts) then
+            setmetatable(power_ghosts, Quadtree)
+	        power_ghosts:rebuild_metatables()
         end
     end
 end

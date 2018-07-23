@@ -12,13 +12,52 @@ surface_build_events = {}
 underground_build_events = {}
 remove_events = {}
 
+-- check for and remove ghost proxies
+function check_ghosts(layer, quadtree, bounding_box)
+    local found_proxy = quadtree:remove_proxy(bounding_box)
+    if found_proxy then
+        local top_ghost = found_proxy.top_ghost
+        if top_ghost and top_ghost.valid then
+            top_ghost.destroy()
+        end
+        local bottom_ghost = found_proxy.bottom_ghost
+        if bottom_ghost and bottom_ghost.valid then
+            bottom_ghost.destroy()
+        end
+        if found_proxy.top_layer == layer then
+            return found_proxy.bottom_layer
+        else
+            return found_proxy.top_layer
+        end
+    end
+    return false
+end
+
+function check_all_ghosts(layer, bounding_box)
+    if not layer then return end
+    -- pads
+    local paired_layer = check_ghosts(layer, layer.pad_ghosts, bounding_box)
+    if paired_layer then
+        check_ghosts(paired_layer, paired_layer.pad_ghosts, bounding_box)
+    end
+    -- belts
+    paired_layer = check_ghosts(layer, layer.belt_ghosts, bounding_box)
+    if paired_layer then
+        check_ghosts(paired_layer, paired_layer.belt_ghosts, bounding_box)
+    end
+    -- power
+    paired_layer = check_ghosts(layer, layer.power_ghosts, bounding_box)
+    if paired_layer then
+        check_ghosts(paired_layer, paired_layer.power_ghosts, bounding_box)
+    end
+end
+
 register_event(defines.events.on_built_entity,
 function (event)
     local p_index = event.player_index
     local player = game.players[p_index]
     local surface = player.surface
     local layer = global.layers[surface.name]
-    print(event.created_entity)
     -- if not layer then
     --     handle_other_placement(event, player)
     -- else
@@ -52,7 +91,6 @@ function handle_script_built(event)
         return -- cant get the surface from this event, so nothing I can do
     end
 
-    local layer = global.layers[surface.name]
     if (not layer) or (layer.index == 1) then
         handle_surface_placement(entity, player, layer)
     else
@@ -67,15 +105,22 @@ function destroy_and_return(built_entity, creator)
     else
         prod = built_entity.name
     end
-    creator.insert{name = prod, count = 1}
+    if prod ~= "entity-ghost" then
+        creator.insert{name = prod, count = 1}
+    end
     built_entity.destroy()
 end
 
 function handle_surface_placement(entity, creator, layer)
+    -- clean up any ghost proxies
+    check_all_ghosts(layer, entity.bounding_box)
+
     local ent_name = entity.name
+    if ent_name == "entity-ghost" then
+        ent_name = entity.ghost_prototype.name
+    end
+
     local callback = surface_build_events[ent_name]
-    print("HAI")
-    print(ent_name)
     if callback then
         if not layer then
             creator.print{"building-surface-blacklist", {"entity-name."..ent_name}}
@@ -88,8 +133,15 @@ function handle_surface_placement(entity, creator, layer)
     end
 end
 
-function handle_underground_placement(entity, p, level)
+function handle_underground_placement(entity, p, layer)
+    -- clean up any ghost proxies
+    check_all_ghosts(layer, entity.bounding_box)
+
     local ent_name = entity.name
+    if ent_name == "entity-ghost" then
+        ent_name = entity.ghost_prototype.name
+    end
+
     local callback = underground_build_events[ent_name]
     if callback then
         if not callback(entity, p.surface) then 
@@ -97,7 +149,7 @@ function handle_underground_placement(entity, p, level)
             destroy_and_return(entity, p)
         end
     else
-        print("Tried to place:" .. ent_name)
+        -- print("Tried to place:" .. ent_name)
         if not global.underground_whitelist[ent_name] then
             p.print{"message.building-blacklist", {"entity-name."..ent_name}}
             destroy_and_return(entity, p)
@@ -105,13 +157,21 @@ function handle_underground_placement(entity, p, level)
     end
 end
 
+underground_build_events["entity-ghost"] = add_ghost
+
 function add_telepad_proxy(pad, surface)
+    local ent_name = pad.name
+    local is_ghost = ent_name == "entity-ghost"
+
+    if is_ghost then
+        ent_name = pad.ghost_name
+    end
+
     local sname = surface.name
-    local is_down = string.find(pad.name, "%-down") ~= nil
+    local is_down = string.find(ent_name, "%-down") ~= nil
     local layer = global.layers[sname]
 
     -- to prevent entity from being buld on other mods' surfaces
-    print("PLACE")
     if not layer then
         return false
     end
@@ -136,34 +196,57 @@ function add_telepad_proxy(pad, surface)
         return false
     end
 
-    -- create target pad entity
-    local target_entity = target_surface.create_entity{
-        name = target_name,
-        position = pad.position,
-        force = pad.force
-    }
+    if is_ghost then
+        -- create target ghost
+        local target_entity = target_surface.create_entity{
+            name = "entity-ghost",
+            inner_name = target_name,
+            position = pad.position,
+            force = pad.force
+        }
 
-    -- add padd to proxies
-    local pad_proxy = {
-        name = "proxy_" .. string.format("%010d", pad.unit_number),
-        entity = pad,
-        target_layer = target_layer,
-        bbox = pad.bounding_box,
-        --players = {}    -- TODO: for tracking status of players standing on pad after teleporting, to prevent loops
-    }
-    global.layers[sname].telepads:add_proxy(pad_proxy)
+        local top = is_down and pad or target_entity
+        local bottom = is_down and target_entity or pad
 
-    -- add target pad
-    local target_proxy = {
-        name = "proxy_" .. string.format("%010d", target_entity.unit_number),
-        entity = target_entity,
-        target_layer = layer,
-        target_pad = pad_proxy,
-        bbox = target_entity.bounding_box,
-    }
-    pad_proxy.target_pad = target_proxy
-    target_layer.telepads:add_proxy(target_proxy)
+        -- create ghost proxies
+        local ghost_proxy = {
+            bbox = top.bounding_box,
+            top_ghost = top,
+            bottom_ghost = bottom,
+            top_layer = is_down and layer or target_layer,
+            bottom_layer = is_down and target_layer or layer
+        }
 
+        layer.pad_ghosts:add_proxy(ghost_proxy)
+        target_layer.pad_ghosts:add_proxy(ghost_proxy)
+    else
+        -- create target pad entity
+        local target_entity = target_surface.create_entity{
+            name = target_name,
+            position = pad.position,
+            force = pad.force
+        }
+        -- add padd to proxies
+        local pad_proxy = {
+            name = "proxy_" .. string.format("%010d", pad.unit_number),
+            entity = pad,
+            target_layer = target_layer,
+            bbox = pad.bounding_box,
+            --players = {}    -- TODO: for tracking status of players standing on pad after teleporting, to prevent loops
+        }
+        global.layers[sname].telepads:add_proxy(pad_proxy)
+
+        -- add target pad
+        local target_proxy = {
+            name = "proxy_" .. string.format("%010d", target_entity.unit_number),
+            entity = target_entity,
+            target_layer = layer,
+            target_pad = pad_proxy,
+            bbox = target_entity.bounding_box,
+        }
+        pad_proxy.target_pad = target_proxy
+        target_layer.telepads:add_proxy(target_proxy)
+    end
     return true
 end
 
@@ -173,11 +256,18 @@ surface_build_events["subterra-telepad-up"] = add_telepad_proxy
 surface_build_events["subterra-telepad-down"] = add_telepad_proxy
 
 function add_belt_proxy(belt, surface)
+    local ent_name = belt.name
+    local is_ghost = ent_name == "entity-ghost"
+
+    if is_ghost then
+        ent_name = belt.ghost_name
+    end
+
     local sname = surface.name
-    local is_down = string.find(belt.name, "%-down") ~= nil
+    local is_down = string.find(ent_name, "%-down") ~= nil
     local layer = global.layers[sname]
 
-    -- to prevent entity from being buld on other mods' surfaces
+    -- to prevent entity from being bult on other mods' surfaces
     if not layer then
         return false
     end
@@ -196,26 +286,52 @@ function add_belt_proxy(belt, surface)
         return false
     end
 
-    local target_entity = target_surface.create_entity{
-        name = target_name,
-        position = belt.position,
-        force = belt.force,
-        direction = belt.direction
-    }
-    
-    local belt_proxy = {
-        input = belt,
-        output = target_entity,
-        target_layer = target_layer,
-        in_line1 = belt.get_transport_line(1),
-        in_line2 = belt.get_transport_line(2),
-        out_line1 = target_entity.get_transport_line(1),
-        out_line2 = target_entity.get_transport_line(2),
-        rotated_last = true
-    }
+    if is_ghost then 
+        -- create target ghost
+        local target_entity = target_surface.create_entity{
+            name = "entity-ghost",
+            inner_name = target_name,
+            position = belt.position,
+            force = belt.force
+        }
 
-    global.belt_inputs[belt.unit_number] = belt_proxy
-    global.belt_outputs[target_entity.unit_number] = belt_proxy
+        local top = is_down and belt or target_entity
+        local bottom = is_down and target_entity or belt
+
+        -- create ghost proxies
+        local ghost_proxy = {
+            bbox = top.bounding_box,
+            top_ghost = top,
+            bottom_ghost = bottom,
+            top_layer = is_down and layer or target_layer,
+            bottom_layer = is_down and target_layer or layer
+        }
+
+        layer.belt_ghosts:add_proxy(ghost_proxy)
+        target_layer.belt_ghosts:add_proxy(ghost_proxy)
+    else
+
+        local target_entity = target_surface.create_entity{
+            name = target_name,
+            position = belt.position,
+            force = belt.force,
+            direction = belt.direction
+        }
+        
+        local belt_proxy = {
+            input = belt,
+            output = target_entity,
+            target_layer = target_layer,
+            in_line1 = belt.get_transport_line(1),
+            in_line2 = belt.get_transport_line(2),
+            out_line1 = target_entity.get_transport_line(1),
+            out_line2 = target_entity.get_transport_line(2),
+            rotated_last = true
+        }
+
+        global.belt_inputs[belt.unit_number] = belt_proxy
+        global.belt_outputs[target_entity.unit_number] = belt_proxy
+    end
     return true
 end
 
@@ -227,8 +343,15 @@ surface_build_events["subterra-belt-down"] = add_belt_proxy
 surface_build_events["subterra-belt-out"] = add_belt_proxy
 
 function add_power_proxy(placed, surface)
+    local ent_name = placed.name
+    local is_ghost = ent_name == "entity-ghost"
+
+    if is_ghost then
+        ent_name = placed.ghost_name
+    end
+
     local sname = surface.name
-    local is_down = string.find(placed.name, "%-down") ~= nil
+    local is_down = string.find(ent_name, "%-down") ~= nil
     local layer = global.layers[sname]
 
     -- to prevent entity from being buld on other mods' surfaces
@@ -250,56 +373,82 @@ function add_power_proxy(placed, surface)
         return false
     end
 
-    local target_entity = target_surface.create_entity{
-        name = target_name,
-        position = placed.position,
-        force = placed.force,
-        direction = placed.direction
-    }
+    if is_ghost then 
+        -- create target ghost
+        local target_entity = target_surface.create_entity{
+            name = "entity-ghost",
+            inner_name = target_name,
+            position = placed.position,
+            force = placed.force
+        }
 
-    -- electic interfaces
-    local input = surface.create_entity{
-        name = "subterra-power-in",
-        position = placed.position,
-        force = placed.force,
-        direction = placed.direction
-    }
+        local top = is_down and placed or target_entity
+        local bottom = is_down and target_entity or placed
 
-    local output = target_surface.create_entity{
-        name = "subterra-power-out",
-        position = placed.position,
-        force = placed.force,
-        direction = placed.direction
-    }
+        -- create ghost proxies
+        local ghost_proxy = {
+            bbox = top.bounding_box,
+            top_ghost = top,
+            bottom_ghost = bottom,
+            top_layer = is_down and layer or target_layer,
+            bottom_layer = is_down and target_layer or layer
+        }
 
-    local top_surface = is_down and surface or target_surface
-    local bottom_surface = is_down and target_surface or surface
-    -- hidden power poles
-    local pole_top = top_surface.create_entity{
-        name = "subterra-power-pole",
-        position = placed.position,
-        force = placed.force,
-        direction = placed.direction
-    }
-    local pole_bottom = bottom_surface.create_entity{
-        name = "subterra-power-pole",
-        position = placed.position,
-        force = placed.force,
-        direction = placed.direction
-    }
-    
-    local power_proxy = {
-        input = input,
-        output = output,
-        top = is_down and placed or target_entity,
-        bottom = is_down and target_entity or placed,
-        pole_top = pole_top,
-        pole_bottom = pole_bottom,
-        target_layer = target_layer
-    }
+        layer.power_ghosts:add_proxy(ghost_proxy)
+        target_layer.power_ghosts:add_proxy(ghost_proxy)
+    else
 
-    global.power_inputs[placed.unit_number] = power_proxy
-    global.power_outputs[target_entity.unit_number] = power_proxy
+        local target_entity = target_surface.create_entity{
+            name = target_name,
+            position = placed.position,
+            force = placed.force,
+            direction = placed.direction
+        }
+
+        -- electic interfaces
+        local input = surface.create_entity{
+            name = "subterra-power-in",
+            position = placed.position,
+            force = placed.force,
+            direction = placed.direction
+        }
+
+        local output = target_surface.create_entity{
+            name = "subterra-power-out",
+            position = placed.position,
+            force = placed.force,
+            direction = placed.direction
+        }
+
+        local top_surface = is_down and surface or target_surface
+        local bottom_surface = is_down and target_surface or surface
+        -- hidden power poles
+        local pole_top = top_surface.create_entity{
+            name = "subterra-power-pole",
+            position = placed.position,
+            force = placed.force,
+            direction = placed.direction
+        }
+        local pole_bottom = bottom_surface.create_entity{
+            name = "subterra-power-pole",
+            position = placed.position,
+            force = placed.force,
+            direction = placed.direction
+        }
+        
+        local power_proxy = {
+            input = input,
+            output = output,
+            top = is_down and placed or target_entity,
+            bottom = is_down and target_entity or placed,
+            pole_top = pole_top,
+            pole_bottom = pole_bottom,
+            target_layer = target_layer
+        }
+
+        global.power_inputs[placed.unit_number] = power_proxy
+        global.power_outputs[target_entity.unit_number] = power_proxy
+    end
     return true
 end
 
@@ -421,6 +570,17 @@ remove_events["subterra-belt-down"] = handle_remove_belt_elevator
 remove_events["subterra-belt-out"] = handle_remove_belt_elevator
 remove_events["subterra-power-up"] = handle_remove_power_interface
 remove_events["subterra-power-down"] = handle_remove_power_interface
+
+-- callback for entity-ghost to remove paired ghosts if present
+remove_events["entity-ghost"] = function(entity)
+    local surface = entity.surface
+    if surface then
+        local layer = global.layers[surface.name]
+        if layer then 
+            check_all_ghosts(layer, entity.bounding_box)
+        end
+    end
+end
 
 -- function simple_build(entity, surface)
 --     return true

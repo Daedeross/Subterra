@@ -24,6 +24,39 @@ function get_member_safe( t, key )
     end
 end
 
+function remove_value(t, value)
+    local index
+    for i, v in pairs(t) do
+        if value == v then 
+            index = i
+            break
+        end
+    end
+    if index then
+        table.remove(t, index)
+        return true
+    end
+    return false
+end
+
+function shallowcopy(orig)
+    local orig_type = type(orig)
+    local copy
+    if orig_type == 'table' then
+        copy = {}
+        for orig_key, orig_value in pairs(orig) do
+            copy[orig_key] = orig_value
+        end
+    else -- number, string, boolean, etc
+        copy = orig
+    end
+    return copy
+end
+
+function print_bounding_box(bbox)
+    return "{ {" .. bbox.left_top.x .. ", " .. bbox.left_top.y .. "}, {"..bbox.right_bottom.x .. ", " .. bbox.right_bottom.y .. "} }"
+end
+
 function add_player_proxy(i)
     local p = game.players[i]
     if global.player_proxies[i] == nil and p.connected and p.character then
@@ -173,6 +206,13 @@ function wire_all_events()
         end
         print("Wired " .. counts[id] .. " callback(s) for event id:" .. id)
     end
+end
+
+function shrink(bounding_box)
+    return {
+        left_top = { x = bounding_box.left_top.x + 0.00125, y = bounding_box.left_top.y + 0.00125 },
+        right_bottom = { x = bounding_box.right_bottom.x - 0.00125, y = bounding_box.right_bottom.y - 0.00125 }
+    }
 end
 
 function debug(x)

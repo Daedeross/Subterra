@@ -13,6 +13,8 @@
 
 --QuadtreeNode
 
+require 'utils'
+
 if MAX_ITEMS_PER_QUADTREE_NODE == nil then
 	MAX_ITEMS_PER_QUADTREE_NODE = 8	-- this will eventually be in a config file
 end
@@ -99,12 +101,25 @@ function QuadtreeNode:add_proxy (proxy)
 end
 
 function QuadtreeNode:rebuild_metatables(node)
-	if getmetatable(node) == nil then
-		setmetatable(node, self) 
+	if not getmetatable(node) then
+		setmetatable(node, self)
 	end
-	if node.children ~= nil then
+	if node.children then
 		for _,c in pairs(node.children) do
-			QuadtreeNode:rebuild_metatables(c)
+			QuadtreeNode:rebuild_metatables(c, proxies)
+		end
+	end
+end
+
+function QuadtreeNode:rebuild_index(proxies)
+	if self.proxies then
+		for _, p in pairs(self.proxies) do
+			table.insert(proxies, p)
+		end
+	end
+	if self.children then
+		for _,c in pairs(self.children) do
+			c:rebuild_index(proxies)
 		end
 	end
 end
@@ -321,6 +336,17 @@ function QuadtreeNode:direct_proxies()
 	end
 end
 
+function QuadtreeNode:count()
+	local n = self.proxies and #self.proxies or 0
+
+	if node.children then
+		for _,c in pairs(node.children) do
+			n = n + c:count()
+		end
+	end
+	return n
+end
+
 -- management class for the QuadtreeNodes
 Quadtree = {
 	name = "Quadtree",
@@ -330,6 +356,8 @@ Quadtree = {
 function Quadtree:new(o)
 	local qt = o or {
 		root = QuadtreeNode:new(INITIAL_EXTENTS),
+		proxies = {},
+		count = 0,
 	}
 	setmetatable(qt, self)
 	self.__index = self
@@ -341,6 +369,8 @@ end
 function Quadtree:add_proxy_unsafe(proxy)
 	self.root = self.root:expand(proxy.bbox)
 	self.root:add_proxy(proxy)
+	self.count = self.count + 1
+	table.insert(self.proxies, proxy)
 end
 
 -- Tries to add a proxy.
@@ -358,7 +388,12 @@ end
 -- Removes the first proxy from the q-tree which collides
 -- with the provided bounding box
 function Quadtree:remove_proxy(bbox)
-	return self.root:check_proxy_collision(bbox, true)
+	local found = self.root:check_proxy_collision(bbox, true)
+	if found then
+		self.count = self.count - 1
+		remove_value(self.proxies, found)
+	end
+	return found
 end
 
 -- Returns the first proxy that collides with the bbox
@@ -375,9 +410,17 @@ function Quadtree:rebuild_metatables()
 	QuadtreeNode:rebuild_metatables(self.root)
 end
 
+function Quadtree:rebuild_index()
+	self.proxies = {}
+	self.root:rebuild_index(self.proxies)
+	self.count = # self.proxies
+end
+
 -- iterates through all proxies in the tree using
 -- a depth-first tree-walk
-function Quadtree:proxies()
+function Quadtree:proxy_iterator()
+	-- Factorio removed Lua.coroutine :'(
+
 	local function yield_node(node, set)
 		if node.proxies then
 			for _, p in pairs(node.proxies) do

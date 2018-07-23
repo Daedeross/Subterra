@@ -2,7 +2,7 @@ require 'scripts/utils'
 
 if not subterra.tick_events then subterra.tick_events = {} end
 
--- event fired every half second
+-- event fired every 12th of a second
 -- Teleports players if standin on an elevator
 register_nth_tick_event (5,
 function (event)
@@ -62,7 +62,7 @@ function (event)
                 end
             end
         end
-    end 
+    end
 end)
 
 -- power
@@ -89,4 +89,53 @@ function (event)
     end 
 end)
 
+function check_ghost_proxy(quadtree, proxy)
+    local top_ghost = proxy.top_ghost
+    local bottom_ghost = proxy.bottom_ghost
 
+    if not (top_ghost and top_ghost.valid) then
+        -- print(print_bounding_box(proxy.bbox))
+
+        quadtree:remove_proxy(proxy.bbox)
+        proxy.top_ghost = nil
+        proxy.bottom_ghost = nil
+
+        if bottom_ghost then
+            bottom_ghost.destroy()
+        end
+    else
+        if not (bottom_ghost and bottom_ghost.valid) then
+            quadtree:remove_proxy(proxy.bbox)
+            proxy.top_ghost = nil
+            proxy.bottom_ghost = nil
+
+            if top_ghost then
+                top_ghost.destroy()
+            end
+        end
+    end
+end
+
+function check_ghost_quadtree(quadtree)
+    local proxies = shallowcopy(quadtree.proxies)
+    for _,proxy in pairs(proxies) do
+        check_ghost_proxy(quadtree, proxy)
+    end
+    quadtree:rebuild_index()
+end
+
+-- event fired every 10th of a second
+-- cleans up invalid ghosts
+register_nth_tick_event (6,
+function (event)
+    local layer_cache = {}
+
+    for key, layer in pairs(global.layers) do
+        if not layer_cache[layer] then
+            layer_cache[layer] = true
+            check_ghost_quadtree(layer.pad_ghosts)
+            check_ghost_quadtree(layer.belt_ghosts)
+            check_ghost_quadtree(layer.power_ghosts)
+        end
+    end
+end)

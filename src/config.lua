@@ -14,7 +14,6 @@ subterra.config.underground_entities["subterra-power-up"] = true
 subterra.config.underground_entities["subterra-power-down"] = true
 subterra.config.underground_entities["subterra-power-in"] = true
 subterra.config.underground_entities["subterra-power-out"] = true
-
 -- whitelisted vanilla entities
 
 --- belts

@@ -1,5 +1,12 @@
-require ("prototypes.entity.transport-belt-pictures")
-require ("prototypes.entity.circuit-connector-sprites")
+require ("util")
+-- require ("prototypes.entity.transport-belt-pictures")
+-- require ("prototypes.entity.circuit-connector-sprites")
+
+function make_belt_elevator(belt_prototype, suffix)
+    local copy = table.deepcopy(belt_prototype)
+
+    copy.name = "subterra-" .. copy.name .. "-out"
+end
 
 data:extend({
     {
@@ -7,7 +14,7 @@ data:extend({
         name = "subterra-belt-out",
         icon = "__base__/graphics/icons/underground-belt.png",
         icon_size = 32,
-        flags = { },
+        flags = { "placeable-neutral", "player-creation" },
         minable = {hardness = 0.2, mining_time = 0.5, result = "subterra-belt-out"},
         max_health = 60,
         corpse = "small-remnants",
@@ -139,7 +146,7 @@ data:extend({
         circuit_connector_sprites = transport_belt_circuit_connector_sprites,
         circuit_wire_connection_point = transport_belt_circuit_wire_connection_point,
         circuit_wire_max_distance = transport_belt_circuit_wire_max_distance
-}--,
+    }--,
 -- {
 --         type = "transport-belt",
 --         name = "subterra-belt-up-out",
