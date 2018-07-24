@@ -12,6 +12,7 @@ require("scripts.events.building")
 require("scripts.events.players")
 require("scripts.events.updates")
 require("scripts.events.rotation")
+require("scripts.events.technology")
 require("scripts.quadtree")
 require("scripts.interfaces.register")
 

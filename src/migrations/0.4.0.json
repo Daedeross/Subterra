@@ -1,0 +1,21 @@
+{
+    "entity":
+    [
+        ["subterra-belt-down", "subterra-transport-belt-down"],
+        ["subterra-belt-up", "subterra-transport-belt-up"],
+        ["subterra-belt-out", "subterra-transport-belt-out"]
+    ],
+    "item":
+    [
+        ["subterra-belt-down", "subterra-transport-belt-down"],
+        ["subterra-belt-up", "subterra-transport-belt-up"],
+        ["subterra-belt-out", "subterra-transport-belt-out"]
+    ],
+    "recipe":
+    [
+        ["subterra-belt-down", "subterra-transport-belt-down"],
+        ["subterra-belt-down", "subterra-transport-belt-down-ex"],
+        ["subterra-belt-up", "subterra-transport-belt-up"],
+        ["subterra-belt-up", "subterra-transport-belt-up-ex"]
+    ]
+}

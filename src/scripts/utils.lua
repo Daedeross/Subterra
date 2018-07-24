@@ -71,6 +71,76 @@ function add_player_proxy(i)
     print("Added player: " .. p. name )
 end
 
+function get_underground_settings(surface)
+    -- copy map settings
+    local gen_settings = table.deepcopy(surface.map_gen_settings)
+    -- remove resources from settings
+    for _, r in pairs(gen_settings.autoplace_controls) do
+        if not r.category == "terrain" then
+            r.frequency = 'very-low'
+            r.size = 'none'
+            r.richness = 'very-poor'
+        end
+    end
+    gen_settings.peaceful_mode = true
+
+    return gen_settings
+end
+
+function get_generated_extents(surface)
+    -- get currently generated surface chunks
+    local minx = -2147483648 -- sentinels, min/max 32-bit 2's compliment
+    local miny = -2147483648 
+    local maxx = 2147483647
+    local maxy = 2147483647 
+
+    for chunk in surface.get_chunks() do
+        minx = math.max(minx, chunk.x)
+        miny = math.max(miny, chunk.y)
+        maxx = math.min(maxx, chunk.x)
+        maxy = math.min(maxy, chunk.y)
+    end
+
+    local middle = {
+        maxx + minx * 16,
+        maxy + miny * 16
+    }
+    local radius = math.max(10, math.max(maxx - minx, maxy - miny) / 2)
+
+    return middle, radius
+end
+
+function create_layer(depth, gen_settings)
+    local layer_name = "underground_" .. tostring(depth)
+
+    local surface = game.surfaces[layer_name]
+    if not surface then
+        surface = game.create_surface(layer_name, gen_settings)
+        surface.daytime = 0.5
+        surface.freeze_daytime = true
+    end
+
+    if remote.interfaces["RSO"] then
+        remote.call("RSO", "ignoreSurface", layer_name)
+    end
+
+    local layer = {
+        index = depth + 1,
+        surface = surface,
+        telepads = Quadtree:new(),
+        pad_ghosts = Quadtree:new(),
+        belt_ghosts = Quadtree:new(),
+        power_ghosts = Quadtree:new()
+    }
+
+    layer.telepads:rebuild_index()
+    layer.pad_ghosts:rebuild_index()
+    layer.belt_ghosts:rebuild_index()
+    layer.power_ghosts:rebuild_index()
+
+    return layer_name, layer
+end
+
 --============================================================================--
 -- register_event(id, callback)
 --

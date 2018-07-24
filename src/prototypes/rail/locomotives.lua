@@ -1,5 +1,4 @@
-local train_levels  = 2
-
+local train_levels = 5
 local speed = 1.2
 local speed_mult = 2
 
@@ -19,35 +18,71 @@ local effectivity = 1.0
 local effectivity_mult = 1.3
 
 function make_train_engine(level, max_speed, max_power, braking_force, friction_force, air_resistance, energy_effectivity)
+
+  local name = "subterra-locomotive-" .. level
+
+
+  local input_name
+  if level == 1 then
+    input_name = "locomotive" 
+  else
+    input_name = "subterra-locomotive-" .. (level - 1)
+  end
+
+  local green_circuit_count = 5 + 5 * level 
+  local red_circuit_count = 5 * (level - 1)
+  local blue_circuit_count = 5 * (level - 2)
+  local battery_count = 2 * level
+
+  local ingredients = {
+    {"electronic-circuit", green_circuit_count},
+    {"battery", battery_count}
+  }
+
+  if red_circuit_count > 0 then
+    table.insert(ingredients, {"advanced-circuit", red_circuit_count})
+  end
+  if blue_circuit_count > 0 then
+    table.insert(ingredients, {"processing-unit", blue_circuit_count})
+  end
+
 data:extend({
   {
     type = "item",
-    name = "subterra-locomotive-" .. level,
+    name = name,
     icon = "__base__/graphics/icons/diesel-locomotive.png",
     icon_size = 32,
     flags = {"goes-to-quickbar"},
     subgroup = "transport",
-    order = "a[train-system]-g[subterra-locomotive-" .. level .. "]",
-    place_result = "subterra-locomotive-" .. level,
+    order = "a[train-system]-g[".. name .. "]",
+    place_result = name,
     stack_size = 5
-},
-{
+  },
+  {
+    type = "recipe",
+    name = name,
+    energy_required = 4,
+    enabled = false,
+    ingredients = ingredients,
+    result = name
+  },
+  {
     type = "locomotive",
-    name = "subterra-locomotive-" ..level,
+    name = name,
     icon = "__base__/graphics/icons/diesel-locomotive.png",
     fast_replaceable_group = "locomotive",
     icon_size = 32,
     flags = {"placeable-neutral", "player-creation", "placeable-off-grid", "fast-replaceable-no-build-while-moving"},
-    minable = {mining_time = 1, result = "subterra-locomotive-"..level },
+    minable = {mining_time = 1, result = name },
     mined_sound = {filename = "__core__/sound/deconstruct-medium.ogg"},
-    max_health = 1000,
+    max_health = 1000 + 100 * level,
     corpse = "medium-remnants",
     dying_explosion = "medium-explosion",
     collision_box = {{-0.6, -2.6}, {0.6, 2.6}},
     selection_box = {{-1, -3}, {1, 3}},
     drawing_box = {{-1, -4}, {1, 3}},
     alert_icon_shift = util.by_pixel(0, -24),
-    weight = 2000,
+    weight = 2000 - 100 * level,
     max_speed = max_speed,
     max_power = max_power .. "kW",
     reversing_power_modifier = 0.6,

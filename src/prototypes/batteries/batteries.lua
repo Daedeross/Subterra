@@ -1,6 +1,6 @@
 require("util")
 
-local battery_levels = 3
+local battery_levels = 4
 
 local energy_start = 50
 local energy_mult = 2
@@ -74,6 +74,7 @@ function make_battery(level, icon, energy, accel, speed)
             type = "recipe",
             name = "subterra-battery-empty-" .. level,
             energy_required = crafting_energy,
+            enabled = false,
             ingredients =
             {
                 {type = "item", name = previous_level_item, amount = energy_mult},

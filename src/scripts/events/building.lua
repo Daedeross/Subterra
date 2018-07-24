@@ -122,6 +122,10 @@ function handle_surface_placement(entity, creator, layer)
         ent_name = entity.ghost_prototype.name
     end
 
+    if global.belt_elevators[ent_name] then
+        ent_name = "belt-elevator"
+    end
+
     local player
     if creator and creator.is_player() then
         player = creator
@@ -161,10 +165,14 @@ function handle_underground_placement(entity, creator, layer)
     if ent_name == "entity-ghost" then
         ent_name = entity.ghost_prototype.name
     end
-
+    
+    if global.belt_elevators[ent_name] then
+        ent_name = "belt-elevator"
+    end
+    
     local callback = underground_build_events[ent_name]
     if callback then
-        local result, message = callback(entity, creator.surface)
+        local result, message = callback(entity, creator.surface, creator)
         if not result then
             if player and message then player.print(message) end
             destroy_and_return(entity, creator)
@@ -180,7 +188,9 @@ end
 
 underground_build_events["entity-ghost"] = add_ghost
 
-function add_telepad_proxy(pad, surface)
+function add_telepad_proxy(pad, surface, creator)
+    local force = creator and get_member_safe(creator, "force")
+
     local ent_name = pad.name
     local is_ghost = ent_name == "entity-ghost"
 
@@ -206,7 +216,16 @@ function add_telepad_proxy(pad, surface)
     
     -- check if target layer exists
     if target_layer == nil then
-        return false, {"building-surface-nil", {"entity-name."..ent_name}}
+        return false, {"message.building-surface-nil", {"entity-name."..ent_name}}
+    end
+
+    local target_depth = target_layer.index - 1
+    print(target_depth)
+    
+    if force then
+        if target_depth > global.current_depth[force.name] then
+            return false, {"message.building-level-not-unlocked", {"entity-name."..ent_name}}
+        end
     end
     
     local target_name = "subterra-telepad-" .. (is_down and "up" or "down")
@@ -276,7 +295,7 @@ underground_build_events["subterra-telepad-down"] = add_telepad_proxy
 surface_build_events["subterra-telepad-up"] = add_telepad_proxy
 surface_build_events["subterra-telepad-down"] = add_telepad_proxy
 
-function add_belt_proxy(belt, surface)
+function add_belt_proxy(belt, surface, creator)
     local ent_name = belt.name
     local is_ghost = ent_name == "entity-ghost"
 
@@ -356,12 +375,8 @@ function add_belt_proxy(belt, surface)
     return true
 end
 
-underground_build_events["subterra-belt-up"] = add_belt_proxy
-underground_build_events["subterra-belt-down"] = add_belt_proxy
-underground_build_events["subterra-belt-out"] = add_belt_proxy
-surface_build_events["subterra-belt-up"] = add_belt_proxy
-surface_build_events["subterra-belt-down"] = add_belt_proxy
-surface_build_events["subterra-belt-out"] = add_belt_proxy
+underground_build_events["belt-elevator"] = add_belt_proxy
+surface_build_events["belt-elevator"] = add_belt_proxy
 
 function add_power_proxy(placed, surface)
     local ent_name = placed.name

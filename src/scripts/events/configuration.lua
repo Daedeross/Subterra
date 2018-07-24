@@ -51,3 +51,72 @@ function (config)
         layer.power_ghosts:rebuild_index()
     end
 end)
+
+-- set all belts
+register_configuration_event(
+function (config)
+    return true
+end,
+function (config)
+    print("do belt elevators")
+    global.belt_elevators = {}
+    for name, prototype in pairs(game.entity_prototypes) do
+        if string.find(name, "subterra-belt") then
+            global.belt_elevators[name] = true
+        else
+            global.belt_elevators[name] = false
+        end
+    end
+end)
+
+-- settings changed
+register_configuration_event(
+function (config)
+    return config.mod_startup_settings_changed
+end,
+function (config)
+    local old_depth = global.max_depth
+    if not old_depth then old_depth = 2 end
+
+    local new_depth = settings.startup["subtrerra-max-depth"].value
+
+    if new_depth > old_depth then
+        local top_surface = game.surfaces['nauvis']
+        local middle, radius = get_generated_extents(top_surface)
+        local gen_settings = get_underground_settings(top_surface)
+
+        for depth=old_depth+1, new_depth do
+            local l_name, layer = create_layer(depth, gen_settings)
+
+            table.insert(global.layers, layer)
+            global.layers[l_name] = layer
+        end
+
+    elseif new_depth < old_depth then
+        for depth=old_depth, new_depth+1, -1 do
+            local layer = global.layers[depth]
+            if layer then
+                game.delete_surface(layer.surface)  -- yikes!
+            end
+        end
+    end
+
+    global.max_depth = new_depth
+    
+    if not global.current_depth then global.current_depth = {} end
+
+    -- set current depth based on technology
+    for index, force in pairs(game.forces) do
+        local technologies = force.technologies
+
+        global.current_depth[force.name] = 0
+
+        for i=new_depth,1,-1 do
+            local tech_name = "underground-building-" .. i
+            if technologies[tech_name] and technologies[tech_name].researched then
+                global.current_depth[force.name] = i
+                break
+            end
+        end
+    end
+end)

@@ -1,5 +1,5 @@
 {
-    "output_directory": "../Factorio_Dev/mods",
+    "output_directory": "../../Factorio_Dev/mods",
     "info":{
         "name": "subterra",
         "version": "0.4.0",

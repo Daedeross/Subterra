@@ -15,8 +15,8 @@
    version="1.1"
    id="svg3713"
    inkscape:version="0.92.2 (5c3e80d, 2017-08-06)"
-   sodipodi:docname="belt-up-icon.svg"
-   inkscape:export-filename="G:\Games\Factorio-Modded\Developement\SubTerra\src\graphics\icons\belt-up-2-icon-32.png"
+   sodipodi:docname="belt-down-1-icon.svg"
+   inkscape:export-filename="G:\Games\Factorio-Modded\Developement\SubTerra\src\graphics\icons\belt-down-icon-32.png"
    inkscape:export-xdpi="12.7"
    inkscape:export-ydpi="12.7">
   <defs
@@ -28,9 +28,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="2.8"
-     inkscape:cx="133.84614"
-     inkscape:cy="113.21506"
+     inkscape:zoom="1.979899"
+     inkscape:cx="51.313397"
+     inkscape:cy="182.51452"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -51,7 +51,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -61,11 +61,11 @@
      id="layer1"
      transform="translate(0,-233)">
     <rect
-       style="fill:#ff2a2a;fill-opacity:1;stroke-width:0.26458332"
+       style="fill:#e8e886;stroke-width:0.26458332;fill-opacity:1"
        id="rect23"
        width="58.208332"
        height="58.208332"
-       x="2.6458347"
+       x="2.6458333"
        y="236.14583" />
     <flowRoot
        xml:space="preserve"
@@ -82,19 +82,19 @@
            style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:133.33332825px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start" /></flowRegion><flowPara
          id="flowPara3723">B</flowPara></flowRoot>    <path
        style="fill:none;stroke:#000000;stroke-width:1.32291663;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="M 33.072917,278.60412 43.656251,253.4687 54.239584,278.60412"
+       d="m 33.072917,253.34375 10.583334,25.13542 10.583333,-25.13542"
        id="path3727"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="ccc" />
     <path
        style="fill:none;stroke:#000000;stroke-width:1.32291663;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="M 33.072916,265.37495 43.65625,240.23953 54.239584,265.37495"
+       d="M 33.072916,266.57292 43.65625,291.70834 54.239584,266.57292"
        id="path3727-7"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="ccc" />
     <path
        style="fill:none;stroke:#000000;stroke-width:1.32291663;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="M 33.072917,293.1562 43.656251,268.02078 54.239585,293.1562"
+       d="m 33.072917,238.79167 10.583334,25.13542 10.583334,-25.13542"
        id="path3727-2"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="ccc" />

@@ -1,3 +1,5 @@
+require 'util'
+
 data:extend({
 	{
 		type = "recipe",

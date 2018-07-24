@@ -34,9 +34,9 @@ function (event)
 
         local entities = surface.find_entities(bb)
         for k, e in pairs(entities) do
-            if e.type ~= 'player' and -- just in case someone is walking there when it's generating...
-               e.type ~= 'item' and
-               not global.underground_whitelist[e.name]
+            if not(   e.type == 'player' -- just in case someone is walking there when it's generating...
+                   or e.type == 'item'
+                   or global.underground_whitelist[e.name])
                then  
                 entities[k].destroy()
             end
@@ -46,7 +46,11 @@ function (event)
         for i=bb.left_top.x, bb.right_bottom.x do
             for j=bb.left_top.y, bb.right_bottom.y do
                 local old_tile = surface.get_tile(i, j).name
-                if index > 2 or (not (old_tile == "water" or old_tile == "water-green" or old_tile == "deepwater" or old_tile == "deepwater-green")) then
+                if index > 2 then
+                    table.insert(new_tiles, {name="sub-dirt", position={i,j}})
+                elseif old_tile == "water" or old_tile == "water-green" or old_tile == "deepwater" or old_tile == "deepwater-green" then
+                    table.insert(new_tiles, {name="deepwater", position={i,j}})
+                else
                     table.insert(new_tiles, {name="sub-dirt", position={i,j}})
                 end
             end
