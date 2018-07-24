@@ -113,6 +113,8 @@ end
 function create_layer(depth, gen_settings)
     local layer_name = "underground_" .. tostring(depth)
 
+    print("Making Layer: " .. layer_name)
+
     local surface = game.surfaces[layer_name]
     if not surface then
         surface = game.create_surface(layer_name, gen_settings)
@@ -139,6 +141,38 @@ function create_layer(depth, gen_settings)
     layer.power_ghosts:rebuild_index()
 
     return layer_name, layer
+end
+
+function check_layer(surface, ent_name, is_down, force)
+    local sname = surface.name
+    
+    local layer = global.layers[sname]
+
+    -- to prevent entity from being buld on other mods' surfaces
+    if not layer then
+        return nil, nil, {"message.building-surface-blacklist", {"entity-name."..ent_name}}
+    end
+
+    local target_layer
+    if is_down then 
+        target_layer = layer.layer_below
+    else
+        target_layer = layer.layer_above
+    end
+    
+    -- check if target layer exists
+    if target_layer == nil then
+        return nil, nil, {"message.building-surface-nil", {"entity-name."..ent_name}}
+    end
+    
+    local target_depth = target_layer.index - 1    
+    if force then
+        if target_depth > global.current_depth[force.name] then
+            return nil, nil, {"message.building-level-not-unlocked", {"entity-name."..ent_name}, {"technology-name.underground-building"}, target_depth}
+        end
+    end
+
+    return layer, target_layer
 end
 
 --============================================================================--

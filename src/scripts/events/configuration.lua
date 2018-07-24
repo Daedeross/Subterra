@@ -60,13 +60,15 @@ end,
 function (config)
     print("do belt elevators")
     global.belt_elevators = {}
+    local count = 0
     for name, prototype in pairs(game.entity_prototypes) do
-        if string.find(name, "subterra-belt") then
-            global.belt_elevators[name] = true
-        else
-            global.belt_elevators[name] = false
+        local s, e = string.find(prototype.name, "subterra%-%a*%-*transport%-belt")
+        if s then
+            count = count + 1
+            global.belt_elevators[prototype.name] = true
         end
     end
+    print(count)
 end)
 
 -- settings changed
@@ -92,13 +94,25 @@ function (config)
             global.layers[l_name] = layer
         end
 
-    elseif new_depth < old_depth then
-        for depth=old_depth, new_depth+1, -1 do
-            local layer = global.layers[depth]
-            if layer then
-                game.delete_surface(layer.surface)  -- yikes!
+        for i = 2, new_depth + 1 do
+            --global.layers[i].surface.request_to_generate_chunks({0,0}, 10)
+            global.layers[i].surface.request_to_generate_chunks(middle, radius)
+            global.layers[i].layer_above = global.layers[i-1]
+            if i < new_depth then
+                global.layers[i].layer_below = global.layers[i+1]
+            else
+                global.layers[i].layer_below = nil
+           
             end
-        end
+        end    
+
+    elseif new_depth < old_depth then
+        -- for depth=old_depth, new_depth+1, -1 do
+        --     local layer = global.layers[depth]
+        --     if layer then
+        --         game.delete_surface(layer.surface)  -- yikes!
+        --     end
+        -- end
     end
 
     global.max_depth = new_depth

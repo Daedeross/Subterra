@@ -1,7 +1,7 @@
 --configuration stuff to go here
 
 -- Max number of layers, including "nauvis" (surface)
-subterra.config.MAX_LAYER_COUNT = 3
+subterra.config.MAX_LAYER_COUNT = 5
 
 -- train and battery names
 subterra.config.locomotive_levels = {

@@ -79,11 +79,11 @@ function initialize_subterra ()
 
     -- set adjacency and kickstart chunk generation
     global.layers[1].layer_below = global.layers[2]
-    for i = 2, subterra.config.MAX_LAYER_COUNT do
+    for i = 2, global.max_depth + 1 do
         --global.layers[i].surface.request_to_generate_chunks({0,0}, 10)
         global.layers[i].surface.request_to_generate_chunks(middle, radius)
         global.layers[i].layer_above = global.layers[i-1]
-        if i < subterra.config.MAX_LAYER_COUNT then
+        if i < global.max_depth then
             global.layers[i].layer_below = global.layers[i+1]
         else
             global.layers[i].layer_below = nil

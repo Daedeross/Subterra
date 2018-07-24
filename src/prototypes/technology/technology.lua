@@ -138,7 +138,7 @@ data:extend(
         effects =
         {
         },
-        prerequisites = {"underground-building-2"},
+        prerequisites = {"underground-building-3"},
         unit =
         {
             count = 600,

@@ -198,36 +198,13 @@ function add_telepad_proxy(pad, surface, creator)
         ent_name = pad.ghost_name
     end
 
-    local sname = surface.name
     local is_down = string.find(ent_name, "%-down") ~= nil
-    local layer = global.layers[sname]
 
-    -- to prevent entity from being buld on other mods' surfaces
-    if not layer then
-        return false, {"message.building-surface-blacklist", {"entity-name."..ent_name}}
-    end
-
-    local target_layer
-    if is_down then 
-        target_layer = layer.layer_below
-    else
-        target_layer = layer.layer_above
-    end
-    
-    -- check if target layer exists
-    if target_layer == nil then
-        return false, {"message.building-surface-nil", {"entity-name."..ent_name}}
+    local layer, target_layer, message = check_layer(surface, ent_name, is_down, force)
+    if message then
+        return false, message
     end
 
-    local target_depth = target_layer.index - 1
-    print(target_depth)
-    
-    if force then
-        if target_depth > global.current_depth[force.name] then
-            return false, {"message.building-level-not-unlocked", {"entity-name."..ent_name}}
-        end
-    end
-    
     local target_name = "subterra-telepad-" .. (is_down and "up" or "down")
 
     -- check if target location is free
@@ -274,7 +251,7 @@ function add_telepad_proxy(pad, surface, creator)
             bbox = pad.bounding_box,
             --players = {}    -- TODO: for tracking status of players standing on pad after teleporting, to prevent loops
         }
-        global.layers[sname].telepads:add_proxy(pad_proxy)
+        layer.telepads:add_proxy(pad_proxy)
 
         -- add target pad
         local target_proxy = {
@@ -296,6 +273,8 @@ surface_build_events["subterra-telepad-up"] = add_telepad_proxy
 surface_build_events["subterra-telepad-down"] = add_telepad_proxy
 
 function add_belt_proxy(belt, surface, creator)
+    local force = creator and get_member_safe(creator, "force")
+
     local ent_name = belt.name
     local is_ghost = ent_name == "entity-ghost"
 
@@ -303,21 +282,20 @@ function add_belt_proxy(belt, surface, creator)
         ent_name = belt.ghost_name
     end
 
-    local sname = surface.name
-    local is_down = string.find(ent_name, "%-down") ~= nil
-    local layer = global.layers[sname]
-
-    -- to prevent entity from being bult on other mods' surfaces
-    if not layer then
-        return false, {"message.building-surface-blacklist", {"entity-name."..ent_name}}
+    local target_name, subs = string.gsub(ent_name, "-down", "-out")
+    local is_down
+    if subs > 0 then 
+        is_down = true
+    else
+        is_down = false
+        target_name, subs = string.gsub(ent_name, "-up", "-out")
     end
 
-    local target_layer = is_down and layer.layer_below or layer.layer_above
-    local target_name = "subterra-belt-out" -- later if I add more speeds, this will actually be variable
+    --print(target_name)
 
-    -- check if target layer exists
-    if not target_layer then
-        return false, {"building-surface-nil", {"entity-name."..ent_name}}
+    local layer, target_layer, message = check_layer(surface, ent_name, is_down, force)
+    if message then
+        return false, message
     end
 
     -- check if target location is free
@@ -368,6 +346,10 @@ function add_belt_proxy(belt, surface, creator)
             out_line2 = target_entity.get_transport_line(2),
             rotated_last = true
         }
+
+        for k, v in pairs(belt_proxy) do
+            print(tostring(k) .. "|" ..  tostring(v))
+        end
 
         global.belt_inputs[belt.unit_number] = belt_proxy
         global.belt_outputs[target_entity.unit_number] = belt_proxy
@@ -529,19 +511,27 @@ underground_build_events["subterra-locomotive-5"] = add_locomotive
 
 register_event(defines.events.on_entity_died,
 function (event)
-    local ent = event.entity
-    local callback = remove_events[ent.prototype.name]
+    local ent_name = event.entity.name
+    if global.belt_elevators[ent_name] then
+        ent_name = "belt-elevator"
+    end
+
+    local callback = remove_events[ent_name]
     if callback then
-        callback(ent)
+        callback(event.entity)
     end
 end)
 
 register_event(defines.events.on_player_mined_entity,
 function (event)
-    local ent = event.entity
-    local callback = remove_events[ent.prototype.name]
+    local ent_name = event.entity.name
+    if global.belt_elevators[ent_name] then
+        ent_name = "belt-elevator"
+    end
+
+    local callback = remove_events[ent_name]
     if callback then
-        callback(ent, game.players[event.player_index], event.buffer)
+        callback(event.entity, game.players[event.player_index], event.buffer)
     end
 end)
 
@@ -556,19 +546,26 @@ end)
 
 register_event(defines.events.on_robot_mined_entity,
 function (event)
-    local ent = event.entity
-    local callback = remove_events[ent.prototype.name]
+    local ent_name = event.entity.name
+    if global.belt_elevators[ent_name] then
+        ent_name = "belt-elevator"
+    end
+
+    local callback = remove_events[ent_name]
     if callback then
-        callback(ent, event.robot, event.buffer)
+        callback(event.entity, event.robot, event.buffer)
     end
 end)
 
 register_event(defines.events.script_raised_destroy,
 function (event)
-    local ent = event.entity
-    local callback = remove_events[ent.prototype.name]
+    local ent_name = event.entity.name
+    if global.belt_elevators[ent_name] then
+        ent_name = "belt-elevator"
+    end
+    local callback = remove_events[ent_name]
     if callback then
-        callback(ent, event.robot, event.buffer)
+        callback(event.entity, event.robot, event.buffer)
     end
 end)
 
@@ -635,9 +632,7 @@ end
 
 remove_events["subterra-telepad-up"] = handle_remove_telepad
 remove_events["subterra-telepad-down"] = handle_remove_telepad
-remove_events["subterra-belt-up"] = handle_remove_belt_elevator
-remove_events["subterra-belt-down"] = handle_remove_belt_elevator
-remove_events["subterra-belt-out"] = handle_remove_belt_elevator
+remove_events["belt-elevator"] = handle_remove_belt_elevator
 remove_events["subterra-power-up"] = handle_remove_power_interface
 remove_events["subterra-power-down"] = handle_remove_power_interface
 
