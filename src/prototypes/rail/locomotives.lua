@@ -21,7 +21,6 @@ function make_train_engine(level, max_speed, max_power, braking_force, friction_
 
   local name = "subterra-locomotive-" .. level
 
-
   local input_name
   if level == 1 then
     input_name = "locomotive" 
@@ -36,7 +35,8 @@ function make_train_engine(level, max_speed, max_power, braking_force, friction_
 
   local ingredients = {
     {"electronic-circuit", green_circuit_count},
-    {"battery", battery_count}
+    {"battery", battery_count},
+    {input_name, 1}
   }
 
   if red_circuit_count > 0 then
@@ -46,11 +46,18 @@ function make_train_engine(level, max_speed, max_power, braking_force, friction_
     table.insert(ingredients, {"processing-unit", blue_circuit_count})
   end
 
+  local last_name 
+  if level == 1 then 
+    table.insert(ingredients, {"electric-engine-unit", 20})
+  end
+
 data:extend({
   {
     type = "item",
     name = name,
-    icon = "__base__/graphics/icons/diesel-locomotive.png",
+    icons ={
+      {icon = "__base__/graphics/icons/diesel-locomotive.png", tint = {r=0.5,g=0.7, b=0.5, a=1} }
+    },
     icon_size = 32,
     flags = {"goes-to-quickbar"},
     subgroup = "transport",
@@ -69,7 +76,10 @@ data:extend({
   {
     type = "locomotive",
     name = name,
-    icon = "__base__/graphics/icons/diesel-locomotive.png",
+    icons = {
+      {icon = "__base__/graphics/icons/diesel-locomotive.png", tint = {r=0.5,g=0.7, b=0.5, a=1} }
+    },
+    
     fast_replaceable_group = "locomotive",
     icon_size = 32,
     flags = {"placeable-neutral", "player-creation", "placeable-off-grid", "fast-replaceable-no-build-while-moving"},
