@@ -361,9 +361,9 @@ function add_belt_proxy(belt, surface, creator)
             rotated_last = true
         }
 
-        for k, v in pairs(belt_proxy) do
-            print(tostring(k) .. "|" ..  tostring(v))
-        end
+        -- for k, v in pairs(belt_proxy) do
+        --     print(tostring(k) .. "|" ..  tostring(v))
+        -- end
 
         global.belt_inputs[belt.unit_number] = belt_proxy
         global.belt_outputs[target_entity.unit_number] = belt_proxy
@@ -391,7 +391,7 @@ function add_power_proxy(placed, surface, creator)
         return false, message
     end
 
-    print(target_layer.index)
+    -- print(target_layer.index)
 
     local target_name = "subterra-power-" .. (is_down and "up" or "down")
 

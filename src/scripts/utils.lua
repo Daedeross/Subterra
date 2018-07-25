@@ -89,23 +89,30 @@ end
 
 function get_generated_extents(surface)
     -- get currently generated surface chunks
-    local minx = -2147483648 -- sentinels, min/max 32-bit 2's compliment
-    local miny = -2147483648 
-    local maxx = 2147483647
-    local maxy = 2147483647 
+    local minx = 2147483648 -- sentinels, min/max 32-bit 2's compliment
+    local miny = 2147483648 
+    local maxx = -2147483647
+    local maxy = -2147483647 
 
     for chunk in surface.get_chunks() do
-        minx = math.max(minx, chunk.x)
-        miny = math.max(miny, chunk.y)
-        maxx = math.min(maxx, chunk.x)
-        maxy = math.min(maxy, chunk.y)
+        minx = math.min(minx, chunk.x)
+        miny = math.min(miny, chunk.y)
+        maxx = math.max(maxx, chunk.x)
+        maxy = math.max(maxy, chunk.y)
     end
 
     local middle = {
-        maxx + minx * 16,
-        maxy + miny * 16
+        (maxx + minx) / 2,
+        (maxy + miny) / 2
     }
     local radius = math.max(10, math.max(maxx - minx, maxy - miny) / 2)
+    middle[1] = middle[1] * 16
+    middle[2] = middle[2] * 16
+
+    -- print("World Rect: {" .. middle[1] .. ", " .. middle[2] .. "} radius = " .. radius .. "\n")
+    -- print("X: " .. minx .. ", " .. maxx)
+    -- print("Y: " .. miny .. ", " .. maxy)
+    -- print("")
 
     return middle, radius
 end

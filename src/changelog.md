@@ -2,6 +2,29 @@
 
 ## Know Issues
 - Other mods that place entities and do not raise the `script_raised_built` event may lead to unintended consequences.
+- If a Stairs, Belt-Elevator, or Power transfer entity is destroyed, it will leave a ghost on only one of its two layers.
+- There are still some edge cases that need to be tested for creation and deletion of these special entitites
+
+## v0.4.0
+### New
+- Added configuration to the mod. User can now set Max Depth (min 1, max 4, default 2).
+WARNING: reducing this value for existing worlds is not supported, but increasing works (so far in my testing, at least).
+- Added technology: Underground levels are now unlocked by successive researches. NOTE: This will prevent you from placing entities
+that 'dig' down to a specific layer (i.e. Stairs, Elevator, Power transfer) until the research is completed.
+- Added subways: Special, faster locomotives that can only be placed underground. Unlocked by research
+- Added recharable batteries: Special 'fuel' for subways. Recharged in a special dedicated machine
+- Added faster belt elevators. The three levels of belts in the base game now have equavalent speed elevators.
+Unlocked at the same level of logistics as the equivalent belt.
+- Added support for ghosts and robots to construct stairs, elevators, and power transfer entities
+
+### Modifeid
+- Changed the first underground level, it now spawns water tiles which follow the water in the main surface.
+NOTE: will not change already generated chunks in that layer.
+
+### Bugfixes
+- Changed chunk generation logic. Possible fix of a logic error in the previous versions, though requires more testing.
+- Fixed bug where game would crash if you died. (X_X)
+- Game will no longer crash in sandbox or if you manualy type the statement `\c game.player.character = nil`
 
 ## v0.3.3
 ### New
