@@ -20,9 +20,9 @@ function (event)
     end
     local index = layer.index
     -- genreate chunk on other layers if necessary
-    for i = 1, subterra.config.MAX_LAYER_COUNT do
+    for i, other_layer in pairs(global.layers) do
         if i ~= index then
-            local l_surface = global.layers[i].surface
+            local l_surface = other_layer.surface
             --if l_surface.is_chunk_generated(pos) then
                 l_surface.request_to_generate_chunks(pos, 0)
             --end
@@ -31,7 +31,6 @@ function (event)
 
     -- clear entities and set tiles if this is a below ground chunk
     if index ~= 1 then
-
         local entities = surface.find_entities(bb)
         for k, e in pairs(entities) do
             if not(   e.type == 'player' -- just in case someone is walking there when it's generating...
