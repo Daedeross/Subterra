@@ -10,7 +10,8 @@
 - Added configuration to the mod. User can now set Max Depth (min 1, max 4, default 2).
 WARNING: reducing this value for existing worlds is not supported, but increasing works (so far in my testing, at least).
 - Added technology: Underground levels are now unlocked by successive researches. NOTE: This will prevent you from placing entities
-that 'dig' down to a specific layer (i.e. Stairs, Elevator, Power transfer) until the research is completed.
+that 'dig' down to a specific layer (i.e. Stairs, Elevator, Power transfer) until the research is completed. For safety, move to the surface
+before ubdating the Max Depth setting
 - Added subways: Special, faster locomotives that can only be placed underground. Unlocked by research
 - Added recharable batteries: Special 'fuel' for subways. Recharged in a special dedicated machine
 - Added faster belt elevators. The three levels of belts in the base game now have equavalent speed elevators.
