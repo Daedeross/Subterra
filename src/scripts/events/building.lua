@@ -98,6 +98,20 @@ function handle_script_built(event)
     end
 end
 
+register_event(defines.events.on_robot_built_entity,
+function (event)
+    local robot = event.robot
+    local entity = event.created_entity
+    local surface = robot.surface
+    local layer = global.layers[surface.name]
+
+    if (not layer) or (layer.index == 1) then
+        handle_surface_placement(entity, robot, layer)
+    else
+        handle_underground_placement(entity, robot, layer)
+    end
+end)
+
 function destroy_and_return(built_entity, creator)
     if creator then
         local prod
@@ -360,7 +374,9 @@ end
 underground_build_events["belt-elevator"] = add_belt_proxy
 surface_build_events["belt-elevator"] = add_belt_proxy
 
-function add_power_proxy(placed, surface)
+function add_power_proxy(placed, surface, creator)
+    local force = creator and get_member_safe(creator, "force")
+
     local ent_name = placed.name
     local is_ghost = ent_name == "entity-ghost"
 
@@ -368,22 +384,16 @@ function add_power_proxy(placed, surface)
         ent_name = placed.ghost_name
     end
 
-    local sname = surface.name
     local is_down = string.find(ent_name, "%-down") ~= nil
-    local layer = global.layers[sname]
 
-    -- to prevent entity from being buld on other mods' surfaces
-    if not layer then
-        return false, {"message.building-surface-blacklist", {"entity-name."..ent_name}}
+    local layer, target_layer, message = check_layer(surface, ent_name, is_down, force)
+    if message then
+        return false, message
     end
 
-    local target_layer = is_down and layer.layer_below or layer.layer_above
+    print(target_layer.index)
+
     local target_name = "subterra-power-" .. (is_down and "up" or "down")
-
-    -- check if target layer exists
-    if not target_layer then
-        return false, {"building-surface-nil", {"entity-name."..ent_name}}
-    end
 
     -- check if target location is free
     local target_surface = target_layer.surface

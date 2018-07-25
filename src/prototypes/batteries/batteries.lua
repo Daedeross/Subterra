@@ -56,17 +56,17 @@ function make_battery(level, icon, energy, accel, speed)
             fuel_acceleration_multiplier = accel,
             fuel_top_speed_multiplier = speed,
             burnt_result = "subterra-battery-empty-" .. level,
-            subgroup = "raw-resource",
+            subgroup = "subterra-battery-full",
             order = "b[battery-" .. level .."]",
             stack_size = 50
         },
         {
             type = "item",
             name = "subterra-battery-empty-" .. level,
-            icon = "__base__/graphics/icons/used-up-uranium-fuel-cell.png",
+            icons = { {icon = icon, tint = {r=0.5,g=0.5,b=0.5,a=1}}},
             icon_size = 32,
             flags = {"goes-to-main-inventory"},
-            subgroup = "intermediate-product",
+            subgroup = "subterra-battery-empty",
             order = "r[subterra-battery-empty-" .. level .. "]",
             stack_size = 50
         },
@@ -75,10 +75,11 @@ function make_battery(level, icon, energy, accel, speed)
             name = "subterra-battery-empty-" .. level,
             energy_required = crafting_energy,
             enabled = false,
+            subgroup = "subterra-battery-empty",
             ingredients =
             {
                 {type = "item", name = previous_level_item, amount = energy_mult},
-                {type = "item", name = "copper-plate", amount = level}
+                {type = "item", name = "copper-plate", amount = 2 + level * 2}
             },
             results = {{"subterra-battery-empty-" .. level, 1}},
             requester_paste_multiplier = 4
@@ -103,11 +104,16 @@ data:extend({
     {
         type = "item",
         name = "subterra-recharger",
-        icon = "__base__/graphics/icons/assembling-machine-1.png",
+        --icon = "__base__/graphics/icons/assembling-machine-1.png",
+        icons = { {
+            icon = "__base__/graphics/icons/assembling-machine-1.png",
+            tint = {r=0,g=0.5,b=0.5,a=1}
+        }
+        } ,
         icon_size = 32,
         flags = {"goes-to-quickbar"},
         subgroup = "production-machine",
-        order = "c[subterra-recharger]",
+        order = "s[subterra-recharger]",
         place_result = "subterra-recharger",
         stack_size = 10
     },
@@ -173,6 +179,7 @@ data:extend({
               line_length = 8,
               shift = util.by_pixel(0, 2),
               scale = 0.666667,
+              tint = {r=0,g=0.5,b=0.5,a=1},
               hr_version =
               {
                 filename = "__base__/graphics/entity/assembling-machine-1/hr-assembling-machine-1.png",
@@ -182,7 +189,8 @@ data:extend({
                 frame_count = 32,
                 line_length = 8,
                 shift = util.by_pixel(0, 2),
-                scale = 0.333333
+                scale = 0.333333,
+                tint = {r=0,g=0.5,b=0.5,a=1},
               }
             },
             {
@@ -196,6 +204,7 @@ data:extend({
               draw_as_shadow = true,
               shift = util.by_pixel(8.5, 5.5),
               scale = 0.666667,
+              tint = {r=0,g=0.5,b=0.5,a=1},
               hr_version =
               {
                 filename = "__base__/graphics/entity/assembling-machine-1/hr-assembling-machine-1-shadow.png",
@@ -207,7 +216,8 @@ data:extend({
                 repeat_count = 32,
                 draw_as_shadow = true,
                 shift = util.by_pixel(8.5, 5),
-                scale = 0.333333
+                scale = 0.333333,
+                tint = {r=0,g=0.5,b=0.5,a=1},
               }
             }
           }

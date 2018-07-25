@@ -2,9 +2,24 @@ rotate_funcs = {}
 
 function swap_belt_elevator(belt_proxy, direction)
     local input = belt_proxy.input
+    local old_in_name = input.name
     local output = belt_proxy.output
 
-    local is_down  = string.find(input.name, "%-down") ~= nil
+    local target_name, subs = string.gsub(old_in_name, "-down", "-out")
+    local is_down
+    local new_in_name
+
+    if subs > 0 then 
+        is_down = true
+        new_in_name = string.gsub(target_name, "-out", "-up")
+    else
+        is_down = false
+        target_name, subs = string.gsub(old_in_name, "-up", "-out")
+        new_in_name = string.gsub(target_name, "-out", "-down")
+    end
+
+    
+
     local in_surface = input.surface
     local in_sname = in_surface.name
     local in_pos = input.position
@@ -24,7 +39,7 @@ function swap_belt_elevator(belt_proxy, direction)
     belt_proxy.output = nil
     output.destroy()
     output = in_surface.create_entity{
-        name = "subterra-belt-out",
+        name = target_name,
         position = in_pos,
         force = force,
         direction = direction
@@ -32,7 +47,7 @@ function swap_belt_elevator(belt_proxy, direction)
 
     -- create new input
     input = belt_proxy.target_layer.surface.create_entity{
-        name = "subterra-belt-" .. (is_down and "up" or "down"),
+        name = new_in_name,
         position = out_pos,
         force = force,
         direction = direction
@@ -69,14 +84,18 @@ function rotate_belt (belt)
     end
 end
 
-rotate_funcs["subterra-belt-up"] = rotate_belt
-rotate_funcs["subterra-belt-down"] = rotate_belt
-rotate_funcs["subterra-belt-out"] = rotate_belt
+rotate_funcs["belt-elevator"] = rotate_belt
 
 register_event(defines.events.on_player_rotated_entity,
 function (event)
     local entity = event.entity
-    local func = rotate_funcs[entity.name]
+    local ent_name = entity.name
+
+    if global.belt_elevators[ent_name] then
+        ent_name = "belt-elevator"
+    end
+
+    local func = rotate_funcs[ent_name]
     if func then
         func(entity)
     end

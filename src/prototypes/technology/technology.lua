@@ -101,7 +101,7 @@ data:extend(
         },
         upgrade = true,
         level = 2,
-        order = "s-t-e"
+        order = "a-t-e"
     },
     {
         type = "technology",
@@ -165,6 +165,10 @@ data:extend(
         icon = "__base__/graphics/technology/railway.png",
         effects =
         {
+            {
+                type = "unlock-recipe",
+                recipe = "subterra-recharger"
+            },
             {
                 type = "unlock-recipe",
                 recipe = "subterra-locomotive-1"
@@ -240,6 +244,14 @@ data:extend(
             {
                 type = "unlock-recipe",
                 recipe = "subterra-locomotive-3"
+            },
+            {
+                type = "unlock-recipe",
+                recipe = "subterra-battery-empty-3"
+            },
+            {
+                type = "unlock-recipe",
+                recipe = "subterra-battery-full-3"
             }
         },
         prerequisites = {"subway-2", "underground-building-3"},
@@ -272,11 +284,11 @@ data:extend(
             },
             {
                 type = "unlock-recipe",
-                recipe = "subterra-battery-empty-3"
+                recipe = "subterra-battery-empty-4"
             },
             {
                 type = "unlock-recipe",
-                recipe = "subterra-battery-full-3"
+                recipe = "subterra-battery-full-4"
             }
         },
         prerequisites = {"subway-3", "underground-building-4"},
