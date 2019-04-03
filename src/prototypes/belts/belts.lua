@@ -15,7 +15,6 @@ subterra.configured_belts = {
         up_icon = "__subterra__/graphics/icons/belt-up-3-icon-32.png",
         down_icon = "__subterra__/graphics/icons/belt-down-3-icon-32.png",
         technology_name = "logistics-3"
-        
     }
 }
 
@@ -81,9 +80,15 @@ function make_belt_elevator(belt_prototype, source_name, config)
     local down = table.deepcopy(belt_prototype)
     local out = table.deepcopy(belt_prototype)
 
-    up.name = "subterra-" .. up.name .. "-up"
-    down.name = "subterra-" .. down.name .. "-down"
-    out.name = "subterra-" .. out.name .. "-out"
+    up_name = "subterra-" .. up.name .. "-up"
+    up.name = up_name
+    up.minable.result = up_name
+    down_name = "subterra-" .. down.name .. "-down"
+    down.name = down_name
+    down.minable.result = down_name
+    out_name = "subterra-" .. out.name .. "-out"
+    out.name = out_name
+    out.minable.result = out_name
 
     local up_recipe = make_recipe(up, source_name)
     local up_ex = make_exchange_recipe(down, up)

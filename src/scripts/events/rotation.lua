@@ -18,13 +18,48 @@ function swap_belt_elevator(belt_proxy, direction)
         new_in_name = string.gsub(target_name, "-out", "-down")
     end
 
-    
-
     local in_surface = input.surface
     local in_sname = in_surface.name
     local in_pos = input.position
     local out_pos = output.position
     local force = input.force
+
+    -- save inventories
+    local in1 = belt_proxy.in_line1
+    local in2 = belt_proxy.in_line2
+    local out1 = belt_proxy.out_line1
+    local out2 = belt_proxy.out_line2
+
+    local new_in1 = {}
+    local new_in2 = {}
+    local new_out1 = {}
+    local new_out2 = {}
+
+    local cin1 = # in1
+    local cin2 = # in2
+    local cout1 = # out1
+    local cout2 = # out2
+
+    if cin1 > 0 then
+        for i=1, cin1 do
+            new_out1[i] = in1[i].name
+        end
+    end
+    if cin2 > 0 then
+        for i=1, cin2 do
+            new_out2[i] = in2[i].name
+        end
+    end
+    if cout1 > 0 then
+        for i=1, cout1 do
+            new_in1[i] = out1[i].name
+        end
+    end
+    if cout2 > 0 then
+        for i=1, cout2 do
+            new_in2[i] = out2[i].name
+        end
+    end
 
     -- destroy input (it has to swap directions)
     global.belt_inputs[input.unit_number] = nil
@@ -33,7 +68,7 @@ function swap_belt_elevator(belt_proxy, direction)
     input.destroy()
 
     -- move output to old input
-    -- TODO: switch back to .teleport() when it in implemented
+    -- TODO: switch back to .teleport() when it is implemented
     -- in Factorio
     --output.teleport(in_pos, in_sname)
     belt_proxy.output = nil
@@ -60,6 +95,28 @@ function swap_belt_elevator(belt_proxy, direction)
     belt_proxy.out_line2 = output.get_transport_line(2)
     -- update target layer
     belt_proxy.target_layer = global.layers[in_sname]
+
+    -- re-insert items
+    if cin1 > 0 then
+        for i = 1, cin1 do
+            bett_proxy.in_line1.insert_at(i, {name=new_out1[i]})
+        end
+    end
+    if cin2 > 0 then
+        for i = 1, cin2 do
+            bett_proxy.in_line1.insert_at(i, {name=new_out2[i]})
+        end
+    end
+    if cout1 > 0 then
+        for i = 1, cout1 do
+            bett_proxy.in_line1.insert_at(i, {name=new_in1[i]})
+        end
+    end
+    if cout2 > 0 then
+        for i = 1, cout2 do
+            bett_proxy.in_line1.insert_at(i, {name=new_in2[i]})
+        end
+    end
 
     global.belt_inputs[input.unit_number] = belt_proxy
     global.belt_outputs[output.unit_number] = belt_proxy
