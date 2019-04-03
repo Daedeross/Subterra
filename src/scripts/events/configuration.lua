@@ -58,12 +58,14 @@ function (config)
     return true
 end,
 function (config)
+    print("Belts\r\n")
     global.belt_elevators = {}
     local count = 0
     for name, prototype in pairs(game.entity_prototypes) do
         local s, e = string.find(prototype.name, "subterra%-%a*%-*transport%-belt")
         if s then
             count = count + 1
+            print(s);
             global.belt_elevators[prototype.name] = true
         end
     end
@@ -100,7 +102,6 @@ function (config)
                 global.layers[i].layer_below = global.layers[i+1]
             else
                 global.layers[i].layer_below = nil
-           
             end
         end    
 

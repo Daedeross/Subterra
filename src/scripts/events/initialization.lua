@@ -83,7 +83,7 @@ function initialize_subterra ()
         --global.layers[i].surface.request_to_generate_chunks({0,0}, 10)
         global.layers[i].surface.request_to_generate_chunks(middle, radius)
         global.layers[i].layer_above = global.layers[i-1]
-        if i < global.max_depth then
+        if i <= global.max_depth then
             global.layers[i].layer_below = global.layers[i+1]
         else
             global.layers[i].layer_below = nil
@@ -120,7 +120,7 @@ end
 function initialize_belt_elevators()
     global.belt_elevators = {}
     for name, prototype in pairs(game.entity_prototypes) do
-        if string.find(name, "subterra-belt") then
+        if string.find(prototype.name, "subterra%-%a*%-*transport%-belt") then
             global.belt_elevators[name] = true
         end
     end

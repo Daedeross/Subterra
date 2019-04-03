@@ -319,6 +319,12 @@ function wire_all_events()
     end
 end
 
+function fly_text(player, text, position)
+    if player then
+        player.create_local_flying_text{text=text, position=position, time_to_live=120, speed=1}
+    end
+end
+
 function shrink(bounding_box)
     return {
         left_top = { x = bounding_box.left_top.x + 0.00125, y = bounding_box.left_top.y + 0.00125 },

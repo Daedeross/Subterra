@@ -59,7 +59,7 @@ local function make_item(prototype, icon)
         name = prototype.name,
         icon = icon,
         icon_size = 32,
-        flags = {"goes-to-quickbar"},
+        flags = { },
         subgroup = "subterra-transport",
         order = "s[" .. prototype.name .. "]",
         place_result = prototype.name,

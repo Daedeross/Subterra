@@ -59,7 +59,7 @@ data:extend({
       {icon = "__base__/graphics/icons/diesel-locomotive.png", tint = {r=0.5,g=0.7, b=0.5, a=1} }
     },
     icon_size = 32,
-    flags = {"goes-to-quickbar"},
+    flags = { },
     subgroup = "transport",
     order = "a[train-system]-g[".. name .. "]",
     place_result = name,

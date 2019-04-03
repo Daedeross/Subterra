@@ -58,6 +58,7 @@ function (event)
     local player = game.players[p_index]
     local surface = player.surface
     local layer = global.layers[surface.name]
+
     -- if not layer then
     --     handle_other_placement(event, player)
     -- else
@@ -148,16 +149,18 @@ function handle_surface_placement(entity, creator, layer)
     local callback = surface_build_events[ent_name]
     if callback then
         if not layer then
-            if player then player.print{"building-surface-blacklist", {"entity-name."..ent_name}} end
+            if player then
+                fly_text(player, {"building-surface-blacklist", {"entity-name."..ent_name}}, entity.position)
+            end
             destroy_and_return(entity, creator)
         else
             local result, message = callback(entity, creator.surface, creator) 
             if not result then
                 if player then
                     if message then
-                        player.print(message)
+                        fly_text(player, message, entity.position)
                     else
-                        player.print{"message.building-conflict", {"entity-name."..ent_name}}
+                        fly_text(player, {"message.building-conflict", {"entity-name."..ent_name}}, entity.position)
                     end
                 end
                 destroy_and_return(entity, creator)
@@ -188,13 +191,17 @@ function handle_underground_placement(entity, creator, layer)
     if callback then
         local result, message = callback(entity, creator.surface, creator)
         if not result then
-            if player and message then player.print(message) end
+            if player and message then 
+                fly_text(player, message, entity.position)
+            end
             destroy_and_return(entity, creator)
         end
     else
         -- print("Tried to place:" .. ent_name)
         if not global.underground_whitelist[ent_name] then
-            if player then player.print{"message.building-blacklist", {"entity-name."..ent_name}} end
+            if player then
+                fly_text(player, {"message.building-blacklist", {"entity-name."..ent_name}}, entity.position)
+            end
             destroy_and_return(entity, creator)
         end
     end

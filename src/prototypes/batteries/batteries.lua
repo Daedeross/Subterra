@@ -50,7 +50,7 @@ function make_battery(level, icon, energy, accel, speed)
             name = "subterra-battery-full-" .. level,
             icon = icon,
             icon_size = 32,
-            flags = {"goes-to-main-inventory"},
+            flags = { },
             fuel_category = "battery-rechargable",
             fuel_value = energy .. "MJ",
             fuel_acceleration_multiplier = accel,
@@ -65,7 +65,7 @@ function make_battery(level, icon, energy, accel, speed)
             name = "subterra-battery-empty-" .. level,
             icons = { {icon = icon, tint = {r=0.5,g=0.5,b=0.5,a=1}}},
             icon_size = 32,
-            flags = {"goes-to-main-inventory"},
+            flags = { },
             subgroup = "subterra-battery-empty",
             order = "r[subterra-battery-empty-" .. level .. "]",
             stack_size = 50
@@ -111,7 +111,7 @@ data:extend({
         }
         } ,
         icon_size = 32,
-        flags = {"goes-to-quickbar"},
+        flags = { },
         subgroup = "production-machine",
         order = "s[subterra-recharger]",
         place_result = "subterra-recharger",
