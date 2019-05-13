@@ -12,7 +12,7 @@ for i=1, subterra.config.MAX_LAYER_COUNT - 1, 1 do
     local name = "subterra-locomotive-" .. i
     -- index 1 is 'nauvis' / ground
     -- each level must be 1 lower that the last
-    subterra.config.locomotive_levels[name] = i + 1
+    subterra.config.locomotive_levels[name] = 2
 end
 
 subterra.config.underground_entities = {}

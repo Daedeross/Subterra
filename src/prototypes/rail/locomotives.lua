@@ -1,3 +1,40 @@
+  local green_circuit_count = 50 
+  local red_circuit_count = 25
+  local battery_count = 20
+  local engine_count = 20
+
+  local ingredients = {
+    {"electronic-circuit", green_circuit_count},
+    {"advanced-circuit", red_circuit_count},
+    {"battery", battery_count},
+    {"electric-engine-unit", engine_count},
+    {"locomotive", 1}
+  }
+
+data:extend({
+  {
+    type = "item",
+    name = "subterra-locomotive",
+    icons ={
+      {icon = "__base__/graphics/icons/diesel-locomotive.png", tint = {r=0.5,g=0.7, b=0.5, a=1} }
+    },
+    icon_size = 32,
+    flags = { },
+    subgroup = "transport",
+    order = "a[train-system]-g[subterra-locomotive]",
+    place_result = "subterra-locomotive-1",
+    stack_size = 5
+  },
+  {
+    type = "recipe",
+    name = "subterra-locomotive",
+    energy_required = 4,
+    enabled = false,
+    ingredients = ingredients,
+    result = "subterra-locomotive"
+  }
+})
+
 local train_levels = 5
 local speed = 1.2
 local speed_inc = 0.5
@@ -17,62 +54,31 @@ local air_mult = 0.25
 local effectivity = 1.0
 local effectivity_diff = 0.25
 
-function make_train_engine(level, max_speed, max_power, braking_force, friction_force, air_resistance, energy_effectivity)
+function make_locomotive_entity(level, max_speed, max_power, braking_force, friction_force, air_resistance, energy_effectivity)
 
   local name = "subterra-locomotive-" .. level
 
-  local input_name
-  if level == 1 then
-    input_name = "locomotive" 
-  else
-    input_name = "subterra-locomotive-" .. (level - 1)
-  end
+  -- local input_name
+  -- if level == 1 then
+  --   input_name = "locomotive" 
+  -- else
+  --   input_name = "subterra-locomotive-" .. (level - 1)
+  -- end
 
-  local green_circuit_count = 5 + 5 * level 
-  local red_circuit_count = 5 * (level - 1)
-  local blue_circuit_count = 5 * (level - 2)
-  local battery_count = 2 * level
 
-  local ingredients = {
-    {"electronic-circuit", green_circuit_count},
-    {"battery", battery_count},
-    {input_name, 1}
-  }
+  -- if red_circuit_count > 0 then
+  --   table.insert(ingredients, {"advanced-circuit", red_circuit_count})
+  -- end
+  -- if blue_circuit_count > 0 then
+  --   table.insert(ingredients, {"processing-unit", blue_circuit_count})
+  -- end
 
-  if red_circuit_count > 0 then
-    table.insert(ingredients, {"advanced-circuit", red_circuit_count})
-  end
-  if blue_circuit_count > 0 then
-    table.insert(ingredients, {"processing-unit", blue_circuit_count})
-  end
-
-  local last_name 
-  if level == 1 then 
-    table.insert(ingredients, {"electric-engine-unit", 20})
-  end
+  -- local last_name 
+  -- if level == 1 then 
+  --   table.insert(ingredients, {"electric-engine-unit", 20})
+  -- end
 
 data:extend({
-  {
-    type = "item",
-    name = name,
-    icons ={
-      {icon = "__base__/graphics/icons/diesel-locomotive.png", tint = {r=0.5,g=0.7, b=0.5, a=1} }
-    },
-    icon_size = 32,
-    flags = { },
-    subgroup = "transport",
-    order = "a[train-system]-g[".. name .. "]",
-    place_result = name,
-    stack_size = 5
-  },
-  {
-    type = "recipe",
-    name = name,
-    energy_required = 4,
-    enabled = false,
-    ingredients = ingredients,
-    result = name
-  },
   {
     type = "locomotive",
     name = name,
@@ -83,8 +89,9 @@ data:extend({
     fast_replaceable_group = "locomotive",
     icon_size = 32,
     flags = {"placeable-neutral", "player-creation", "placeable-off-grid", "fast-replaceable-no-build-while-moving"},
-    minable = {mining_time = 1, result = name },
+    minable = {mining_time = 1, result = "subterra-locomotive" },
     mined_sound = {filename = "__core__/sound/deconstruct-medium.ogg"},
+    order = "a[train-system]-g[" .. name .. "]",
     max_health = 1000 + 100 * level,
     corpse = "medium-remnants",
     dying_explosion = "medium-explosion",
@@ -394,7 +401,7 @@ data:extend({
 end
 
 for i=1,train_levels,1 do
-	make_train_engine(i, speed, power, brake, friction, air, effectivity)
+	make_locomotive_entity(i, speed, power, brake, friction, air, effectivity)
 	speed = speed + speed_inc
 	power = power + power_inc
 	brake = brake + brake_inc
