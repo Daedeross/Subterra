@@ -80,7 +80,7 @@ function (config)
     local old_depth = global.max_depth
     if not old_depth then old_depth = 2 end
 
-    local new_depth = settings.startup["subtrerra-max-depth"].value
+    local new_depth = settings.startup["subterra-max-depth"].value
 
     if new_depth > old_depth then
         local top_surface = game.surfaces['nauvis']
@@ -131,5 +131,42 @@ function (config)
                 break
             end
         end
+    end
+end)
+
+-- whitelist changed
+register_configuration_event(
+function (config)
+    if not config.mod_startup_settings_changed then
+        return false
+    end
+    return (not global.whitelist_string) or global.whitelist_string ~= settings.startup["subterra-whitelist"].value
+end,
+function (config)
+    local removed = {}
+    local added = {}
+
+    for name, _ in pairs(global.underground_whitelist) do
+        -- keep core whitelist entities
+        if not subterra.config.underground_entities[name] then
+            removed[name] = true
+        end
+    end
+
+    global.whitelist_string = settings.startup["subterra-whitelist"].value
+    local new_list = split(global.whitelist_string, ";")
+
+    for _, name in pairs(new_list) do
+        removed[name] = nil
+        if not global.underground_whitelist[name] then
+            added[name] = true
+        end
+    end
+
+    for name, _ in pairs(added) do
+        global.underground_whitelist[name] = true
+    end
+    for name, _ in pairs(removed) do
+        global.underground_whitelist[name] = nil
     end
 end)

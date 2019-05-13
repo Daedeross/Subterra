@@ -1,21 +1,21 @@
 local train_levels = 5
 local speed = 1.2
-local speed_mult = 2
+local speed_inc = 0.5
 
 local power = 1000
-local power_mult = 1.5
+local power_inc = 500
 
-local brake = 10
-local brake_mult = 1.2
+local brake = 15
+local brake_inc = 5
 
 local friction = 0.5
-local friction_mult = 0.25
+local friction_mult = 0.75
 
 local air = 0.0050
 local air_mult = 0.25
 
 local effectivity = 1.0
-local effectivity_mult = 1.3
+local effectivity_diff = 0.25
 
 function make_train_engine(level, max_speed, max_power, braking_force, friction_force, air_resistance, energy_effectivity)
 
@@ -395,10 +395,10 @@ end
 
 for i=1,train_levels,1 do
 	make_train_engine(i, speed, power, brake, friction, air, effectivity)
-	speed = speed * speed_mult
-	power = power * power_mult
-	brake = brake * brake_mult
+	speed = speed + speed_inc
+	power = power + power_inc
+	brake = brake + brake_inc
 	friction = friction * friction_mult
 	air = air * air_mult
-	effectivity = effectivity * effectivity_mult
+	effectivity = effectivity + effectivity_diff
 end

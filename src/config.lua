@@ -1,20 +1,19 @@
 --configuration stuff to go here
 
 -- Max number of layers, including "nauvis" (surface)
-subterra.config.MAX_LAYER_COUNT = 5
+subterra.config.MAX_LAYER_COUNT = 6
 
 -- train and battery names
 subterra.config.locomotive_levels = {
     locomotive = 1
 }
 
-for i=1, subterra.config.MAX_LAYER_COUNT, 1 do
+for i=1, subterra.config.MAX_LAYER_COUNT - 1, 1 do
     local name = "subterra-locomotive-" .. i
     -- index 1 is 'nauvis' / ground
     -- each level must be 1 lower that the last
-    subterra.config.locomotive_levels[name] = i+1
+    subterra.config.locomotive_levels[name] = i + 1
 end
-
 
 subterra.config.underground_entities = {}
 -- subterra entities

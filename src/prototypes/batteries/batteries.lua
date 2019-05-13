@@ -1,14 +1,14 @@
 require("util")
 
-local battery_levels = 4
+local battery_levels = 5
 
 local energy_start = 50
 local energy_mult = 2
 
 local accel_start = 1.0
-local accel_mult = 1.2
+local accel_mult = 1.1
 local speed_start = 1.0
-local speed_mult = 1.5
+local speed_mult = 1.2
 
 local recharger_speed = 1
 local recharger_power = 10      -- MW

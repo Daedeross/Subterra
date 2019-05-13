@@ -15,7 +15,7 @@ require 'scripts/utils'
 function initialize_subterra ()
     print("Starting SubTerra Initialization")
 
-    global.max_depth = settings.startup["subtrerra-max-depth"].value
+    global.max_depth = settings.startup["subterra-max-depth"].value
 
     local top_surface = game.surfaces['nauvis']
 
@@ -112,7 +112,17 @@ end
 function initialize_underground_whitelist()
     if not global.underground_whitelist then global.underground_whitelist = {} end
 
+    -- required entities
     for name,_ in pairs(subterra.config.underground_entities) do
+        global.underground_whitelist[name] = true
+    end
+
+    -- add entities from settings
+    global.whitelist_string = settings.startup["subterra-whitelist"].value or ""
+    local new_list = split(global.whitelist_string, ";")
+
+    for _, name in pairs(new_list) do
+        log("whitelist: " .. name)
         global.underground_whitelist[name] = true
     end
 end
