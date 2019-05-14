@@ -1,9 +1,39 @@
 # Changelog
 
 ## Know Issues
+- At this time, when Underground Locomotives, they will always point westward (or north if placed vertically).
+See below for a workaround.
 - Other mods that place entities and do not raise the `script_raised_built` event may lead to unintended consequences.
 - If a Stairs, Belt-Elevator, or Power transfer entity is destroyed, it will leave a ghost on only one of its two layers.
-- There are still some edge cases that need to be tested for creation and deletion of these special entitites
+- There are still some edge cases that need to be tested for creation and deletion of these special entitites.
+
+## v0.5.0
+NOTE: Compatibilty with saves from previous versions is spotty at best.
+### New
+- Added Gui element to show current Depth. Simple text label for now.
+- Added ability to ady any entity to the Underground Whitelist via semicolon delimited list in the mod's startup settings.
+- Added keyboard shortcut to flip the direction of any rolling stock under the cursor (Defalt: CONTROL + F). This can
+be used to work-around the top know issue above.
+
+### Modified
+- Completely changed how underground locomotives are handled. Now there is only one item and recipe that improves in performance the
+further underground it is placed. The levels of the Subways technolopgy unlocks the ability to place locomotives deeper.
+- Changed the max-depth setting to default to 4, with a max of 5
+
+### Bugfixes
+- Removing a belt-elevator now properly picks up the items on its input and output.
+- The fifth level of the Underground is now properly generated.
+- Fixed numerous entity placement and removal errors.
+- `raise_destroy` is now set to true when cleaning up blacklisted entities.
+- Major Refactor of code has started, there are multiple large and small bugs that have been fixed that are not noted here.
+
+### Mod Compatability
+I have not tested this with many mods yet. If there is a particular incompatible mod you would like me to support,
+please open an issue for it on GitHub.
+#### Whistle Stop Factories
+- Its 'Big' machines are not whitelisted and are removed if spawned underground.
+- If you want to allow them to spawn underground, add this to the Underground Whitelist in SubTerra's startup
+settings: `wsf-big-assembly;wsf-big-refinery;wsf-big-furnace;express-loader`
 
 ## v0.4.0
 ### New
@@ -18,7 +48,7 @@ before ubdating the Max Depth setting
 Unlocked at the same level of logistics as the equivalent belt.
 - Added support for ghosts and robots to construct stairs, elevators, and power transfer entities
 
-### Modifeid
+### Modified
 - Changed the first underground level, it now spawns water tiles which follow the water in the main surface.
 NOTE: will not change already generated chunks in that layer.
 
