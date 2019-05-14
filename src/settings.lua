@@ -21,5 +21,11 @@ data:extend({
         setting_type = "startup",
         default_value = "None",
         allowed_values = { "None", "Console", "StdOut", "Subterra Log", "Factorio Log" }
+    },
+    {
+        type = "bool-setting",
+        name = "subterra-show-level",
+        setting_type = "runtime-per-user",
+        default_value = true
     }
 })

@@ -16,7 +16,7 @@ end
 local debug_sink
 if debug_mode == "Console" then
     debug_sink = function (x)
-        game.print(tostring(x))
+        if game then game.print(tostring(x)) else log(tostring(x)) end
     end
 elseif debug_mode == "StdOut" then
     debug_sink = function (x)
@@ -35,7 +35,11 @@ elseif debug_mode == "Subterra Log" then
     end
 
     debug_sink = function (x)
-        game.write_file(SUBTERRA_LOG_FILE, get_timestamp() .. " - " .. tostring(x) .. "\n", true)
+        if game then
+            game.write_file(SUBTERRA_LOG_FILE, get_timestamp() .. " - " .. tostring(x) .. "\n", true)
+        else
+            log(x)
+        end
     end
 elseif debug_mode == "Factorio Log" then
     debug_sink = function (x)
@@ -317,7 +321,7 @@ function wire_all_events()
         for n, callbacks in pairs(events) do
             if counts[n] == 1 then
                 script.on_nth_tick(n, callbacks[1])
-                print("Wired nth tick event for n = " .. n)
+                debug("Wired nth tick event for n = " .. n)
             elseif counts[n] > 1 then
                 script.on_nth_tick(n,
                 function(event)

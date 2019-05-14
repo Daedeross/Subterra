@@ -22,7 +22,7 @@ data:extend({
     flags = { },
     subgroup = "transport",
     order = "a[train-system]-g[subterra-locomotive]",
-    place_result = "subterra-locomotive-1",
+    place_result = "subterra-locomotive",
     stack_size = 5
   },
   {
@@ -56,7 +56,12 @@ local effectivity_diff = 0.25
 
 function make_locomotive_entity(level, max_speed, max_power, braking_force, friction_force, air_resistance, energy_effectivity)
 
-  local name = "subterra-locomotive-" .. level
+  local name
+  if level == 0 then
+    name = "subterra-locomotive"
+  else
+    name = "subterra-locomotive-" .. level
+  end
 
   -- local input_name
   -- if level == 1 then
@@ -400,7 +405,7 @@ data:extend({
 })
 end
 
-for i=1,train_levels,1 do
+for i=0,train_levels,1 do
 	make_locomotive_entity(i, speed, power, brake, friction, air, effectivity)
 	speed = speed + speed_inc
 	power = power + power_inc

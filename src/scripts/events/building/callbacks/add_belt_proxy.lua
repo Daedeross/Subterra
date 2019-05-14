@@ -33,7 +33,7 @@ local add_belt_proxy = function(belt, surface, creator)
         target_name, subs = string.gsub(ent_name, "-up", "-out")
     end
 
-    --print(target_name)
+    --debug(target_name)
 
     local layer, target_layer, message = check_layer(surface, ent_name, is_down, force)
     if message then
@@ -90,7 +90,7 @@ local add_belt_proxy = function(belt, surface, creator)
         }
 
         -- for k, v in pairs(belt_proxy) do
-        --     print(tostring(k) .. "|" ..  tostring(v))
+        --     debug(tostring(k) .. "|" ..  tostring(v))
         -- end
 
         global.belt_inputs[belt.unit_number] = belt_proxy

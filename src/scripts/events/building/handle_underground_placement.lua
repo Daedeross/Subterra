@@ -42,12 +42,12 @@ local handle_underground_placement = function (entity, creator, layer)
             destroy_and_return(entity, creator)
         end
     else
-        -- print("Tried to place:" .. ent_name)
+        -- debug("Tried to place:" .. ent_name)
         if not global.underground_whitelist[ent_name] then
             if player then
                 fly_text(player, {"message.building-blacklist", {"entity-name."..ent_name}}, entity.position)
             end
-            -- game.players[1].print("dest: " .. ent_name)
+            -- game.players[1].debug("dest: " .. ent_name)
             destroy_and_return(entity, creator)
         end
     end

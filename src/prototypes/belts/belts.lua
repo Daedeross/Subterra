@@ -19,7 +19,7 @@ subterra.configured_belts = {
 }
 
 local function make_recipe(prototype, source_name)
-    --print("SOURCE: ".. source_name)
+    --debug("SOURCE: ".. source_name)
     return {
         type = "recipe",
         name = prototype.name,

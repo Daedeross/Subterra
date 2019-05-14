@@ -49,16 +49,18 @@ remove_events["subterra-power-up"] = remove_power_interface
 remove_events["subterra-power-down"] = remove_power_interface
 
 -- locomotives
-surface_build_events["subterra-locomotive-1"] = add_locomotive
-surface_build_events["subterra-locomotive-2"] = add_locomotive
-surface_build_events["subterra-locomotive-3"] = add_locomotive
-surface_build_events["subterra-locomotive-4"] = add_locomotive
-surface_build_events["subterra-locomotive-5"] = add_locomotive
-underground_build_events["subterra-locomotive-1"] = add_locomotive
-underground_build_events["subterra-locomotive-2"] = add_locomotive
-underground_build_events["subterra-locomotive-3"] = add_locomotive
-underground_build_events["subterra-locomotive-4"] = add_locomotive
-underground_build_events["subterra-locomotive-5"] = add_locomotive
+surface_build_events["subterra-locomotive"] = add_locomotive
+-- surface_build_events["subterra-locomotive-1"] = add_locomotive
+-- surface_build_events["subterra-locomotive-2"] = add_locomotive
+-- surface_build_events["subterra-locomotive-3"] = add_locomotive
+-- surface_build_events["subterra-locomotive-4"] = add_locomotive
+-- surface_build_events["subterra-locomotive-5"] = add_locomotive
+underground_build_events["subterra-locomotive"] = add_locomotive
+-- underground_build_events["subterra-locomotive-1"] = add_locomotive
+-- underground_build_events["subterra-locomotive-2"] = add_locomotive
+-- underground_build_events["subterra-locomotive-3"] = add_locomotive
+-- underground_build_events["subterra-locomotive-4"] = add_locomotive
+-- underground_build_events["subterra-locomotive-5"] = add_locomotive
 
 -- ghosts, requires access to all previously registered remove_events
 remove_events["entity-ghost"] = function(entity)

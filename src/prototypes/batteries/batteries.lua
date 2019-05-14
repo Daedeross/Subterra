@@ -36,7 +36,7 @@ end
 
 function make_battery(level, icon, energy, accel, speed)
     local crafting_energy = energy / recharger_output
-    -- print("ENERGY: " .. crafting_energy)
+    -- debug("ENERGY: " .. crafting_energy)
     local previous_level_item
     if level == 1 then
         previous_level_item = "battery"

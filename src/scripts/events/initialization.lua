@@ -13,7 +13,7 @@ require 'scripts/utils'
 -- wired in control.lua:game.on_init
 --============================================================================--
 function initialize_subterra ()
-    print("Starting SubTerra Initialization")
+    debug("Starting SubTerra Initialization")
 
     global.max_depth = settings.startup["subterra-max-depth"].value
 
@@ -36,9 +36,9 @@ function initialize_subterra ()
     
     -- create player proxies
     global.player_proxies = {}
-    print("Player Count: " .. tostring(# game.players))
+    debug("Player Count: " .. tostring(# game.players))
     for i, p in pairs(game.players) do
-       print("Creating proxy for player:" .. p.name)
+       debug("Creating proxy for player:" .. p.name)
        add_player_proxy(i)
     end
 
@@ -72,10 +72,10 @@ function initialize_subterra ()
 
     local middle, radius = get_generated_extents(top_surface)
 
-    -- print("World Rect: {" .. middle[1] .. ", " .. middle[2] .. "} radius = " .. radius .. "\n")
-    -- print("X: " .. minx .. ", " .. maxx)
-    -- print("Y: " .. miny .. ", " .. maxy)
-    -- print("")
+    -- debug("World Rect: {" .. middle[1] .. ", " .. middle[2] .. "} radius = " .. radius .. "\n")
+    -- debug("X: " .. minx .. ", " .. maxx)
+    -- debug("Y: " .. miny .. ", " .. maxy)
+    -- debug("")
 
     -- set adjacency and kickstart chunk generation
     global.layers[1].layer_below = global.layers[2]
@@ -106,7 +106,7 @@ function initialize_subterra ()
     initialize_belt_elevators()
     initialize_underground_whitelist()
 
-    print("SubTerra Initialization Complete")
+    debug("SubTerra Initialization Complete")
 end
 
 function initialize_underground_whitelist()

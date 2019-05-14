@@ -18,7 +18,7 @@ function (config)
     return subterra_version(config, "0.3.0")
 end,
 function (config)
-    print("Migrating global table to 0.3.0")
+    debug("Migrating global table to 0.3.0")
     if not global.power_inputs then global.power_inputs = {} end
     if not global.power_outputs then global.power_outputs = {} end
 end)
@@ -29,7 +29,7 @@ function (config)
     return subterra_version(config, "0.3.3")
 end,
 function(config)
-    print("Migrate Sebterra to v0.3.3: Adding underground white-list")
+    debug("Migrate Sebterra to v0.3.3: Adding underground white-list")
     initialize_underground_whitelist()
 end)
 
@@ -38,7 +38,7 @@ function (config)
     return subterra_version(config, "0.4.0")
 end,
 function (config)
-    print("Migrate Sebterra to v0.4.0: Adding ghost proxies and qaudtree index")
+    debug("Migrate Sebterra to v0.4.0: Adding ghost proxies and qaudtree index")
     for i, layer in pairs(global.layers) do
         if not layer.pad_ghosts then layer.pad_ghosts = Quadtree:new() end
         if not layer.belt_ghosts then layer.belt_ghosts = Quadtree:new() end
@@ -58,14 +58,14 @@ function (config)
     return true
 end,
 function (config)
-    print("Belts\r\n")
+    debug("Belts\r\n")
     global.belt_elevators = {}
     local count = 0
     for name, prototype in pairs(game.entity_prototypes) do
         local s, e = string.find(prototype.name, "subterra%-%a*%-*transport%-belt")
         if s then
             count = count + 1
-            print(s);
+            debug(s);
             global.belt_elevators[prototype.name] = true
         end
     end

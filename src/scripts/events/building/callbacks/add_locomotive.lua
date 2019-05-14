@@ -31,18 +31,13 @@ local add_locomotive = function (entity, surface, creator)
     if is_ghost then
         ent_name = entity.ghost_name
     end
-
+    
     local sname = surface.name
-    
-    local min_index = subterra.config.locomotive_levels[ent_name]
-    if not min_index then
-        return false
-    end
-    
     local layer = global.layers[sname]
-    -- to prevent entity from being buld on non-allowed surfaces
-    if not (layer and layer.index >= min_index) then
-        return false, {"message.building-locomotive-level", {"entity-name."..ent_name}, min_index - 1}
+    -- to prevent entity from being built on non-allowed surfaces
+    if not (layer and layer.index > 1) then
+        game.print(layer.index)
+        return false, {"message.building-locomotive-level", {"entity-name."..ent_name}, 1 }
     end
 
     local force = creator and creator.force
@@ -58,6 +53,7 @@ local add_locomotive = function (entity, surface, creator)
     end
 
     local player = creator.is_player() and creator
+    debug(force.name)
 
     -- do the entity switch
     local params = {
@@ -67,11 +63,11 @@ local add_locomotive = function (entity, surface, creator)
         force = force,
         fast_replace = true,
         player = player,
-        raise_built = true
+        --raise_built = true
     }
 
     entity.destroy()
-    debug("Trying to create loco")
+    debug("Trying to create locomotive")
     local new_locomotive = surface.create_entity(params)
     debug(new_locomotive)
     return true
