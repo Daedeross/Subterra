@@ -18,7 +18,7 @@ function (event)
                     if pad then
                         if p.on_pad ~= pad.entity.unit_number then
                             player.teleport(player.position, pad.target_layer.surface.name)
-                            print("Teleported player:" .. player.name)
+                            debug("Teleported player:" .. player.name)
                             p.on_pad = pad.target_pad.entity.unit_number
                         end
                     else
@@ -98,7 +98,7 @@ function check_ghost_proxy(quadtree, proxy)
     local bottom_ghost = proxy.bottom_ghost
 
     if not (top_ghost and top_ghost.valid) then
-        -- print(print_bounding_box(proxy.bbox))
+        -- debug(print_bounding_box(proxy.bbox))
 
         quadtree:remove_proxy(proxy.bbox)
         proxy.top_ghost = nil

@@ -1,14 +1,14 @@
 require("util")
 
-local battery_levels = 4
+local battery_levels = 5
 
 local energy_start = 50
 local energy_mult = 2
 
 local accel_start = 1.0
-local accel_mult = 1.2
+local accel_mult = 1.1
 local speed_start = 1.0
-local speed_mult = 1.5
+local speed_mult = 1.2
 
 local recharger_speed = 1
 local recharger_power = 10      -- MW
@@ -36,7 +36,7 @@ end
 
 function make_battery(level, icon, energy, accel, speed)
     local crafting_energy = energy / recharger_output
-    -- print("ENERGY: " .. crafting_energy)
+    -- debug("ENERGY: " .. crafting_energy)
     local previous_level_item
     if level == 1 then
         previous_level_item = "battery"
@@ -50,7 +50,7 @@ function make_battery(level, icon, energy, accel, speed)
             name = "subterra-battery-full-" .. level,
             icon = icon,
             icon_size = 32,
-            flags = {"goes-to-main-inventory"},
+            flags = { },
             fuel_category = "battery-rechargable",
             fuel_value = energy .. "MJ",
             fuel_acceleration_multiplier = accel,
@@ -65,7 +65,7 @@ function make_battery(level, icon, energy, accel, speed)
             name = "subterra-battery-empty-" .. level,
             icons = { {icon = icon, tint = {r=0.5,g=0.5,b=0.5,a=1}}},
             icon_size = 32,
-            flags = {"goes-to-main-inventory"},
+            flags = { },
             subgroup = "subterra-battery-empty",
             order = "r[subterra-battery-empty-" .. level .. "]",
             stack_size = 50
@@ -111,7 +111,7 @@ data:extend({
         }
         } ,
         icon_size = 32,
-        flags = {"goes-to-quickbar"},
+        flags = { },
         subgroup = "production-machine",
         order = "s[subterra-recharger]",
         place_result = "subterra-recharger",

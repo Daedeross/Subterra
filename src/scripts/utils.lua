@@ -2,9 +2,53 @@ if not subterra.events then subterra.events = {} end
 if not subterra.tick_events then subterra.tick_events = {} end
 if not subterra.config_events then subterra.config_events = {} end
 
-S_ROOT = "__subterra__"
-
+-- flags and statics
+S_ROOT = "__SubTerra__"
 _blank = S_ROOT .. "/graphics/blank.png"
+SUBTERRA_LOG_FILE = "subterra.log"
+
+local debug_mode = "None"
+local debug_sink_setting = settings and settings.startup and settings.startup["subterra-log-sink"]
+if debug_sink_setting then
+    debug_mode = debug_sink_setting.value
+end
+
+local debug_sink
+if debug_mode == "Console" then
+    debug_sink = function (x)
+        if game then game.print(tostring(x)) else log(tostring(x)) end
+    end
+elseif debug_mode == "StdOut" then
+    debug_sink = function (x)
+        print(tostring(x))
+    end
+elseif debug_mode == "Subterra Log" then
+    local get_timestamp = function ()
+        local tick = game.tick
+        local ticks = tick % 60
+        local seconds = (tick - ticks) % 3600
+        local minutes = (tick - seconds - ticks) % 216000
+        local hours = math.floor((tick - minutes - seconds - ticks) / 216000)
+        minutes = minutes / 3600
+        seconds = seconds / 60
+        return string.format("%5d:%02d:%02d:%02d", hours, minutes, seconds, ticks)
+    end
+
+    debug_sink = function (x)
+        if game then
+            game.write_file(SUBTERRA_LOG_FILE, get_timestamp() .. " - " .. tostring(x) .. "\n", true)
+        else
+            log(x)
+        end
+    end
+elseif debug_mode == "Factorio Log" then
+    debug_sink = function (x)
+        log(x)
+    end
+else
+    debug_sink = function (x) end
+end
+
 function blank_picture()
     return {
         filename = _blank,
@@ -277,7 +321,7 @@ function wire_all_events()
         for n, callbacks in pairs(events) do
             if counts[n] == 1 then
                 script.on_nth_tick(n, callbacks[1])
-                print("Wired nth tick event for n = " .. n)
+                debug("Wired nth tick event for n = " .. n)
             elseif counts[n] > 1 then
                 script.on_nth_tick(n,
                 function(event)
@@ -319,6 +363,12 @@ function wire_all_events()
     end
 end
 
+function fly_text(player, text, position)
+    if player then
+        player.create_local_flying_text{text=text, position=position, time_to_live=120, speed=1}
+    end
+end
+
 function shrink(bounding_box)
     return {
         left_top = { x = bounding_box.left_top.x + 0.00125, y = bounding_box.left_top.y + 0.00125 },
@@ -326,6 +376,16 @@ function shrink(bounding_box)
     }
 end
 
-function debug(x)
-    game.players[1].print(tostring(x))
+debug = debug_sink
+
+function split(str,sep)
+    local ret={}
+    local n=1
+    for w in str:gmatch("([^"..sep.."]*)") do
+       ret[n] = ret[n] or w
+       if w=="" then
+          n = n + 1
+       end
+    end
+    return ret
 end

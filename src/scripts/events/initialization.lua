@@ -13,9 +13,9 @@ require 'scripts/utils'
 -- wired in control.lua:game.on_init
 --============================================================================--
 function initialize_subterra ()
-    print("Starting SubTerra Initialization")
+    debug("Starting SubTerra Initialization")
 
-    global.max_depth = settings.startup["subtrerra-max-depth"].value
+    global.max_depth = settings.startup["subterra-max-depth"].value
 
     local top_surface = game.surfaces['nauvis']
 
@@ -36,9 +36,9 @@ function initialize_subterra ()
     
     -- create player proxies
     global.player_proxies = {}
-    print("Player Count: " .. tostring(# game.players))
+    debug("Player Count: " .. tostring(# game.players))
     for i, p in pairs(game.players) do
-       print("Creating proxy for player:" .. p.name)
+       debug("Creating proxy for player:" .. p.name)
        add_player_proxy(i)
     end
 
@@ -72,10 +72,10 @@ function initialize_subterra ()
 
     local middle, radius = get_generated_extents(top_surface)
 
-    -- print("World Rect: {" .. middle[1] .. ", " .. middle[2] .. "} radius = " .. radius .. "\n")
-    -- print("X: " .. minx .. ", " .. maxx)
-    -- print("Y: " .. miny .. ", " .. maxy)
-    -- print("")
+    -- debug("World Rect: {" .. middle[1] .. ", " .. middle[2] .. "} radius = " .. radius .. "\n")
+    -- debug("X: " .. minx .. ", " .. maxx)
+    -- debug("Y: " .. miny .. ", " .. maxy)
+    -- debug("")
 
     -- set adjacency and kickstart chunk generation
     global.layers[1].layer_below = global.layers[2]
@@ -83,7 +83,7 @@ function initialize_subterra ()
         --global.layers[i].surface.request_to_generate_chunks({0,0}, 10)
         global.layers[i].surface.request_to_generate_chunks(middle, radius)
         global.layers[i].layer_above = global.layers[i-1]
-        if i < global.max_depth then
+        if i <= global.max_depth then
             global.layers[i].layer_below = global.layers[i+1]
         else
             global.layers[i].layer_below = nil
@@ -106,13 +106,23 @@ function initialize_subterra ()
     initialize_belt_elevators()
     initialize_underground_whitelist()
 
-    print("SubTerra Initialization Complete")
+    debug("SubTerra Initialization Complete")
 end
 
 function initialize_underground_whitelist()
     if not global.underground_whitelist then global.underground_whitelist = {} end
 
+    -- required entities
     for name,_ in pairs(subterra.config.underground_entities) do
+        global.underground_whitelist[name] = true
+    end
+
+    -- add entities from settings
+    global.whitelist_string = settings.startup["subterra-whitelist"].value or ""
+    local new_list = split(global.whitelist_string, ";")
+
+    for _, name in pairs(new_list) do
+        log("whitelist: " .. name)
         global.underground_whitelist[name] = true
     end
 end
@@ -120,7 +130,7 @@ end
 function initialize_belt_elevators()
     global.belt_elevators = {}
     for name, prototype in pairs(game.entity_prototypes) do
-        if string.find(name, "subterra-belt") then
+        if string.find(prototype.name, "subterra%-%a*%-*transport%-belt") then
             global.belt_elevators[name] = true
         end
     end

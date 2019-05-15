@@ -1,4 +1,4 @@
-local max_depth = settings.startup["subtrerra-max-depth"].value
+local max_depth = settings.startup["subterra-max-depth"].value
 
 function make_underground_tech_levels(max)
 data:extend(
@@ -65,8 +65,8 @@ data:extend(
             count = 100,
             ingredients =
             {
-                {"science-pack-1", 1},
-                {"science-pack-2", 2}
+                {"automation-science-pack", 1},
+                {"logistic-science-pack", 2}
             },
             time = 30
         },
@@ -90,9 +90,9 @@ data:extend(
             count = 200,
             ingredients =
             {
-                {"science-pack-1", 1},
-                {"science-pack-2", 2},
-                {"science-pack-3", 1}
+                {"automation-science-pack", 1},
+                {"logistic-science-pack", 2},
+                {"chemical-science-pack", 1}
             },
             time = 30
         },
@@ -115,10 +115,10 @@ data:extend(
             count = 400,
             ingredients =
             {
-                {"science-pack-1", 1},
-                {"science-pack-2", 2},
-                {"science-pack-3", 1},
-                {"high-tech-science-pack", 1}
+                {"automation-science-pack", 1},
+                {"logistic-science-pack", 2},
+                {"chemical-science-pack", 1},
+                {"utility-science-pack", 1}
             },
             time = 30
         },
@@ -144,11 +144,11 @@ data:extend(
             count = 600,
             ingredients =
             {
-                {"science-pack-1", 1},
-                {"science-pack-2", 1},
-                {"science-pack-3", 1},
-                {"high-tech-science-pack", 1},
-                {"production-science-pack", 1}
+                {"automation-science-pack", 1},
+                {"logistic-science-pack", 1},
+                {"chemical-science-pack", 1},
+                {"production-science-pack", 1},
+                {"utility-science-pack", 1}
             },
             time = 30
         },
@@ -156,7 +156,34 @@ data:extend(
         level = 4,
         order = "s-t-e"
     },
-
+    {
+        type = "technology",
+        name = "underground-building-5",
+        enabled = max >= 5,
+        icon_size = 128,
+        icon = "__subterra__/graphics/icons/stairs-down-128.png",
+        effects =
+        {
+        },
+        prerequisites = {"underground-building-4"},
+        unit =
+        {
+            count = 600,
+            ingredients =
+            {
+                {"automation-science-pack", 2},
+                {"logistic-science-pack", 2},
+                {"chemical-science-pack", 2},
+                {"production-science-pack", 2},
+                {"utility-science-pack", 2},
+                {"space-science-pack", 1}
+            },
+            time = 60
+        },
+        upgrade = true,
+        level = 5,
+        order = "s-t-e"
+    },
     {
         type = "technology",
         name = "subway-1",
@@ -171,7 +198,7 @@ data:extend(
             },
             {
                 type = "unlock-recipe",
-                recipe = "subterra-locomotive-1"
+                recipe = "subterra-locomotive"
             },
             {
                 type = "unlock-recipe",
@@ -188,8 +215,8 @@ data:extend(
             count = 50,
             ingredients =
             {
-                {"science-pack-1", 1},
-                {"science-pack-2", 1}
+                {"automation-science-pack", 1},
+                {"logistic-science-pack", 1}
             },
             time = 30
         },
@@ -205,10 +232,10 @@ data:extend(
         icon = "__base__/graphics/technology/railway.png",
         effects =
         {
-            {
-                type = "unlock-recipe",
-                recipe = "subterra-locomotive-2"
-            },
+            -- {
+            --     type = "unlock-recipe",
+            --     recipe = "subterra-locomotive-2"
+            -- },
             {
                 type = "unlock-recipe",
                 recipe = "subterra-battery-empty-2"
@@ -224,8 +251,8 @@ data:extend(
             count = 100,
             ingredients =
             {
-                {"science-pack-1", 1},
-                {"science-pack-2", 1}
+                {"automation-science-pack", 1},
+                {"logistic-science-pack", 1}
             },
             time = 30
         },
@@ -241,10 +268,10 @@ data:extend(
         icon = "__base__/graphics/technology/railway.png",
         effects =
         {
-            {
-                type = "unlock-recipe",
-                recipe = "subterra-locomotive-3"
-            },
+            -- {
+            --     type = "unlock-recipe",
+            --     recipe = "subterra-locomotive-3"
+            -- },
             {
                 type = "unlock-recipe",
                 recipe = "subterra-battery-empty-3"
@@ -260,9 +287,9 @@ data:extend(
             count = 150,
             ingredients =
             {
-                {"science-pack-1", 1},
-                {"science-pack-2", 1},
-                {"science-pack-3", 1}
+                {"automation-science-pack", 1},
+                {"logistic-science-pack", 1},
+                {"chemical-science-pack", 1}
             },
             time = 30
         },
@@ -278,10 +305,10 @@ data:extend(
         icon = "__base__/graphics/technology/railway.png",
         effects =
         {
-            {
-                type = "unlock-recipe",
-                recipe = "subterra-locomotive-4"
-            },
+            -- {
+            --     type = "unlock-recipe",
+            --     recipe = "subterra-locomotive-4"
+            -- },
             {
                 type = "unlock-recipe",
                 recipe = "subterra-battery-empty-4"
@@ -297,55 +324,56 @@ data:extend(
             count = 200,
             ingredients =
             {
-                {"science-pack-1", 1},
-                {"science-pack-2", 1},
-                {"science-pack-3", 1},
-                {"high-tech-science-pack", 1}
+                {"automation-science-pack", 1},
+                {"logistic-science-pack", 1},
+                {"chemical-science-pack", 1},
+                {"utility-science-pack", 1}
             },
             time = 30
         },
         upgrade = true,
         level = 4,
         order = "s-t-e"
+    },
+    {
+        type = "technology",
+        name = "subway-5",
+        enabled = max >= 4,
+        icon_size = 128,
+        icon = "__base__/graphics/technology/railway.png",
+        effects =
+        {
+            -- {
+            --     type = "unlock-recipe",
+            --     recipe = "subterra-locomotive-5"
+            -- },
+            {
+                type = "unlock-recipe",
+                recipe = "subterra-battery-empty-5"
+            },
+            {
+                type = "unlock-recipe",
+                recipe = "subterra-battery-full-5"
+            }
+        },
+        prerequisites = {"subway-4", "underground-building-5"},
+        unit =
+        {
+            count = 200,
+            ingredients =
+            {
+                {"automation-science-pack", 2},
+                {"logistic-science-pack", 2},
+                {"chemical-science-pack", 2},
+                {"utility-science-pack", 2},
+                {"space-science-pack", 1}
+            },
+            time = 60
+        },
+        upgrade = true,
+        level = 5,
+        order = "s-t-e"
     }
-    ,
-    -- {
-    --     type = "technology",
-    --     name = "subway-5",
-    --     icon_size = 128,
-    --     icon = "__base__/graphics/technology/railway.png",
-    --     effects =
-    --     {
-    --         {
-    --             type = "unlock-recipe",
-    --             recipe = "subterra-locomotive-5"
-    --         },
-    --         {
-    --             type = "unlock-recipe",
-    --             recipe = "subterra-battery-empty-4"
-    --         },
-    --         {
-    --             type = "unlock-recipe",
-    --             recipe = "subterra-battery-full-4"
-    --         }
-    --     },
-    --     prerequisites = {"subway-4", "underground-building-5"},
-    --     unit =
-    --     {
-    --         count = 300,
-    --         ingredients =
-    --         {
-    --             {"science-pack-1", 1},
-    --             {"science-pack-2", 1},
-    --             {"science-pack-3", 1},
-    --             {"high-tech-science-pack", 1}
-    --         },
-    --         time = 30
-    --     },
-    --     upgrade = true,
-    --     level = 5,
-    --     order = "s-t-e"
-    -- },
 })
 end
 
