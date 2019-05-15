@@ -5,14 +5,16 @@
 See below for a workaround.
 - Other mods that place entities and do not raise the `script_raised_built` event may lead to unintended consequences.
 - If a Stairs, Belt-Elevator, or Power transfer entity is destroyed, it will leave a ghost on only one of its two layers.
-- There are still some edge cases that need to be tested for creation and deletion of these special entitites.
+- There are still some edge cases that need to be tested for creation and deletion of these special entities.
+- Power-Transfer is still being tested.
 
 ## v0.5.0
-NOTE: Compatibilty with saves from previous versions is spotty at best.
+NOTE: Compatibility with saves from previous versions is spotty at best.
 ### New
+- Updated to Factorio v 0.17.x
 - Added Gui element to show current Depth. Simple text label for now.
-- Added ability to ady any entity to the Underground Whitelist via semicolon delimited list in the mod's startup settings.
-- Added keyboard shortcut to flip the direction of any rolling stock under the cursor (Defalt: CONTROL + F). This can
+- Added ability to add any entity to the Underground Whitelist via semicolon delimited list in the mod's startup settings.
+- Added keyboard shortcut to flip the direction of any rolling stock under the cursor (Default: CONTROL + F). This can
 be used to work-around the top know issue above.
 
 ### Modified
@@ -26,14 +28,6 @@ further underground it is placed. The levels of the Subways technolopgy unlocks 
 - Fixed numerous entity placement and removal errors.
 - `raise_destroy` is now set to true when cleaning up blacklisted entities.
 - Major Refactor of code has started, there are multiple large and small bugs that have been fixed that are not noted here.
-
-### Mod Compatability
-I have not tested this with many mods yet. If there is a particular incompatible mod you would like me to support,
-please open an issue for it on GitHub.
-#### Whistle Stop Factories
-- Its 'Big' machines are not whitelisted and are removed if spawned underground.
-- If you want to allow them to spawn underground, add this to the Underground Whitelist in SubTerra's startup
-settings: `wsf-big-assembly;wsf-big-refinery;wsf-big-furnace;express-loader`
 
 ## v0.4.0
 ### New
@@ -72,10 +66,10 @@ To remove an entity: `remote.call("subterra:entities", "remove", %NAME%)`
 
 ## v0.3.1
 ### Bugfixes
-- Subscribes to the `script_raised_built` event to precent non-whitelisted entiteis from being built underground.
+- Subscribes to the `script_raised_built` event to precent non-whitelisted entities from being built underground.
 - Added some missed vanilla entities to underground whitelist.
 - Mod now handles being added to large existing worlds.
-  - Note: Loading into a large explored world will cause performace to drop for a
+  - Note: Loading into a large explored world will cause performance to drop for a
 short time while the underground surface generation catches up.
 
 ## v0.3.0
@@ -83,7 +77,7 @@ short time while the underground surface generation catches up.
 - "Telepads" renamed to "Stairs"
 
 ### New
-- Power tansfer.
+- Power transfer.
 - Custom graphics for stairs and power transfer structures.
 - Added whitelist of vanilla structures able build underground.
 
