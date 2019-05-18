@@ -1,145 +1,24 @@
-require 'scripts/utils'
+require("__subterra__.scripts.utils")
 
 if not subterra.tick_events then subterra.tick_events = {} end
 
--- event fired every 12th of a second
--- Teleports players if standin on an elevator
-register_nth_tick_event (5,
-function (event)
-    for i, p in pairs(global.player_proxies) do
-        local player = p.player
-        if player.connected then
-            if player.character then
-                local sname = player.surface.name
-                local layer = global.layers[sname]
-                local qt = layer and layer.telepads
-                if qt then
-                    local pad = qt:check_proxy_collision(player.character.bounding_box)
-                    if pad then
-                        if p.on_pad ~= pad.entity.unit_number then
-                            player.teleport(player.position, pad.target_layer.surface.name)
-                            debug("Teleported player:" .. player.name)
-                            p.on_pad = pad.target_pad.entity.unit_number
-                        end
-                    else
-                        p.on_pad = -1
-                    end
-                else
-                    p.on_pad = -1
-                end
-            else
-                p.on_pad = -1
-            end
-        else
-            global.player_proxies[i] = nil
-        end
-    end
-end)
+local check_telepads = require("__subterra__.scripts.events.updates.check_telepads")
+local update_belt_elevators = require("__subterra__.scripts.events.updates.update_belt_elevators")
+local update_power = require("__subterra__.scripts.events.updates.update_power")
+local cleanup_ghosts = require("__subterra__.scripts.events.updates.cleanup_ghosts")
 
-local INSERT_POS = {
-	["transport-belt"] = 0.71875, -- 1 - 9/32
-	["underground-belt"] = 0.21875, -- 0.5 - 9/32
-}
+-- Teleports players if standing on stairs
+-- event fired every 12th of a second by default
+local pad_interval = (subterra and subterra.config and subterra.config.TELEPAD_UPDATE_INTERVAL) or 5
+register_nth_tick_event (pad_interval, check_telepads)
 
--- belts
-register_event(defines.events.on_tick,
-function (event)
-    for _,b in pairs(global.belt_inputs) do
-        if b.input.valid and b.output.valid then
-            --local type = b.input.type
-            local in1 = b.in_line1
-            local in2 = b.in_line2
-            local out1 = b.out_line1
-            local out2 = b.out_line2
-            local c1 = # in1
-            local c2 = # in2
-            if c1 > 0 then
-                local n = in1[1].name
-                if out1.insert_at_back({name=n}) then
-                    in1.remove_item({name=n})
-                end
-            end
-            if c2 > 0 then
-                local n = in2[1].name
-                if out2.insert_at_back({name=n}) then
-                    in2.remove_item({name=n})
-                end
-            end
-        end
-    end
-end)
+-- update belts
+register_event(defines.events.on_tick, update_belt_elevators)
 
 -- power
--- Source: https://github.com/MagmaMcFry/Factorissimo2
-local function transfer_power(from, to)
-	if not (from.valid and to.valid) then return end
-	local energy = from.energy + to.energy
-    local ebs = to.electric_buffer_size
-	if energy > ebs then
-		to.energy = ebs
-		from.energy = energy - ebs
-	else
-		to.energy = energy
-		from.energy = 0
-	end
-end
+register_event(defines.events.on_tick, update_power)
 
-register_event(defines.events.on_tick,
-function (event)
-    for _,p in pairs(global.power_inputs) do
-        if p.input.valid and p.output.valid then
-            transfer_power(p.input, p.output)
-        end
-    end 
-end)
-
-function check_ghost_proxy(quadtree, proxy)
-    local top_ghost = proxy.top_ghost
-    local bottom_ghost = proxy.bottom_ghost
-
-    if not (top_ghost and top_ghost.valid) then
-        -- debug(print_bounding_box(proxy.bbox))
-
-        quadtree:remove_proxy(proxy.bbox)
-        proxy.top_ghost = nil
-        proxy.bottom_ghost = nil
-
-        if bottom_ghost then
-            bottom_ghost.destroy()
-        end
-    else
-        if not (bottom_ghost and bottom_ghost.valid) then
-            quadtree:remove_proxy(proxy.bbox)
-            proxy.top_ghost = nil
-            proxy.bottom_ghost = nil
-
-            if top_ghost then
-                top_ghost.destroy()
-            end
-        end
-    end
-end
-
-function check_ghost_quadtree(quadtree)
-    local proxies = shallowcopy(quadtree.proxies)
-    for _,proxy in pairs(proxies) do
-        check_ghost_proxy(quadtree, proxy)
-    end
-    quadtree:rebuild_index()
-end
-
--- event fired every 10th of a second
 -- cleans up invalid ghosts
-register_nth_tick_event (6,
-function (event)
-    local layer_cache = {}
-
-    for key, layer in pairs(global.layers) do
-        if not layer_cache[layer] then
-            layer_cache[layer] = true
-            check_ghost_quadtree(layer.pad_ghosts)
-            check_ghost_quadtree(layer.belt_ghosts)
-            check_ghost_quadtree(layer.power_ghosts)
-        end
-    end
-end)
+-- event fired every 10th of a second by default
+local ghost_interval = (subterra and subterra.config and subterra.config.GHOST_CLEANUP_INTERVAL) or 6
+register_nth_tick_event (ghost_interval, cleanup_ghosts)

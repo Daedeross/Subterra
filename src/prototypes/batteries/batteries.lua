@@ -89,6 +89,7 @@ function make_battery(level, icon, energy, accel, speed)
             name = "subterra-battery-full-" .. level,
             category = "recharging",
             energy_required = crafting_energy,
+            enabled = false,
             ingredients =
             {
                 {"subterra-battery-empty-" .. level, 1}

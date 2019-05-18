@@ -1,7 +1,16 @@
 --configuration stuff to go here
 
+if not subterra then subterra = {} end
+if not subterra.config then subterra.config = {} end
+
 -- Max number of layers, including "nauvis" (surface)
 subterra.config.MAX_LAYER_COUNT = 6
+
+-- interval, in ticks, to check telepads
+subterra.config.TELEPAD_UPDATE_INTERVAL = 5
+
+-- interval, in ticks, to check for and cleanup invalid ghosts
+subterra.config.GHOST_CLEANUP_INTERVAL = 6
 
 -- train and battery names
 subterra.config.locomotive_levels = {
