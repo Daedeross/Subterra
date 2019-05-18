@@ -14,4 +14,3 @@ for index, force in pairs(game.forces) do
         update_recipe(recipes[recipe_name], technologies[tech_name])
     end
 end
-
