@@ -8,8 +8,10 @@ See below for a workaround.
 - There are still some edge cases that need to be tested for creation and deletion of these special entities.
 - Power-Transfer only works 'downward'.
 
-## v0.5.1
+## v0.5.2
+- Fixed initialization bug.
 
+## v0.5.1
 ### Modified
 - Changes some messages when a 2-layer entitiy is denied placement.
 ### BuxFixes
