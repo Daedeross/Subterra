@@ -31,8 +31,6 @@ local add_power_proxy = function (placed, surface, creator)
         return false, message
     end
 
-    -- debug(target_layer.index)
-
     local target_name = "subterra-power-" .. (is_down and "up" or "down")
 
     -- check if target location is free

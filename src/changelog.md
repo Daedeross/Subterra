@@ -6,7 +6,14 @@ See below for a workaround.
 - Other mods that place entities and do not raise the `script_raised_built` event may lead to unintended consequences.
 - If a Stairs, Belt-Elevator, or Power transfer entity is destroyed, it will leave a ghost on only one of its two layers.
 - There are still some edge cases that need to be tested for creation and deletion of these special entities.
-- Power-Transfer is still being tested.
+- Power-Transfer only works 'downward'.
+
+## v0.5.1
+
+### Modified
+- Changes some messages when a 2-layer entitiy is denied placement.
+### BuxFixes
+- Picking up a power converted no longer crashes the game.
 
 ## v0.5.0
 NOTE: Compatibility with saves from previous versions is spotty at best.

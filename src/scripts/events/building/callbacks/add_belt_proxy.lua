@@ -1,4 +1,5 @@
 require("__subterra__.scripts.utils")
+local gsub = string.gsub
 --============================================================================--
 -- add_belt_proxy(belt, surface, creator)
 --
@@ -24,13 +25,13 @@ local add_belt_proxy = function(belt, surface, creator)
         ent_name = belt.ghost_name
     end
 
-    local target_name, subs = string.gsub(ent_name, "-down", "-out")
+    local target_name, subs = gsub(ent_name, "-down", "-out")
     local is_down
     if subs > 0 then 
         is_down = true
     else
         is_down = false
-        target_name, subs = string.gsub(ent_name, "-up", "-out")
+        target_name, subs = gsub(ent_name, "-up", "-out")
     end
 
     --debug(target_name)

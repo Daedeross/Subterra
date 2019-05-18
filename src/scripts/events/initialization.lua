@@ -15,7 +15,8 @@ require 'scripts/utils'
 function initialize_subterra ()
     debug("Starting SubTerra Initialization")
 
-    global.max_depth = settings.startup["subterra-max-depth"].value
+    local max_depth = settings.startup["subterra-max-depth"].value
+    global.max_depth = max_depth
 
     local top_surface = game.surfaces['nauvis']
 
@@ -79,14 +80,15 @@ function initialize_subterra ()
 
     -- set adjacency and kickstart chunk generation
     global.layers[1].layer_below = global.layers[2]
-    for i = 2, global.max_depth + 1 do
-        --global.layers[i].surface.request_to_generate_chunks({0,0}, 10)
-        global.layers[i].surface.request_to_generate_chunks(middle, radius)
-        global.layers[i].layer_above = global.layers[i-1]
-        if i <= global.max_depth then
-            global.layers[i].layer_below = global.layers[i+1]
+    for i = 2, max_depth + 1 do
+        local layer = global.layers[i]
+        --layer.surface.request_to_generate_chunks({0,0}, 10)
+        layer.surface.request_to_generate_chunks(middle, radius)
+        layer.layer_above = global.layers[i-1]
+        if i <= max_depth then
+            layer.layer_below = global.layers[i+1]
         else
-            global.layers[i].layer_below = nil
+            layer.layer_below = nil
         end
     end
 
@@ -111,29 +113,31 @@ end
 
 function initialize_underground_whitelist()
     if not global.underground_whitelist then global.underground_whitelist = {} end
-
+    local whitelist = global.underground_whitelist
     -- required entities
     for name,_ in pairs(subterra.config.underground_entities) do
-        global.underground_whitelist[name] = true
+        whitelist[name] = true
     end
 
     -- add entities from settings
-    global.whitelist_string = settings.startup["subterra-whitelist"].value or ""
-    local new_list = split(global.whitelist_string, ";")
+    local whitelist_string = settings.startup["subterra-whitelist"].value or ""
+    local new_list = split(whitelist_string, ";")
+    global.whitelist_string = whitelist_string
 
     for _, name in pairs(new_list) do
         log("whitelist: " .. name)
-        global.underground_whitelist[name] = true
+        whitelist[name] = true
     end
 end
 
 function initialize_belt_elevators()
-    global.belt_elevators = {}
+    local belt_elevators = {}
     for name, prototype in pairs(game.entity_prototypes) do
         if string.find(prototype.name, "subterra%-%a*%-*transport%-belt") then
-            global.belt_elevators[name] = true
+            belt_elevators[name] = true
         end
     end
+    global.belt_elevators = belt_elevators
 end
 
 function on_load()

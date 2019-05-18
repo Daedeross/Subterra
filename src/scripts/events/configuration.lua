@@ -95,13 +95,14 @@ function (config)
         end
 
         for i = 2, new_depth + 1 do
+            local layer = global.layers[i]
             --global.layers[i].surface.request_to_generate_chunks({0,0}, 10)
-            global.layers[i].surface.request_to_generate_chunks(middle, radius)
-            global.layers[i].layer_above = global.layers[i-1]
+            layer.surface.request_to_generate_chunks(middle, radius)
+            layer.layer_above = global.layers[i-1]
             if i < new_depth then
-                global.layers[i].layer_below = global.layers[i+1]
+                layer.layer_below = global.layers[i+1]
             else
-                global.layers[i].layer_below = nil
+                layer.layer_below = nil
             end
         end    
 
@@ -121,16 +122,16 @@ function (config)
     -- set current depth based on technology
     for index, force in pairs(game.forces) do
         local technologies = force.technologies
-
-        global.current_depth[force.name] = 0
-
+        local force_depth = 0
         for i=new_depth,1,-1 do
             local tech_name = "underground-building-" .. i
             if technologies[tech_name] and technologies[tech_name].researched then
-                global.current_depth[force.name] = i
+                force_depth = i
                 break
             end
         end
+
+        global.current_depth[force.name] = force_depth
     end
 end)
 
@@ -140,7 +141,8 @@ function (config)
     if not config.mod_startup_settings_changed then
         return false
     end
-    return (not global.whitelist_string) or global.whitelist_string ~= settings.startup["subterra-whitelist"].value
+    local whitelist_string = global.whitelist_string
+    return (not whitelist_string) or whitelist_string ~= settings.startup["subterra-whitelist"].value
 end,
 function (config)
     local removed = {}
@@ -153,20 +155,21 @@ function (config)
         end
     end
 
-    global.whitelist_string = settings.startup["subterra-whitelist"].value
-    local new_list = split(global.whitelist_string, ";")
+    local current_list = global.underground_whitelist
+    local whitelist_string = settings.startup["subterra-whitelist"].value
+    local new_list = split(whitelist_string, ";")
 
     for _, name in pairs(new_list) do
         removed[name] = nil
-        if not global.underground_whitelist[name] then
+        if not current_list[name] then
             added[name] = true
         end
     end
 
     for name, _ in pairs(added) do
-        global.underground_whitelist[name] = true
+        current_list[name] = true
     end
     for name, _ in pairs(removed) do
-        global.underground_whitelist[name] = nil
+        current_list[name] = nil
     end
 end)

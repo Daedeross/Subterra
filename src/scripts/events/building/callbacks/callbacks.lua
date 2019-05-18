@@ -43,7 +43,7 @@ remove_events["subterra-telepad-down"] = remove_telepad
 -- power convertes
 underground_build_events["subterra-power-up"] = add_power_proxy
 underground_build_events["subterra-power-down"] = add_power_proxy
-surface_build_events["subterra-power-up"] = function() return false end
+surface_build_events["subterra-power-up"] = add_power_proxy
 surface_build_events["subterra-power-down"] = add_power_proxy
 remove_events["subterra-power-up"] = remove_power_interface
 remove_events["subterra-power-down"] = remove_power_interface

@@ -10,15 +10,22 @@ require 'scripts/utils'
 register_event(defines.events.on_chunk_generated,
 function (event)
     local bb = event.area
+    local left = bb.left_top.x
+    local right = bb.right_bottom.x
+    local top = bb.left_top.y
+    local bottom = bb.right_bottom.y 
+
     local surface = event.surface
-    local pos = {bb.left_top.x + 16, bb.left_top.y + 16 }
     local layer = global.layers[surface.name]
     -- if the surface name is not a key in global.layers,
     -- then it is a surface from another mod and will be ignored
     if not layer then
         return
     end
-    local index = layer.index
+
+    local index = layer.index    
+    local pos = { left + 16, top + 16 }
+
     -- genreate chunk on other layers if necessary
     for i, other_layer in pairs(global.layers) do
         if i ~= index then
@@ -29,21 +36,23 @@ function (event)
         end
     end
 
+    local whitelist = global.underground_whitelist
+
     -- clear entities and set tiles if this is a below ground chunk
     if index ~= 1 then
         local entities = surface.find_entities(bb)
         for k, e in pairs(entities) do
             if not(   e.type == 'player' -- just in case someone is walking there when it's generating...
                    or e.type == 'item'
-                   or global.underground_whitelist[e.name])
+                   or whitelist[e.name])
                then  
-                entities[k].destroy()
+                e.destroy()
             end
         end
         -- replace whatever tiles are there with underground tile(s)
         local new_tiles = {}
-        for i=bb.left_top.x, bb.right_bottom.x do
-            for j=bb.left_top.y, bb.right_bottom.y do
+        for i=left, right do
+            for j=top, bottom do
                 local old_tile = surface.get_tile(i, j).name
                 if index > 2 then
                     table.insert(new_tiles, {name="sub-dirt", position={i,j}})

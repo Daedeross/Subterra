@@ -10,9 +10,17 @@ require("__subterra__.scripts.utils")
 --
 --============================================================================--
 local handle_remove_power_interface = function (mined, removing_entity, buffer)
+    if not mined.valid then
+        return
+    end
+
     local proxy = global.power_inputs[mined.unit_number] or global.power_outputs[mined.unit_number]
 
-    if not proxy then
+    if not (proxy and proxy.top.valid and proxy.bottom.valid) then
+        return
+    end
+
+    if (proxy.destroying) then
         return
     end
     
@@ -21,6 +29,8 @@ local handle_remove_power_interface = function (mined, removing_entity, buffer)
     local mine_results = mined.name  -- naming convention, entity is named same as item that places it
     global.power_inputs[top_id] = nil
     global.power_outputs[bottom_id] = nil
+
+    proxy.destroying = true
 
     proxy.input.destroy({raise_destroy=true})
     proxy.output.destroy({raise_destroy=true})

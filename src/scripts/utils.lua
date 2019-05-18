@@ -6,6 +6,9 @@ if not subterra.config_events then subterra.config_events = {} end
 S_ROOT = "__SubTerra__"
 _blank = S_ROOT .. "/graphics/blank.png"
 SUBTERRA_LOG_FILE = "subterra.log"
+local math_max = math.max
+local math_min = math.min
+local math_floor = math.floor
 
 local debug_mode = "None"
 local debug_sink_setting = settings and settings.startup and settings.startup["subterra-log-sink"]
@@ -28,7 +31,7 @@ elseif debug_mode == "Subterra Log" then
         local ticks = tick % 60
         local seconds = (tick - ticks) % 3600
         local minutes = (tick - seconds - ticks) % 216000
-        local hours = math.floor((tick - minutes - seconds - ticks) / 216000)
+        local hours = math_floor((tick - minutes - seconds - ticks) / 216000)
         minutes = minutes / 3600
         seconds = seconds / 60
         return string.format("%5d:%02d:%02d:%02d", hours, minutes, seconds, ticks)
@@ -112,7 +115,7 @@ function add_player_proxy(i)
         }
         global.player_proxies[i] = proxy
     end
-    print("Added player: " .. p. name )
+    print("Added player: " .. p.name )
 end
 
 function get_underground_settings(surface)
@@ -139,17 +142,17 @@ function get_generated_extents(surface)
     local maxy = -2147483647 
 
     for chunk in surface.get_chunks() do
-        minx = math.min(minx, chunk.x)
-        miny = math.min(miny, chunk.y)
-        maxx = math.max(maxx, chunk.x)
-        maxy = math.max(maxy, chunk.y)
+        minx = math_min(minx, chunk.x)
+        miny = math_min(miny, chunk.y)
+        maxx = math_max(maxx, chunk.x)
+        maxy = math_max(maxy, chunk.y)
     end
 
     local middle = {
         (maxx + minx) / 2,
         (maxy + miny) / 2
     }
-    local radius = math.max(10, math.max(maxx - minx, maxy - miny) / 2)
+    local radius = math_max(10, math_max(maxx - minx, maxy - miny) / 2)
     middle[1] = middle[1] * 16
     middle[2] = middle[2] * 16
 
@@ -213,7 +216,11 @@ function check_layer(surface, ent_name, is_down, force)
     
     -- check if target layer exists
     if target_layer == nil then
-        return nil, nil, {"message.building-surface-nil", {"entity-name."..ent_name}}
+        if (is_down) then
+            return nil, nil, {"message.building-surface-bottom", {"entity-name."..ent_name}}
+        else
+            return nil, nil, {"message.building-surface-top", {"entity-name."..ent_name}}
+        end
     end
     
     local target_depth = target_layer.index - 1    
