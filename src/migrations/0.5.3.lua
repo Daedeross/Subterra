@@ -11,7 +11,7 @@ for index, force in pairs(game.forces) do
     for level = 1, 5 do
         local recipe_name = "subterra-battery-full-" .. level
         local tech_name = "subway-" .. level
-        update_recipe(recipes[recipe_name, technologies[tech_name]])
+        update_recipe(recipes[recipe_name], technologies[tech_name])
     end
 end
 
