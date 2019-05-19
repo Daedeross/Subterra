@@ -9,14 +9,15 @@ require("__subterra__.scripts.utils")
 -- 
 --============================================================================--
 local on_player_mined_entity = function (event)
-    local ent_name = event.entity.name
+    local entity = event.entity
+    local ent_name = entity.name
     if global.belt_elevators[ent_name] then
         ent_name = "belt-elevator"
     end
 
     local callback = callbacks.remove[ent_name]
     if callback then
-        callback(event.entity, game.players[event.player_index], event.buffer)
+        callback(entity, game.players[event.player_index], event.buffer)
     end
 end
 
