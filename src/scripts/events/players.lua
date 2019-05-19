@@ -102,3 +102,6 @@ function (event)
         selected.connect_rolling_stock(defines.rail_direction.front)
     end
 end)
+
+local on_player_cursor_stack_changed = require("__subterra__.scripts.events.player.on_player_cursor_stack_changed")
+register_event(defines.events.on_player_cursor_stack_changed, on_player_cursor_stack_changed)

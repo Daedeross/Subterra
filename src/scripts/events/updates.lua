@@ -6,6 +6,7 @@ local check_telepads = require("__subterra__.scripts.events.updates.check_telepa
 local update_belt_elevators = require("__subterra__.scripts.events.updates.update_belt_elevators")
 local update_power = require("__subterra__.scripts.events.updates.update_power")
 local cleanup_ghosts = require("__subterra__.scripts.events.updates.cleanup_ghosts")
+local do_player_drawing = require("__subterra__.scripts.events.updates.do_player_drawing")
 
 -- Teleports players if standing on stairs
 -- event fired every 12th of a second by default
@@ -22,3 +23,6 @@ register_event(defines.events.on_tick, update_power)
 -- event fired every 10th of a second by default
 local ghost_interval = (subterra and subterra.config and subterra.config.GHOST_CLEANUP_INTERVAL) or 6
 register_nth_tick_event (ghost_interval, cleanup_ghosts)
+
+local draw_interval = (subterra and subterra.config and subterra.config.BOX_DURATION) or 60
+register_nth_tick_event(draw_interval, do_player_drawing)
