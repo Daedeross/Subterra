@@ -49,7 +49,7 @@ local add_locomotive = function (entity, surface, creator)
     local depth = layer.index - 1
     if not (depth <= max_depth) then
         debug("too deep")
-        return false, {"message.building-locomotive-level-max", {"entity-name."..ent_name}, max_depth }
+        return false, {"message.building-locomotive-level-max", {"entity-name."..ent_name}, {"technology-name.subway"}, depth }
     end
 
     local player = creator.is_player() and creator

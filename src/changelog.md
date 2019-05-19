@@ -6,16 +6,20 @@ See below for a workaround.
 - Other mods that place entities and do not raise the `script_raised_built` event may lead to unintended consequences.
 - If a Stairs, Belt-Elevator, or Power transfer entity is destroyed, it will leave a ghost on only one of its two layers.
 - There are still some edge cases that need to be tested for creation and deletion of these special entities.
-- Power-Transfer only works 'downward'.
+- Power-Transfer only works one way. The placed entity becomes the input.
+
+## v0.5.3
+- Battery recharge recipes are now hidden until the requisite level of Subways is researched.
+- Additional code refactoring and optimization.
 
 ## v0.5.2
 - Fixed initialization bug.
 
 ## v0.5.1
 ### Modified
-- Changes some messages when a 2-layer entitiy is denied placement.
+- Changes some messages when a 2-layer entity is denied placement.
 ### BuxFixes
-- Picking up a power converted no longer crashes the game.
+- Picking up a power converter no longer crashes the game.
 
 ## v0.5.0
 NOTE: Compatibility with saves from previous versions is spotty at best.
@@ -28,7 +32,7 @@ be used to work-around the top know issue above.
 
 ### Modified
 - Completely changed how underground locomotives are handled. Now there is only one item and recipe that improves in performance the
-further underground it is placed. The levels of the Subways technolopgy unlocks the ability to place locomotives deeper.
+further underground it is placed. The levels of the Subways technology unlocks the ability to place locomotives deeper.
 - Changed the max-depth setting to default to 4, with a max of 5
 
 ### Bugfixes
@@ -44,9 +48,9 @@ further underground it is placed. The levels of the Subways technolopgy unlocks 
 WARNING: reducing this value for existing worlds is not supported, but increasing works (so far in my testing, at least).
 - Added technology: Underground levels are now unlocked by successive researches. NOTE: This will prevent you from placing entities
 that 'dig' down to a specific layer (i.e. Stairs, Elevator, Power transfer) until the research is completed. For safety, move to the surface
-before ubdating the Max Depth setting
+before updating the Max Depth setting
 - Added subways: Special, faster locomotives that can only be placed underground. Unlocked by research
-- Added recharable batteries: Special 'fuel' for subways. Recharged in a special dedicated machine
+- Added rechargeable batteries: Special 'fuel' for subways. Recharged in a special dedicated machine
 - Added faster belt elevators. The three levels of belts in the base game now have equavalent speed elevators.
 Unlocked at the same level of logistics as the equivalent belt.
 - Added support for ghosts and robots to construct stairs, elevators, and power transfer entities
@@ -58,7 +62,7 @@ NOTE: will not change already generated chunks in that layer.
 ### Bugfixes
 - Changed chunk generation logic. Possible fix of a logic error in the previous versions, though requires more testing.
 - Fixed bug where game would crash if you died. (X_X)
-- Game will no longer crash in sandbox or if you manualy type the statement `\c game.player.character = nil`
+- Game will no longer crash in sandbox or if you manually type the statement `\c game.player.character = nil`
 
 ## v0.3.3
 ### New
@@ -75,7 +79,7 @@ To remove an entity: `remote.call("subterra:entities", "remove", %NAME%)`
 
 ## v0.3.1
 ### Bugfixes
-- Subscribes to the `script_raised_built` event to precent non-whitelisted entities from being built underground.
+- Subscribes to the `script_raised_built` event to percent non-whitelisted entities from being built underground.
 - Added some missed vanilla entities to underground whitelist.
 - Mod now handles being added to large existing worlds.
   - Note: Loading into a large explored world will cause performance to drop for a
