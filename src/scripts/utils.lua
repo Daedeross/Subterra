@@ -6,9 +6,9 @@ if not subterra.config_events then subterra.config_events = {} end
 S_ROOT = "__SubTerra__"
 _blank = S_ROOT .. "/graphics/blank.png"
 SUBTERRA_LOG_FILE = "subterra.log"
-local math_max = math.max
-local math_min = math.min
-local math_floor = math.floor
+
+-- cache pointers to math library functions
+local math_max, math_min, math_floor, math_ceil = math.max, math.min, math.floor, math.ceil
 
 local debug_mode = "None"
 local debug_sink_setting = settings and settings.startup and settings.startup["subterra-log-sink"]
@@ -55,10 +55,18 @@ end
 function blank_picture()
     return {
         filename = _blank,
-        priority = "high",
+        priority = "low",
 		width = 1,
 		height = 1,
 		frame_count = 1,
+    }
+end
+
+function blank_pictures()
+    return {
+        layers = {
+            blank_picture()
+        }
     }
 end
 
@@ -380,6 +388,20 @@ function shrink(bounding_box)
     return {
         left_top = { x = bounding_box.left_top.x + 0.00125, y = bounding_box.left_top.y + 0.00125 },
         right_bottom = { x = bounding_box.right_bottom.x - 0.00125, y = bounding_box.right_bottom.y - 0.00125 }
+    }
+end
+
+function chunk_to_area(chunk_position)
+    local left, top = (math_floor(chunk_position.x) * 32), (math_floor(chunk_position.y) * 32)
+    return {
+        left_top = {
+            x = left,
+            y = top
+        },
+        right_bottom = {
+            x = left + 31,
+            y = top + 31
+        }
     }
 end
 

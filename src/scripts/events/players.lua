@@ -8,6 +8,7 @@ require ('config')
 require 'scripts/utils'
 
 local display_level = require("__subterra__.scripts.events.ui.display_level")
+local on_player_cursor_stack_changed = require("__subterra__.scripts.events.player.on_player_cursor_stack_changed")
 
 --============================================================================--
 -- on_player_joined()
@@ -68,16 +69,8 @@ register_event(defines.events.on_player_changed_surface,
 function (event)
     local player = game.players[event.player_index]
     display_level(player)
+    on_player_cursor_stack_changed(event)
 end)
-
--- register_nth_tick_event(600,
--- function (event)
---     for i, proxy in pairs(global.player_proxies) do
---         if proxy.player then
---             display_level(proxy.player)
---         end
---     end
--- end))
 
 register_event("subterra-flip-rolling-stock",
 function (event)
@@ -103,5 +96,4 @@ function (event)
     end
 end)
 
-local on_player_cursor_stack_changed = require("__subterra__.scripts.events.player.on_player_cursor_stack_changed")
 register_event(defines.events.on_player_cursor_stack_changed, on_player_cursor_stack_changed)

@@ -1,16 +1,17 @@
-
-local tolerance = 0.1
+local tolerance = 0.01
 local limit = subterra and subterra.config and subterra.config.ENTITY_FIND_LIMIT    -- may be nil
 local collision_mask = {"item-layer", "object-layer", "player-layer", "water-tile"}
 local render_color = { r = 0.5, g = 0.323, b = 0.0, a = 0.1 }
 
 local draw_nearby_boxes = function(player, current_surface, target_surface, radius, duration)
-    debug("Draw Boxes: " .. tostring(duration))
+
+    local x = player.position.x
+    local y = player.position.y
+
     local filter = {
         collision_mask = collision_mask,
         limit = limit,
-        position = player.position,
-        radius = radius
+        area = { { x - radius, y - radius }, { x + radius, y + radius } }
     }
     local players = { player }
     local boxes = {}

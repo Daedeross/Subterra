@@ -6,7 +6,7 @@ local check_telepads = require("__subterra__.scripts.events.updates.check_telepa
 local update_belt_elevators = require("__subterra__.scripts.events.updates.update_belt_elevators")
 local update_power = require("__subterra__.scripts.events.updates.update_power")
 local cleanup_ghosts = require("__subterra__.scripts.events.updates.cleanup_ghosts")
-local do_player_drawing = require("__subterra__.scripts.events.updates.do_player_drawing")
+local do_player_drawing = require("__subterra__.scripts.events.ui.do_player_drawing")
 
 -- Teleports players if standing on stairs
 -- event fired every 12th of a second by default

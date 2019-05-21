@@ -34,6 +34,14 @@ function initialize_subterra ()
     --         remote.call("RSO", "ignoreSurface", layer_name)
     --     end
     -- end
+
+    -- create force_proxies
+    -- global.force_proxies = {}
+    -- for name, force in pairs(game.forces) do
+    --     force_proxies[name] = {
+
+    --     }
+    -- end
     
     -- create player proxies
     global.player_proxies = {}

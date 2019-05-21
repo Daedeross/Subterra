@@ -24,6 +24,18 @@ for i=1, subterra.config.MAX_LAYER_COUNT - 1, 1 do
     subterra.config.locomotive_levels[name] = 2
 end
 
+-- interval in ticks to redraw the hud when a player has an 'up' or
+-- 'down' item in their hand
+subterra.config.BOX_DURATION = 10
+
+-- Radius (sorta) to draw the helper hud.
+-- Actual area is a bounding box with extents equal to
+-- player position +- this radius
+subterra.config.HUD_DRAW_RADIUS = 20
+
+-- entity types that are allowed underground by default
+subterra.config.underground_types = {}
+
 subterra.config.underground_entities = {}
 -- subterra entities
 subterra.config.underground_entities["subterra-telepad-up"] = true

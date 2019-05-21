@@ -65,7 +65,6 @@ function (config)
         local s, e = string.find(prototype.name, "subterra%-%a*%-*transport%-belt")
         if s then
             count = count + 1
-            debug(s);
             global.belt_elevators[prototype.name] = true
         end
     end

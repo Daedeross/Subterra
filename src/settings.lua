@@ -27,5 +27,17 @@ data:extend({
         name = "subterra-show-level",
         setting_type = "runtime-per-user",
         default_value = true
+    },
+    {
+        type = "bool-setting",
+        name = "subterra-show-build-hud",
+        setting_type = "runtime-per-user",
+        default_value = true
+    },
+    {
+        type = "double-setting",
+        name = "subterra-build-hud-radius",
+        setting_type = "startup",
+        default_value = 20
     }
 })

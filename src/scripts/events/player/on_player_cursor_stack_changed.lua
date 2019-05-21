@@ -1,7 +1,7 @@
-local draw_nearby_boxes = require("__subterra__.scripts.events.updates.draw_nearby_boxes")
+local draw_nearby_boxes = require("__subterra__.scripts.events.ui.draw_nearby_boxes")
 
 local duration = ((subterra and subterra.config and subterra.config.BOX_DURATION) or 60) + 1
-local draw_radius = (subterra and subterra.config and subterra.config.HAND_DRAW_RADIUS) or 20
+local draw_radius = (subterra and subterra.config and subterra.config.HUD_DRAW_RADIUS) or 20
 
 local check_entities = {}
 

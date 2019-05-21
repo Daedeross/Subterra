@@ -338,7 +338,7 @@ data:extend(
     {
         type = "technology",
         name = "subway-5",
-        enabled = max >= 4,
+        enabled = max >= 5,
         icon_size = 128,
         icon = "__base__/graphics/technology/railway.png",
         effects =
@@ -378,3 +378,38 @@ data:extend(
 end
 
 make_underground_tech_levels(max_depth)
+
+local radar_pre = { "underground-building-1", "advanced-electronics" }
+if data.raw.technology["basic-mapping"] and data.raw.technology["basic-mapping"].enabled then
+    table.insert(radar_pre, "basic-mapping")
+end
+
+local radar_techs = {}
+
+local base_radar_count = 10
+
+data:extend(
+{
+    {
+        type = "technology",
+        name = "subterra-mapping",
+        icon_size = 128,
+        icon = "__base__/graphics/technology/demo/basic-mapping.png",
+        enabled = true,
+        effects = { },
+        unit =
+        {
+            count_formula = "2^L*"..base_radar_count,
+            ingredients = {
+                { "automation-science-pack", 1 },
+                { "logistic-science-pack", 1 },
+                { "chemical-science-pack", 1 },
+                { "military-science-pack", 1 }
+            },
+            time = 30
+        },
+        prerequisites = radar_pre,
+        max_level = max_depth,
+        order = "c-a-b"
+    }
+})

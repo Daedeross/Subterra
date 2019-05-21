@@ -8,7 +8,7 @@ _blank = S_ROOT .. "/graphics/blank.png"
 local function blank_picture()
     return {
         filename = _blank,
-        priority = "high",
+        priority = "low",
 		width = 1,
 		height = 1,
 		frame_count = 1,
