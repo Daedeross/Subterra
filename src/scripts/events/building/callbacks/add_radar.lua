@@ -17,9 +17,10 @@ local add_radar_proxy = require("__subterra__.scripts.events.building.callbacks.
 local add_radar = function(radar, surface, creator)
     debug("add_radar")
     local hidden_name = "subterra-hidden-" .. radar.name
-    if not game.entity_prototypes[hidden_name] then
-        debug("No underground radar found to place")
-        return true
+    local hidden_prototype = game.entity_prototypes[hidden_name]
+    if not hidden_prototype then
+        debug("unknown radar placed")
+        return
     end
 
     if surface.name ~= "nauvis" then
@@ -29,10 +30,10 @@ local add_radar = function(radar, surface, creator)
 
     local force = creator and get_member_safe(creator, "force")
     local tech = force.technologies["subterra-mapping"]
-    local level = tech.level
+    local level = tonumber(tech.level)
     debug("level: " .. level)
 
-    add_radar_proxy(radar, force, hidden_name, level)
+    add_radar_proxy(radar, force, hidden_prototype, level)
 
     return true
 end

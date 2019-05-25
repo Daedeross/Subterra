@@ -119,7 +119,7 @@ function initialize_subterra ()
     -- intialize radar proxy table
     -- will only be populated runtime
     global.radar_proxies = {}       -- indexed by unit_number, for lookup from entity
-    global.radar_proxy_arrays = {}  -- compact array of all proxies, for iterating over on_tick
+    global.radar_proxy_array = {}  -- compact array of all proxies, for iterating over on_tick
     global.radar_proxy_forces = {}  -- compact arrays indexed by force name, for iterating over on tech rechearhed
 
     for name, force in pairs(game.forces) do

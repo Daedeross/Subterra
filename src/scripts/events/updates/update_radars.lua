@@ -7,7 +7,7 @@ local update_radars = function (event)
     if count < 1 then return end
 
     local max_depth = settings.startup["subterra-max-depth"].value
-    local radar_chunk = settings.startup["subterra-radar-update-chunk"].value or 1
+    local radar_chunk = settings.startup["subterra-radar-update-chunk"].value or 60
 
     local buffer_size = radar_chunk * BUFFER_DURATION * RADAR_POWER
 
@@ -29,3 +29,5 @@ local update_radars = function (event)
         end
     end
 end
+
+return update_radars

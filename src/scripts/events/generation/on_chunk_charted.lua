@@ -3,6 +3,7 @@ require("__subterra__.scripts.utils")
 local on_chunk_charted = function (event)
     local surface = game.surfaces[event.surface_index]
     local sname = surface.name
+    if sname ~= "nauvis" then return end
     local layers = global.layers
     local layer = layers[sname]
     
@@ -13,21 +14,24 @@ local on_chunk_charted = function (event)
     end
 
     local force = event.force
-    -- if not force.technologies["subterra-mapping"].researched then
-    --     return
-    -- end
+    local tech = force.technologies["subterra-mapping"]
+    local chart_depth = tech.level
+    if chart_depth < 2 then
+        return
+    end
 
     local position = event.position
     debug("CHART: " .. position.x .. ", " .. position.y)
     
+    
     local area = chunk_to_area(position)
-    for _, layer in pairs(layers) do
-        local layer_surface = layer.surface
+    for i = 2, chart_depth do
+        local layer_surface = layers[i].surface
         local layer_name = layer_surface.name
-        if not (layer_name == sname or force.is_chunk_visible(layer_surface, position)) then
+        --if not (layer_name == sname or force.is_chunk_visible(layer_surface, position)) then
             debug("CHARTING: " .. layer_name)
             force.chart(layer_surface, area)
-        end
+        --end
     end
 end
 

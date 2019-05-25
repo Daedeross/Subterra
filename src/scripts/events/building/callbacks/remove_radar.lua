@@ -22,7 +22,7 @@ local remove_radar = function(radar)
     local force_array = global.radar_proxy_forces[radar.force.name]
 
     table.remove(global.radar_proxies, unit_number)
-    table.remove(global.radar_proxy_arrays, proxy.index)
+    table.remove(global.radar_proxy_array, proxy.index)
     table.remove(force_array, proxy.force_index)
 end
 

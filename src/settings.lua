@@ -39,5 +39,13 @@ data:extend({
         name = "subterra-build-hud-radius",
         setting_type = "startup",
         default_value = 20
+    },
+    {
+        type = "int-setting",
+        name = "subterra-radar-update-chunk",
+        setting_type = "startup",
+        default_value = 60,
+        minimum_value = 1,
+        maximum_value = 120,
     }
 })

@@ -11,4 +11,4 @@ local on_chunk_charted = require("__subterra__.scripts.events.generation.on_chun
 
 register_event(defines.events.on_chunk_generated, on_chunk_generated)
 
---register_event(defines.events.on_chunk_charted, on_chunk_charted)
+register_event(defines.events.on_chunk_charted, on_chunk_charted)

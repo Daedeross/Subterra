@@ -392,11 +392,11 @@ function shrink(bounding_box)
 end
 
 function position_to_chunk(position)
-    return { floor(position.x / 32), floor(position.y / 32) }
+    return { x = math_floor(position.x / 32), y = math_floor(position.y / 32) }
 end
 
 function chunk_to_position(chunk_position)
-    return { floor(chunk_position.x) * 32, floor(chunk_position.y) * 32 }
+    return { x = math_floor(chunk_position.x) * 32, y = math_floor(chunk_position.y) * 32 }
 end
 
 function chunk_to_area(chunk_position)

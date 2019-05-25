@@ -26,28 +26,29 @@ local blank_pictures = {
 -- using burner as energy source
 -- this is just to prevent electric poles from connecting to the hudden radars
 -- create dummy fuel-category and fuel-item
-data:extend({
-    {
-        type = "fuel-category",
-        name = "subterra-hidden-radar-fuel"
-    },
-    {
-        type = "item",
-        name = "subterra-hidden-radar-fuel",
-        icon = blank_picture,
-        icon_size = 32,
-        flags = { },
-        fuel_category = "subterra-hidden-radar-fuel",
-        fuel_value = BUFFER_SIZE .. "J",
-        subgroup = "subterra-hidden-radar-fuel",
-        order = "z[z]",
-        stack_size = 1
-    }
-})
+-- data:extend({
+--     {
+--         type = "fuel-category",
+--         name = "subterra-hidden-radar-fuel"
+--     },
+--     -- {
+--     --     type = "item",
+--     --     name = "subterra-hidden-radar-fuel",
+--     --     icon = _blank,
+--     --     icon_size = 32,
+--     --     flags = { },
+--     --     fuel_category = "subterra-hidden-radar-fuel",
+--     --     fuel_value = BUFFER_SIZE .. "J",
+--     --     --subgroup = "subterra-hidden-radar-fuel",
+--     --     order = "z[z]",
+--     --     stack_size = 1
+--     -- }
+-- })
 
 
 local function make_radar(existing_radar)
     local new_name = "subterra-hidden-" .. existing_radar.name
+    local range = existing_radar.max_distance_of_nearby_sector_revealed * 32
 
     if data.raw.radar[new_name] then
         return
@@ -63,18 +64,11 @@ local function make_radar(existing_radar)
     new_radar.flags = { "not-on-map", "not-deconstructable", "not-repairable" }
     new_radar.selectable_in_game = false
     new_radar.working_sound = nil
-    new_radar.energy_usage = 60W,
+    new_radar.energy_usage = "60W"
+    new_radar.max_health = range    -- haaaaak to get the range runtime
 
     new_radar.energy_source = {
-        type = "burner",
-        emissions_per_minute = 0,
-        render_no_power_icon = false,
-        render_no_network_icon = false,
-        fuel_inventory_size = 1,
-        light_flicker = {
-            maximum_intensity = 0
-        },
-        fuel_category = "subterra-hidden-radar-fuel"
+        type = "void"
     }
 
     data:extend({new_radar})
