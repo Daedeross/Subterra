@@ -1,21 +1,12 @@
 require("__subterra__.scripts.utils")
 
-local max_depth = settings.startup["subterra-max-depth"].value
-
-local remove_hidden_radars = function(force, name, position)
+local remove_hidden_radars = function(proxy)
     debug("remove_hidden_radars")
-    local layers = global.layers
+    local radars = proxy.radars
     -- all layers except top
-    for i=2, max_depth do
-        local layer = layers[i]
-        local surface = layer.surface
-
-        local entity = surface.find_entity(name, position)
-
-        if entity and entity.valid then
-            entity.destroy()
-        end
+    for i=2, proxy.max_level do
+        radars[i].destroy()
     end
-end 
+end
 
 return remove_hidden_radars

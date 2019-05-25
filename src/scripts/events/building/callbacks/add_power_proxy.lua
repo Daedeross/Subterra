@@ -78,6 +78,12 @@ local add_power_proxy = function (placed, surface, creator)
             force = placed.force,
             direction = placed.direction
         }
+        -- local input_2 = target_surface.create_entity{
+        --     name = "subterra-power-in",
+        --     position = placed.position,
+        --     force = placed.force,
+        --     direction = placed.direction
+        -- }
 
         local output = target_surface.create_entity{
             name = "subterra-power-out",
@@ -85,6 +91,12 @@ local add_power_proxy = function (placed, surface, creator)
             force = placed.force,
             direction = placed.direction
         }
+        -- local output_2 = surface.create_entity{
+        --     name = "subterra-power-out",
+        --     position = placed.position,
+        --     force = placed.force,
+        --     direction = placed.direction
+        -- }
 
         local top_surface = is_down and surface or target_surface
         local bottom_surface = is_down and target_surface or surface

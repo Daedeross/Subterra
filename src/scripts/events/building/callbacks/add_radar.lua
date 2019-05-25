@@ -1,4 +1,4 @@
-local add_hidden_radar = require("__subterra__.scripts.events.building.callbacks.add_hidden_radar")
+local add_radar_proxy = require("__subterra__.scripts.events.building.callbacks.add_radar_proxy")
 --============================================================================--
 -- add_radar(belt, surface, creator)
 --
@@ -30,21 +30,9 @@ local add_radar = function(radar, surface, creator)
     local force = creator and get_member_safe(creator, "force")
     local tech = force.technologies["subterra-mapping"]
     local level = tech.level
-    debug("level: " .. level)  
-    if level < 2 then
-        debug("tech not researched")
-        return true
-    end
-    
-    -- -- all layers except top
-    local layers = global.layers
-    for i=2, level do
-        local layer = layers[i]
-        if layer then
-            local surface = layer.surface
-            add_hidden_radar(force, hidden_name, surface, radar.position)
-        end
-    end
+    debug("level: " .. level)
+
+    add_radar_proxy(radar, force, hidden_name, level)
 
     return true
 end

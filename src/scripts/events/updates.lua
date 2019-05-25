@@ -5,6 +5,7 @@ if not subterra.tick_events then subterra.tick_events = {} end
 local check_telepads = require("__subterra__.scripts.events.updates.check_telepads")
 local update_belt_elevators = require("__subterra__.scripts.events.updates.update_belt_elevators")
 local update_power = require("__subterra__.scripts.events.updates.update_power")
+local update_radars = require("__subterra__.scripts.events.updates.update_radars")
 local cleanup_ghosts = require("__subterra__.scripts.events.updates.cleanup_ghosts")
 local do_player_drawing = require("__subterra__.scripts.events.ui.do_player_drawing")
 
@@ -26,3 +27,6 @@ register_nth_tick_event (ghost_interval, cleanup_ghosts)
 
 local draw_interval = (subterra and subterra.config and subterra.config.BOX_DURATION) or 60
 register_nth_tick_event(draw_interval, do_player_drawing)
+
+-- radars
+register_event(defines.events.on_tick, update_radars)

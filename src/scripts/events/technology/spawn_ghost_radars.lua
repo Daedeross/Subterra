@@ -9,17 +9,21 @@ local spawn_ghost_radars = function(force, level)
         return
     end
 
-    local all_radars = game.surfaces['nauvis'].find_entities_filtered{
-        force = force,
-        type = "radar"
-    }
+    local force_array = global.radar_proxy_forces[force.name]
+    if not force_array then
+        return
+    end
 
-    for _, radar in pairs(all_radars) do
-        local hidden_name = "subterra-hidden-" .. radar.name
-        if game.entity_prototypes[hidden_name] then
-            add_hidden_radar(force, hidden_name, target_surface, radar.position) 
-        else
-            debug("No underground radar found to place")
+    local count = # force_array
+    if count < 1 then
+        return
+    end
+
+    for i=1, count do
+        local proxy = force_array[i]
+        local radars = proxy.radars
+        if radars[level] then  -- defensive check
+            radars[level] = add_hidden_radar(force, proxy.hidden_name, target_surface, proxy.top.position)
         end
     end
 end

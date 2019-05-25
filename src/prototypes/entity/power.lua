@@ -27,7 +27,7 @@ local function blank_pole_picture()
 end
 
 data:extend({
-{
+{   -- Visible & interacable "Top" of a power converter
     type = "simple-entity-with-force",
     name = "subterra-power-down",
     icon = "__base__/graphics/icons/big-electric-pole.png",
@@ -121,7 +121,7 @@ data:extend({
         }
     }
 },
-{
+{   -- Visible & interacable "Bottom" of a power converter
     type = "simple-entity-with-force",
     name = "subterra-power-up",
     icon = "__base__/graphics/icons/big-electric-pole.png",

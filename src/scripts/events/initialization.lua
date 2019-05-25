@@ -116,6 +116,16 @@ function initialize_subterra ()
     initialize_belt_elevators()
     initialize_underground_whitelist()
 
+    -- intialize radar proxy table
+    -- will only be populated runtime
+    global.radar_proxies = {}       -- indexed by unit_number, for lookup from entity
+    global.radar_proxy_arrays = {}  -- compact array of all proxies, for iterating over on_tick
+    global.radar_proxy_forces = {}  -- compact arrays indexed by force name, for iterating over on tech rechearhed
+
+    for name, force in pairs(game.forces) do
+        global.radar_proxy_forces[name] = {}
+    end
+
     debug("SubTerra Initialization Complete")
 end
 

@@ -3,6 +3,10 @@ require ("util")
 local Radar = {}
 local MAX_RADARS = 100
 local _blank = S_ROOT .. "/graphics/blank.png"
+local radar_chunk = settings.startup["subterra-radar-update-chunk"].value or 1
+local RADAR_POWER = 60  -- 60 Watts, i.e. 1 Joule per tick
+local BUFFER_DURATION = 10  -- how long the buffer should last if unpowered and updated every tick
+local BUFFER_SIZE = radar_chunk * BUFFER_DURATION * RADAR_POWER
 
 local blank_picture = {
     filename = _blank,
@@ -18,6 +22,29 @@ local blank_pictures = {
         blank_picture
     }
 }
+
+-- using burner as energy source
+-- this is just to prevent electric poles from connecting to the hudden radars
+-- create dummy fuel-category and fuel-item
+data:extend({
+    {
+        type = "fuel-category",
+        name = "subterra-hidden-radar-fuel"
+    },
+    {
+        type = "item",
+        name = "subterra-hidden-radar-fuel",
+        icon = blank_picture,
+        icon_size = 32,
+        flags = { },
+        fuel_category = "subterra-hidden-radar-fuel",
+        fuel_value = BUFFER_SIZE .. "J",
+        subgroup = "subterra-hidden-radar-fuel",
+        order = "z[z]",
+        stack_size = 1
+    }
+})
+
 
 local function make_radar(existing_radar)
     local new_name = "subterra-hidden-" .. existing_radar.name
@@ -36,9 +63,19 @@ local function make_radar(existing_radar)
     new_radar.flags = { "not-on-map", "not-deconstructable", "not-repairable" }
     new_radar.selectable_in_game = false
     new_radar.working_sound = nil
-    if new_radar.energy_source then
-        new_radar.energy_source.type = "void"
-    end
+    new_radar.energy_usage = 60W,
+
+    new_radar.energy_source = {
+        type = "burner",
+        emissions_per_minute = 0,
+        render_no_power_icon = false,
+        render_no_network_icon = false,
+        fuel_inventory_size = 1,
+        light_flicker = {
+            maximum_intensity = 0
+        },
+        fuel_category = "subterra-hidden-radar-fuel"
+    }
 
     data:extend({new_radar})
 end
@@ -52,7 +89,6 @@ Radar.make_radars = function()
 
     -- create new table to iterate over
     local existing_radars = {}
-
     for _, prototype in pairs(radars) do
         table.insert(existing_radars, prototype)
     end
