@@ -3,19 +3,7 @@ local add_hidden_radar = require("__subterra__.scripts.events.building.callbacks
 
 local max_depth = settings.startup["subterra-max-depth"].value
 
-local add_radar_proxy = function(original, force, hidden_name, level)
-    local radars = {}
-    radars[1] = original
-    
-    if level > 1 then
-        local layers = global.layers
-        for i = 2, level do
-            local surface = layers[i].surface
-            local hidden = add_hidden_radar(force, hidden_name, surface, position)
-            radars[i] = hidden
-        end
-    end
-
+local add_radar_proxy = function(radar, force, level)
     local f_name = force.name
     local proxy_array = global.radar_proxy_arrays
     local force_array = global.radar_proxy_forces[f_name]
@@ -27,13 +15,15 @@ local add_radar_proxy = function(original, force, hidden_name, level)
 
     local index = # proxy_array + 1
     local f_index = # force_array + 1
+    local center = chunk_to_position(position_to_chunk(radar.position))
+    local range = radar.prototype.radar_range * 32
+
     local proxy = {
         index = index,
         force_index = f_index,
         force = force,
-        hidden_name = hidden_name,
-        top = original,
-        radars = radars,
+        radar = radar,
+        chart_area = { { center.x - range, center.y - range }, { center.x + range, center.y + range } }
         max_level = level
     }
 

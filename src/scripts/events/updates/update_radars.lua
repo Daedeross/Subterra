@@ -6,31 +6,25 @@ local update_radars = function (event)
     local count = # radar_proxy_array
     if count < 1 then return end
 
-    local fuel = game.entity_prototypes.item["subterra-hidden-radar-fuel"]
-
+    local max_depth = settings.startup["subterra-max-depth"].value
     local radar_chunk = settings.startup["subterra-radar-update-chunk"].value or 1
+
     local buffer_size = radar_chunk * BUFFER_DURATION * RADAR_POWER
+
+    local layers = global.layers
+    local surfaces = {}
+    for i = 1, max_depth + 1 do
+        surfaces[i] = layers[i].surface
+    end
 
     local start = event.tick % radar_chunk + 1
     for i = start, count, radar_chunk do
         local proxy = radar_proxy_array[i]
         local max_level = proxy.max_level
         if max_level > 1 then
-            local radars = proxy.radars
-            local is_powered = proxy.top.energy > 0
+            local force = proxy.force
             for j = 2, max_level do
-                local radar = radars[j]
-                if radar and radar.valid then
-                    local burner = radar.burner
-                    if is_powered then
-                        if not burner.currently_burning then
-                            burner.currently_burning = fuel
-                        end
-                        burner.remaining_burning_fuel = buffer_size
-                    else
-                        burner.currently_burning = nil
-                    end
-                end
+                force.chart(surfaces[j], proxy.chart_area)
             end
         end
     end

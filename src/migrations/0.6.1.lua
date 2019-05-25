@@ -32,11 +32,10 @@ local try_add_radar_proxy = function(radar)
         index = index,
         force_index = f_index,
         force = radar.force,
-        hidden_name = hidden_name,
-        top = radar,
-        radars = { radar }, -- underground radar tech also added this version so it cannot already be researched.
-        max_level = 1       -- Thus only the top radar is in the proxy and max_level is 1
-    }
+        radar = radar,
+        radar_range = radar.prototype.radar_range,
+        max_level = 1       -- underground radar tech also added this version so it cannot already be researched.
+    }                       -- Thus only the top radar is in the proxy and max_level is 1
 
     radar_proxies[unit_number] = proxy
     table.insert(radar_proxy_arrays, proxy)
