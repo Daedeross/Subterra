@@ -30,8 +30,11 @@ local function equalize_power(proxy, max_level, do_print)
 	local output_each = output_energy / max_level
 
 	for i = 1, max_level do
-		inputs[i].energy = input_each
-		outputs[i].energy = output_each
+		local input = inputs[i]
+		if input then	-- compatibility for saves pre 0.6.0
+			input.energy = input_each
+			outputs[i].energy = output_each
+		end
 	end
 end
 
