@@ -29,11 +29,11 @@ end
 data:extend({
 {   -- Visible & interacable "Top" of a power converter
     type = "simple-entity-with-force",
-    name = "subterra-power-down",
+    name = "subterra-power-column",
     icon = "__base__/graphics/icons/big-electric-pole.png",
     icon_size = 32,
     flags = {"placeable-neutral", "player-creation"},
-    minable = {hardness = 0.2, mining_time = 0.5, result = "subterra-power-down"},
+    minable = {hardness = 0.2, mining_time = 0.5, result = "subterra-power-column"},
     max_health = 150,
     corpse = "medium-remnants",
     resistances =
@@ -121,100 +121,100 @@ data:extend({
         }
     }
 },
-{   -- Visible & interacable "Bottom" of a power converter
-    type = "simple-entity-with-force",
-    name = "subterra-power-up",
-    icon = "__base__/graphics/icons/big-electric-pole.png",
-    icon_size = 32,
-    flags = {"placeable-neutral", "player-creation"},
-    minable = {hardness = 0.2, mining_time = 0.5, result = "subterra-power-up"},
-    max_health = 150,
-    corpse = "medium-remnants",
-    resistances =
-    {
-        {
-            type = "fire",
-            percent = 100
-        }
-    },
-    collision_box = {{-0.65, -0.65}, {0.65, 0.65}},
-    selection_box = {{-1, -1}, {1, 1}},
-    drawing_box = {{-1, -3}, {1, 0.5}},
-    vehicle_impact_sound =    { filename = "__base__/sound/car-metal-impact.ogg", volume = 0.65 },
-    animations =
-    {
-        {
-            filename = "__subterra__/graphics/entities/power/power-interface.png",
-            priority = "high",
-            width = 400,
-            height = 300,
-            line_length = 5,
-            frame_count = 30,
-            shift = {1.75, -1.5},
-            scale = 0.50,
-            animation_speed = 0.5
-        }
-    },
-    connection_points =
-    {
-        {
-            shadow =
-            {
-                copper = {2.7, 0},
-                green = {1.8, 0},
-                red = {3.6, 0}
-            },
-            wire =
-            {
-                copper = {0, -3.125},
-                green = {-0.59375, -3.125},
-                red = {0.625, -3.125}
-            }
-        },
-        {
-            shadow =
-            {
-                copper = {3.1, 0.2},
-                green = {2.3, -0.3},
-                red = {3.8, 0.6}
-            },
-            wire =
-            {
-                copper = {-0.0625, -3.125},
-                green = {-0.5, -3.4375},
-                red = {0.34375, -2.8125}
-            }
-        },
-        {
-            shadow =
-            {
-                copper = {2.9, 0.06},
-                green = {3.0, -0.6},
-                red = {3.0, 0.8}
-            },
-            wire =
-            {
-                copper = {-0.09375, -3.09375},
-                green = {-0.09375, -3.53125},
-                red = {-0.09375, -2.65625}
-            }
-        },
-        {
-            shadow =
-            {
-                copper = {3.1, 0.2},
-                green = {3.8, -0.3},
-                red = {2.35, 0.6}
-            },
-            wire =
-            {
-                copper = {-0.0625, -3.1875},
-                green = {0.375, -3.5},
-                red = {-0.46875, -2.90625}
-            }
-        }
-    }
-},
+-- {   -- Visible & interacable "Bottom" of a power converter
+--     type = "simple-entity-with-force",
+--     name = "subterra-power-up",
+--     icon = "__base__/graphics/icons/big-electric-pole.png",
+--     icon_size = 32,
+--     flags = {"placeable-neutral", "player-creation"},
+--     minable = {hardness = 0.2, mining_time = 0.5, result = "subterra-power-up"},
+--     max_health = 150,
+--     corpse = "medium-remnants",
+--     resistances =
+--     {
+--         {
+--             type = "fire",
+--             percent = 100
+--         }
+--     },
+--     collision_box = {{-0.65, -0.65}, {0.65, 0.65}},
+--     selection_box = {{-1, -1}, {1, 1}},
+--     drawing_box = {{-1, -3}, {1, 0.5}},
+--     vehicle_impact_sound =    { filename = "__base__/sound/car-metal-impact.ogg", volume = 0.65 },
+--     animations =
+--     {
+--         {
+--             filename = "__subterra__/graphics/entities/power/power-interface.png",
+--             priority = "high",
+--             width = 400,
+--             height = 300,
+--             line_length = 5,
+--             frame_count = 30,
+--             shift = {1.75, -1.5},
+--             scale = 0.50,
+--             animation_speed = 0.5
+--         }
+--     },
+--     connection_points =
+--     {
+--         {
+--             shadow =
+--             {
+--                 copper = {2.7, 0},
+--                 green = {1.8, 0},
+--                 red = {3.6, 0}
+--             },
+--             wire =
+--             {
+--                 copper = {0, -3.125},
+--                 green = {-0.59375, -3.125},
+--                 red = {0.625, -3.125}
+--             }
+--         },
+--         {
+--             shadow =
+--             {
+--                 copper = {3.1, 0.2},
+--                 green = {2.3, -0.3},
+--                 red = {3.8, 0.6}
+--             },
+--             wire =
+--             {
+--                 copper = {-0.0625, -3.125},
+--                 green = {-0.5, -3.4375},
+--                 red = {0.34375, -2.8125}
+--             }
+--         },
+--         {
+--             shadow =
+--             {
+--                 copper = {2.9, 0.06},
+--                 green = {3.0, -0.6},
+--                 red = {3.0, 0.8}
+--             },
+--             wire =
+--             {
+--                 copper = {-0.09375, -3.09375},
+--                 green = {-0.09375, -3.53125},
+--                 red = {-0.09375, -2.65625}
+--             }
+--         },
+--         {
+--             shadow =
+--             {
+--                 copper = {3.1, 0.2},
+--                 green = {3.8, -0.3},
+--                 red = {2.35, 0.6}
+--             },
+--             wire =
+--             {
+--                 copper = {-0.0625, -3.1875},
+--                 green = {0.375, -3.5},
+--                 red = {-0.46875, -2.90625}
+--             }
+--         }
+--     }
+-- },
 {
     type = "electric-energy-interface",
     name = "subterra-power-in",

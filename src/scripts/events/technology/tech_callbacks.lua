@@ -16,10 +16,10 @@ local callbacks = {}
 callbacks["subterra-mapping"] = underground_radars
 callbacks["underground-building"] = underground_building
 
-local max_depth = settings.startup["subterra-max-depth"].value
+local max_depth = settings.startup["subterra-max-depth"].value or 5
 for i=1, max_depth do
     -- callbacks["subterra-mapping-"..i] = underground_radars
-    callbacks["underground-building"..1] = underground_building
+    callbacks["underground-building-"..i] = underground_building
 end
 
 return callbacks

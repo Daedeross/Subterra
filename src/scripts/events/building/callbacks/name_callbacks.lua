@@ -41,16 +41,19 @@ remove_events["subterra-telepad-up"] = remove_telepad
 remove_events["subterra-telepad-down"] = remove_telepad
 
 -- power convertes
-underground_build_events["subterra-power-up"] = add_power_proxy
-underground_build_events["subterra-power-down"] = add_power_proxy
-surface_build_events["subterra-power-up"] = add_power_proxy
-surface_build_events["subterra-power-down"] = add_power_proxy
-remove_events["subterra-power-up"] = remove_power_interface
-remove_events["subterra-power-down"] = remove_power_interface
+--underground_build_events["subterra-power-up"] = add_power_proxy
+underground_build_events["subterra-power-column"] = add_power_proxy
+--surface_build_events["subterra-power-up"] = add_power_proxy
+surface_build_events["subterra-power-column"] = add_power_proxy
+--remove_events["subterra-power-up"] = remove_power_interface
+remove_events["subterra-power-column"] = remove_power_interface
 
 -- locomotives
 surface_build_events["subterra-locomotive"] = add_locomotive
-underground_build_events["subterra-locomotive"] = add_locomotive
+underground_build_events["subterra-recharger"] = function () return true end
+
+
+underground_build_events["subterra-power-column"] = add_power_proxy
 
 -- ghosts, requires access to all previously registered remove_events
 remove_events["entity-ghost"] = function(entity)

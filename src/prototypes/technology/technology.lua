@@ -42,22 +42,22 @@ data:extend(
                 type = "unlock-recipe",
                 recipe = "subterra-transport-belt-down-ex"
             },
+            -- {
+            --     type = "unlock-recipe",
+            --     recipe = "subterra-power-up"
+            -- },
+            -- {
+            --     type = "unlock-recipe",
+            --     recipe = "subterra-power-up-ex"
+            -- },
             {
                 type = "unlock-recipe",
-                recipe = "subterra-power-up"
-            },
-            {
-                type = "unlock-recipe",
-                recipe = "subterra-power-up-ex"
-            },
-            {
-                type = "unlock-recipe",
-                recipe = "subterra-power-down"
-            },
-            {
-                type = "unlock-recipe",
-                recipe = "subterra-power-down-ex"
-            }
+                recipe = "subterra-power-column"
+            }--,
+            -- {
+            --     type = "unlock-recipe",
+            --     recipe = "subterra-power-column-ex"
+            -- }
         },
         prerequisites = {"logistics"},
         unit =

@@ -3,10 +3,7 @@ require ("util")
 local Radar = {}
 local MAX_RADARS = 100
 local _blank = S_ROOT .. "/graphics/blank.png"
-local radar_chunk = settings.startup["subterra-radar-update-chunk"].value or 1
-local RADAR_POWER = 60  -- 60 Watts, i.e. 1 Joule per tick
-local BUFFER_DURATION = 10  -- how long the buffer should last if unpowered and updated every tick
-local BUFFER_SIZE = radar_chunk * BUFFER_DURATION * RADAR_POWER
+local radar_chunk = settings.startup["subterra-radar-update-chunk"].value or 60
 
 local blank_picture = {
     filename = _blank,
@@ -22,29 +19,6 @@ local blank_pictures = {
         blank_picture
     }
 }
-
--- using burner as energy source
--- this is just to prevent electric poles from connecting to the hudden radars
--- create dummy fuel-category and fuel-item
--- data:extend({
---     {
---         type = "fuel-category",
---         name = "subterra-hidden-radar-fuel"
---     },
---     -- {
---     --     type = "item",
---     --     name = "subterra-hidden-radar-fuel",
---     --     icon = _blank,
---     --     icon_size = 32,
---     --     flags = { },
---     --     fuel_category = "subterra-hidden-radar-fuel",
---     --     fuel_value = BUFFER_SIZE .. "J",
---     --     --subgroup = "subterra-hidden-radar-fuel",
---     --     order = "z[z]",
---     --     stack_size = 1
---     -- }
--- })
-
 
 local function make_radar(existing_radar)
     local new_name = "subterra-hidden-" .. existing_radar.name

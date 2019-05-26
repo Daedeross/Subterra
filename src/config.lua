@@ -43,10 +43,11 @@ subterra.config.underground_entities["subterra-telepad-down"] = true
 subterra.config.underground_entities["subterra-belt-up"] = true
 subterra.config.underground_entities["subterra-belt-down"] = true
 subterra.config.underground_entities["subterra-belt-out"] = true
-subterra.config.underground_entities["subterra-power-up"] = true
-subterra.config.underground_entities["subterra-power-down"] = true
+subterra.config.underground_entities["subterra-power-column"] = true
+--subterra.config.underground_entities["subterra-power-column"] = true
 subterra.config.underground_entities["subterra-power-in"] = true
 subterra.config.underground_entities["subterra-power-out"] = true
+subterra.config.underground_entities["subterra-recharger"] = true
 -- whitelisted vanilla entities
 
 --- belts

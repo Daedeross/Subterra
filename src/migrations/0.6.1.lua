@@ -1,14 +1,16 @@
 require("__subterra__.scripts.utils")
 
+local max_level = settings.startup["subterra-max-depth"].value + 1  -- level is depth + 1 (i.e. nauvis = depth 0 & level 1)
+local layers = global.layers
+
 local radar_proxies = {}
 local radar_proxy_array = {}
 local radar_proxy_forces = {}
 
 -- get all radars on nauvis
-local nauvis = game.surfaces['nauvis']
-
 -- this could take a while...
-local all_radars = game.surfaces['nauvis'].find_entities_filtered{
+local nauvis = game.surfaces['nauvis']
+local all_radars = nauvis.find_entities_filtered{
     type = "radar"
 }
 
@@ -54,3 +56,142 @@ end
 global.radar_proxies = radar_proxies
 global.radar_proxy_array = radar_proxy_array 
 global.radar_proxy_forces = radar_proxy_forces
+
+-- quick lookup of subterra surfaces indexed by level
+local surfaces = {}
+for i = 1, max_level do
+    surfaces[i] = layers[i].surface
+end
+
+-- migrate power_proxies
+local power_proxies = {}
+local power_inputs = global.power_inputs
+local power_outputs = global.power_outputs
+
+local target_name = "subterra-power-column"
+
+for _, old_proxy in pairs(power_inputs) do
+    local unit_numbers = {}
+    local inputs = {}
+    local outputs = {}
+    local columns = {}
+    local poles = {}
+
+    local old_input = old_proxy.input
+    local old_output = old_proxy.output
+    local old_top = old_proxy.top
+    local old_bottom = old_proxy.bottom
+    local old_pole_top = old_proxy.pole_top
+    local old_pole_bottom = old_proxy.pole_bottom
+    local old_out_index = old_proxy.target_layer.index
+    local old_in_index = layers[old_top.surface.name].index
+    local old_top_index = layers[old_input.surface.name].index
+    local old_bottom_index = old_top_index + 1
+    local target_position = old_top.position
+    local target_direction = old_top.direction
+    local force = old_top.force
+
+    for i=1, max_level do
+        local surface = surfaces[i]
+        local can_place = surface.can_place_entity{name = target_name, position = target_position}
+        
+        local input
+        local output
+        local column
+        local pole
+    
+        if i == old_in_index then
+            input = old_input
+            output = surface.create_entity{
+                name = "subterra-power-out",
+                position = target_position,
+                force = force,
+                direction = target_direction
+            }
+        elseif i == old_out_index then
+            output = old_output
+            input = surface.create_entity{
+                name = "subterra-power-in",
+                position = target_position,
+                force = force,
+                direction = target_direction
+            }
+        elseif can_place then
+            input = surface.create_entity{
+                name = "subterra-power-in",
+                position = target_position,
+                force = force,
+                direction = target_direction
+            }
+            output = surface.create_entity{
+                name = "subterra-power-out",
+                position = target_position,
+                force = force,
+                direction = target_direction
+            }
+        end
+
+        if i == old_top_index then
+            column = old_top
+            pole = old_pole_top
+        elseif i == old_bottom_index then
+            column = old_bottom
+            pole = old_pole_bottom
+        elseif can_place then
+            column = surface.create_entity{
+                name = "subterra-power-column",
+                force = force,
+                position = target_position,
+                direction = target_direction
+            }
+            pole = surface.create_entity{
+                name = "subterra-power-pole",
+                position = target_position,
+                force = force,
+                direction = target_direction
+            }
+        end
+
+        columns[i] = column
+        inputs[i] = input
+        outputs[i] = output
+        poles[i] = pole
+
+        if column then
+            table.insert(unit_numbers, column.unit_number)
+        end
+    end
+
+    -- clean up any dangling references
+    old_proxy.input = nil
+    old_proxy.output = nil
+    old_proxy.top = nil
+    old_proxy.bottom = nil
+    old_proxy.pole_top = nil
+    old_proxy.pole_bottom = nil
+    old_proxy.target_layer = nil
+    
+    local power_proxy = {
+        columns = columns,
+        inputs = inputs,
+        outputs = outputs,
+        poles = poles
+    }
+    -- add to new index
+    for _, unit_number in pairs(unit_numbers) do
+        power_proxies[unit_number] = power_proxy
+    end
+end
+
+global.power_proxies = power_proxies
+
+-- clear old tables
+global.power_inputs = nil
+for k, _ in pairs(power_inputs) do
+    power_inputs[k] = nil
+end
+
+global.power_outputs = nil
+for k, _ in pairs(power_outputs) do
+    power_outputs[k] = nil
+end

@@ -210,7 +210,7 @@ function check_layer(surface, ent_name, is_down, force)
     
     local layer = global.layers[sname]
 
-    -- to prevent entity from being buld on other mods' surfaces
+    -- to prevent entity from being built on other mods' surfaces
     if not layer then
         return nil, nil, {"message.building-surface-blacklist", {"entity-name."..ent_name}}
     end
