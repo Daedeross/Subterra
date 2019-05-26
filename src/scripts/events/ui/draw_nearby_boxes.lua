@@ -1,9 +1,31 @@
 local tolerance = 0.01
 local limit = subterra and subterra.config and subterra.config.ENTITY_FIND_LIMIT    -- may be nil
 local collision_mask = {"item-layer", "object-layer", "player-layer", "water-tile"}
-local render_color = { r = 0.5, g = 0.323, b = 0.0, a = 0.1 }
+local below_color = { r = 0.25, g = 0.125, b = 0.0, a = 0.05 } -- dark orange
+local above_color = { r = 0.0, g = 0.125, b = 0.25, a = 0.05 } -- dark blue-cyan
+local math_min = math.min
+local math_abs = math.abs
 
-local draw_nearby_boxes = function(player, current_surface, target_surface, radius, duration)
+local function darken_color (color, diff)
+    if diff == 1 then
+        return color
+    end
+    local mult = 1 / diff
+    return {
+        r = math_min(1, color.r * mult),
+        g = math_min(1, color.g * mult),
+        b = math_min(1, color.b * mult),
+        a = color.a
+    }
+end
+
+local draw_nearby_boxes = function(player, current_surface, target_surface, radius, duration, difference)
+    local draw_color
+    if difference > 0 then
+        draw_color = darken_color(above_color, math_abs(difference))
+    else
+        draw_color = darken_color(below_color, math_abs(difference))
+    end
 
     local x = player.position.x
     local y = player.position.y
@@ -30,7 +52,7 @@ local draw_nearby_boxes = function(player, current_surface, target_surface, radi
 
     for k, box in pairs(boxes) do
         rendering.draw_rectangle({
-            color = render_color,
+            color = draw_color,
             filled = true,
             left_top = box.left_top,
             right_bottom = box.right_bottom,

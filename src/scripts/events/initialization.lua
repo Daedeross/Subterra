@@ -45,9 +45,10 @@ function initialize_subterra ()
     
     -- create player proxies
     global.player_proxies = {}
+    global.drawing_players = {}
     debug("Player Count: " .. tostring(# game.players))
     for i, p in pairs(game.players) do
-       debug("Creating proxy for player:" .. p.name)
+       debug("Creating proxy for player: " .. p.name)
        add_player_proxy(i)
     end
 

@@ -229,3 +229,5 @@ global.power_outputs = nil
 for k, _ in pairs(power_outputs) do
     power_outputs[k] = nil
 end
+
+global.drawing_players = {}
