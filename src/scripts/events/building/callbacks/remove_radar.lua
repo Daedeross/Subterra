@@ -1,4 +1,3 @@
-local remove_hidden_radars = require("__subterra__.scripts.events.building.callbacks.remove_hidden_radars")
 --============================================================================--
 -- remove_radar(radar)
 --
@@ -17,8 +16,7 @@ local remove_radar = function(radar)
     if not proxy then
         return
     end
-    
-    -- remove_hidden_radars(proxy)
+
     local force_array = global.radar_proxy_forces[radar.force.name]
 
     table.remove(global.radar_proxies, unit_number)

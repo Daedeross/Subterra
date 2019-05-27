@@ -1,3 +1,17 @@
+--============================================================================--
+-- get_adjacent_surfaces(current_surface, direction)
+--
+-- Helper method that gets nearby surfaces in a particular direction.
+--
+-- param current_surface (LuaSurface): The surface the player is on
+-- param direction (int): The direction in which to get the nearby surfaces
+--      nil - returns nill
+--      -1  - returns surface below
+--      1   - returns surface above
+--
+-- returns: Array of surfaces
+--
+--============================================================================--
 local get_adjacent_surfaces = function(current_surface, direction)
     if not direction then
         return nil

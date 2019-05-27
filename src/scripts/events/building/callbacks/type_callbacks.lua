@@ -1,4 +1,4 @@
--- This file contains all callbacks to be registerd (by name) to handle entity placement
+-- This file contains all callbacks to be registerd (by type) to handle entity placement
 -- each callback must conform to the following signature:
 --============================================================================--
 -- function (entity, surface, creator)
@@ -23,7 +23,7 @@ local remove_events = {}
 
 -- radars
 surface_build_events["radar"] = add_radar
--- underground_build_events["radar"] = add_radar    -- TODO: Might want special underground radar instead
+-- underground_build_events["radar"] = add_radar    -- TODO: Might want special underground radar instead ?
 remove_events["radar"] = remove_radar
 
 local callbacks = {}

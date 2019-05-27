@@ -1,5 +1,15 @@
 require("__subterra__.scripts.utils")
-
+--============================================================================--
+-- on_chunk_charted(event)
+--
+-- Charts underground chunks in underground levels based on underground radar
+--      research of the charting force. Only activates when nauvis is charted
+--
+-- param event (table): { surface_index, force, position }
+--
+-- remarks: This event does not seem to fire for the nearby pulse charting
+--      of radars, so that is handled differently.
+--============================================================================--
 local on_chunk_charted = function (event)
     local surface = game.surfaces[event.surface_index]
     local sname = surface.name
@@ -22,8 +32,7 @@ local on_chunk_charted = function (event)
 
     local position = event.position
     debug("CHART: " .. position.x .. ", " .. position.y)
-    
-    
+
     local area = chunk_to_area(position)
     for i = 2, chart_depth do
         local layer_surface = layers[i].surface

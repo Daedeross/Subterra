@@ -68,7 +68,7 @@ function initialize_subterra ()
     ground.pad_ghosts:rebuild_index()
     ground.belt_ghosts:rebuild_index()
     ground.power_ghosts:rebuild_index()
-    
+
     table.insert(global.layers, ground)
 
     global.layers["nauvis"] = global.layers[1]

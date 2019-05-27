@@ -1,5 +1,4 @@
 require("__subterra__.scripts.utils")
---local num = 10
 -- based on transfer_power(from, to) from: https://github.com/MagmaMcFry/Factorissimo2
 local function equalize_power(proxy, max_level, do_print)
     local inputs = proxy.inputs
@@ -43,7 +42,15 @@ local function equalize_power(proxy, max_level, do_print)
         end
     end
 end
-
+--============================================================================--
+-- update_power(event)
+--
+-- Transfers energy from the input buffers to the output buffers and equalizes
+--      the outputs of each power transfer column
+--
+-- param event (OnTickEvent): { tick }
+--
+--============================================================================--
 local update_power = function (event)
     local max_level = settings.startup["subterra-max-depth"].value + 1
     local proxies = global.power_array

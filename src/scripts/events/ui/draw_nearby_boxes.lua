@@ -18,7 +18,22 @@ local function darken_color (color, diff)
         a = color.a
     }
 end
-
+--===========================================================================================--
+-- draw_nearby_boxes(player, current_surface, target_surface, radius, duration, difference)
+--
+-- checks every n-th tick (default 60) and draws the placement HUD for players
+--      that need it.
+--
+-- param player (LuaPlayer): The player to draw for.
+-- param current_surface (LuaSurface): The surface the player is currently on.
+-- param target_surface (LuaSurface): The surface to scan for entities.
+-- param radius (double): The distance to scan (i.e. 1/2 bounding box height/width).
+-- param duration (int): The duration in ticks to draw the HUD.
+-- param difference (int): The difference between levels of current_surface and target_surface
+--      positive difference -> above, negative -> below
+--
+-- remarks: the Drawn boxes are darkened the greater the absolute value of difference.
+--===========================================================================================--
 local draw_nearby_boxes = function(player, current_surface, target_surface, radius, duration, difference)
     local draw_color
     if difference > 0 then
@@ -50,7 +65,7 @@ local draw_nearby_boxes = function(player, current_surface, target_surface, radi
         end
     end
 
-    for k, box in pairs(boxes) do
+    for k, box in pairs(boxes) do   -- TODO: Change to numeric for
         rendering.draw_rectangle({
             color = draw_color,
             filled = true,

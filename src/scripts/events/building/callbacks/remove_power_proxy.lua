@@ -27,7 +27,7 @@ local function destroy_hidden_entities(proxy, mined, max_level)
 end
 
 --============================================================================--
--- handle_remove_power_interface(mined, removing_entity, buffer)
+-- remove_power_proxy(mined, removing_entity, buffer)
 --
 -- callback for when a power-interface is removed
 --
@@ -36,7 +36,7 @@ end
 -- param buffer (LuaEntity): The buffer inventory of the remover (or nil)
 --
 --============================================================================--
-local handle_remove_power_interface = function (mined, removing_entity, buffer)
+local remove_power_proxy = function (mined, removing_entity, buffer)
     if not mined.valid then
         return
     end
@@ -77,4 +77,4 @@ local handle_remove_power_interface = function (mined, removing_entity, buffer)
     end
 end
 
-return handle_remove_power_interface
+return remove_power_proxy

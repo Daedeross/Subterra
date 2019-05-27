@@ -47,6 +47,12 @@ end)
 --============================================================================--
 register_event(defines.events.on_player_left_game,
 function (event)
+    local proxy = event.player_index
+    if proxy then
+        for k, _ in pairs(proxy) do
+            proxy[k] = nil
+        end
+    end
     global.player_proxies[event.player_index] = nil
 end)
 
@@ -57,6 +63,12 @@ end)
 --============================================================================--
 register_event(defines.events.on_player_died,
 function (event)
+    local proxy = event.player_index
+    if proxy then
+        for k, _ in pairs(proxy) do
+            proxy[k] = nil
+        end
+    end
     global.player_proxies[event.player_index] = nil
 end)
 

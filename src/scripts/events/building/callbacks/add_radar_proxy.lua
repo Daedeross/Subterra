@@ -1,6 +1,20 @@
 require("__subterra__.scripts.utils")
-local add_hidden_radar = require("__subterra__.scripts.events.building.callbacks.add_hidden_radar")
-
+--============================================================================--
+-- add_radar_proxy(radar, force, hidden_prototype, level)
+--
+-- Adds a radar proxy for a just placed radar on nauvis.
+-- Adds the proxy to the relevant indices.
+--
+-- param radar (LuaEntity): The placed entity.
+-- param force (LuaSurface): The force that owns the radar.
+-- param hidden_prototype (LuaEntity): Dynamicaly generated prototype with
+--      max_health equal the the vision range of the radar.
+-- param level (int): The current max level of the underground-radars technology
+--      for the owning force.
+--
+-- returns nil
+--
+--============================================================================--
 local add_radar_proxy = function(radar, force, hidden_prototype, level)
 
     local radar_proxy_array = global.radar_proxy_array

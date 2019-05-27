@@ -7,6 +7,7 @@ local duration = ((subterra and subterra.config and subterra.config.BOX_DURATION
 local draw_radius = (subterra and subterra.config and subterra.config.HUD_DRAW_RADIUS) or 20
 local power_radius = math.floor(draw_radius / 2)
 
+-- helper callback functions
 local above_callback = function(surface)
     return get_adjacent_surfaces (surface, 1)
 end
@@ -27,8 +28,8 @@ local get_all_but = function (current_surface)
     return surfaces
 end
 
+-- callbacks based on entity name
 local check_entities = {}
-
 check_entities["subterra-telepad-up"] = above_callback
 check_entities["subterra-telepad-down"] = below_callback
 
@@ -42,7 +43,16 @@ check_entities["subterra-express-transport-belt-up"] = above_callback
 check_entities["subterra-transport-belt-down"] = below_callback
 check_entities["subterra-fast-transport-belt-down"] = below_callback
 check_entities["subterra-express-transport-belt-down"] = below_callback
-
+--============================================================================--
+-- on_player_cursor_stack_changed(event)
+--
+-- Called when a player changes their cursor stack or when changing surfaces
+--
+-- param event (table): { player_index }
+--
+-- remarks: This sets the proxy's draw_surfaces and current_level properties
+--      which are used to draw the "HUD" that aids entity placement.
+--============================================================================--
 local on_player_cursor_stack_changed = function(event)
     debug("on_player_cursor_stack_changed")
     local player_proxies = global.player_proxies

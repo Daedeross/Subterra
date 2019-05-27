@@ -21,7 +21,7 @@ local add_locomotive = require("__subterra__.scripts.events.building.callbacks.a
 
 local remove_telepad = require("__subterra__.scripts.events.building.callbacks.remove_telepad")
 local remove_belt_elevator = require("__subterra__.scripts.events.building.callbacks.remove_belt_elevator")
-local remove_power_interface = require("__subterra__.scripts.events.building.callbacks.remove_power_interface")
+local remove_power_proxy = require("__subterra__.scripts.events.building.callbacks.remove_power_proxy")
 
 local surface_build_events = {}
 local underground_build_events = {}
@@ -45,8 +45,8 @@ remove_events["subterra-telepad-down"] = remove_telepad
 underground_build_events["subterra-power-column"] = add_power_proxy
 --surface_build_events["subterra-power-up"] = add_power_proxy
 surface_build_events["subterra-power-column"] = add_power_proxy
---remove_events["subterra-power-up"] = remove_power_interface
-remove_events["subterra-power-column"] = remove_power_interface
+--remove_events["subterra-power-up"] = remove_power_proxy
+remove_events["subterra-power-column"] = remove_power_proxy
 
 -- locomotives
 surface_build_events["subterra-locomotive"] = add_locomotive

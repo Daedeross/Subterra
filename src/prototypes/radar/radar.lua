@@ -3,7 +3,7 @@ require ("util")
 local Radar = {}
 local MAX_RADARS = 100
 local _blank = S_ROOT .. "/graphics/blank.png"
-local radar_chunk = settings.startup["subterra-radar-update-chunk"].value or 60
+local radar_chunk = settings.startup["subterra-radar-update-chunk-size"].value or 60
 
 local blank_picture = {
     filename = _blank,

@@ -16,9 +16,15 @@ local hide_element = function (root, name)
     end
     root[name].visible = false
 end
-
 local ELEMENT_NAME = "subterra_level"
-
+--============================================================================--
+-- display_level(player)
+--
+-- Draws or hides the UI  element that displays the player's current Depth
+--
+-- param force (LuaPlayer): The player for which to update the UI
+--
+--============================================================================--
 local display_level = function (player)
     local top = player.gui.top
 

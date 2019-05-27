@@ -1,3 +1,12 @@
+--============================================================================--
+-- update_radar_proxies(force, level)
+--
+-- Helper method that gets the current level of a player proxy
+--
+-- param force (LuaForce): The force that needs to update their radars.
+-- param level (int): The force's current level of the subterra-mapping tech.
+--
+--============================================================================--
 local update_radar_proxies = function(force, level)
     debug("spawn_ghost_radars")
 
