@@ -115,7 +115,9 @@ function initialize_subterra ()
 
     -- set underground enitity list
     initialize_belt_elevators()
+    initialize_underground_blacklist()
     initialize_underground_whitelist()
+    initialize_underground_type_whitelist()
 
     -- intialize radar proxy table
     -- will only be populated runtime
@@ -130,11 +132,49 @@ function initialize_subterra ()
     debug("SubTerra Initialization Complete")
 end
 
+function initialize_underground_blacklist()
+    if not global.underground_blacklist then global.underground_blacklist = {} end
+    local blacklist = global.underground_blacklist
+    -- required entities
+    for name,_ in pairs(subterra.config.underground_blacklist) do
+        blacklist[name] = true
+    end
+
+    -- add entities from settings
+    local blacklist_string = settings.startup["subterra-blacklist"].value or ""
+    local new_list = split(blacklist_string, ";")
+    global.blacklist_string = blacklist_string
+
+    for _, name in pairs(new_list) do
+        log("blacklist: " .. name)
+        blacklist[name] = true
+    end
+end
+
 function initialize_underground_whitelist()
     if not global.underground_whitelist then global.underground_whitelist = {} end
     local whitelist = global.underground_whitelist
     -- required entities
     for name,_ in pairs(subterra.config.underground_entities) do
+        whitelist[name] = true
+    end
+
+    -- add entities from settings
+    local whitelist_string = settings.startup["subterra-whitelist"].value or ""
+    local new_list = split(whitelist_string, ";")
+    global.whitelist_string = whitelist_string
+
+    for _, name in pairs(new_list) do
+        log("whitelist: " .. name)
+        whitelist[name] = true
+    end
+end
+
+function initialize_underground_type_whitelist()
+    if not global.underground_types then global.underground_types = {} end
+    local whitelist = global.underground_types
+    -- required entities
+    for name,_ in pairs(subterra.config.underground_types) do
         whitelist[name] = true
     end
 

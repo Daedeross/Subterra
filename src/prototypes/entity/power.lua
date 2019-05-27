@@ -1,6 +1,6 @@
 local transfer_rate =  50 -- in MW
 local buffer_size = transfer_rate * 16667 -- J/tick (enough to hold 1 tick's worth of energy)
-local input_priority = "tertiary"
+local input_priority = "secondary-input"
 local output_priority = "tertiary"
 local S_ROOT = "__subterra__"
 
@@ -30,7 +30,7 @@ data:extend({
 {   -- Visible & interactable "Top" of a power converter
     type = "simple-entity-with-force",
     name = "subterra-power-column",
-    icon = "__base__/graphics/icons/big-electric-pole.png",
+    icon = "__subterra__/graphics/icons/power-column-icon-32.png",
     icon_size = 32,
     flags = {"placeable-neutral", "player-creation"},
     minable = {hardness = 0.2, mining_time = 0.5, result = "subterra-power-column"},
@@ -124,7 +124,7 @@ data:extend({
 {
     type = "electric-energy-interface",
     name = "subterra-power-in",
-    icon = "__base__/graphics/icons/small-electric-pole.png",
+    icon = "__subterra__/graphics/icons/power-column-icon-32.png",
     icon_size = 32,
     flags = { "not-on-map", "not-deconstructable", "not-repairable" },
     selectable_in_game = false,
@@ -167,7 +167,7 @@ data:extend({
 {
     type = "electric-energy-interface",
     name = "subterra-power-out",
-    icon = "__base__/graphics/icons/small-electric-pole.png",
+    icon = "__subterra__/graphics/icons/power-column-icon-32.png",
     icon_size = 32,
     flags = { "not-on-map", "not-deconstructable", "not-repairable" },
     selectable_in_game = false,
@@ -210,7 +210,7 @@ data:extend({
 {
     type = "electric-pole",
     name = "subterra-power-pole",
-    icon = "__base__/graphics/icons/big-electric-pole.png",
+    icon = "__subterra__/graphics/icons/power-column-icon-32.png",
     icon_size = 32,
     flags = { "not-on-map", "not-deconstructable", "not-repairable" },
     minable = nil,

@@ -42,22 +42,10 @@ data:extend(
                 type = "unlock-recipe",
                 recipe = "subterra-transport-belt-down-ex"
             },
-            -- {
-            --     type = "unlock-recipe",
-            --     recipe = "subterra-power-up"
-            -- },
-            -- {
-            --     type = "unlock-recipe",
-            --     recipe = "subterra-power-up-ex"
-            -- },
             {
                 type = "unlock-recipe",
                 recipe = "subterra-power-column"
-            }--,
-            -- {
-            --     type = "unlock-recipe",
-            --     recipe = "subterra-power-column-ex"
-            -- }
+            }
         },
         prerequisites = {"logistics"},
         unit =
@@ -396,6 +384,7 @@ data:extend(
         icon_size = 128,
         icon = "__base__/graphics/technology/demo/basic-mapping.png",
         enabled = true,
+        upgrade = true,
         effects = { },
         unit =
         {

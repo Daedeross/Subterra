@@ -61,6 +61,9 @@ local handle_underground_placement = function (entity, creator, layer)
             end
         else
             debug("Tried to place: " .. ent_type .. " | " .. ent_name)
+            debug("Blacklisted: " .. tostring(global.underground_blacklist[ent_name] or "false"))
+            debug("Whitelisted: " .. tostring(global.underground_whitelist[ent_name] or "false"))
+            debug("Typelisted: " .. tostring(global.underground_types[ent_type] or "false"))
             if global.underground_blacklist[ent_name] or not
               (global.underground_whitelist[ent_name] or global.underground_types[ent_type]) then
                 if player then

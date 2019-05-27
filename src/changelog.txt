@@ -4,10 +4,20 @@ Date: 2019-05-26T18:42:54-05:00
   Features:
     - Added "Ground Penetrating Radar" technology. Researching this will change all radars to give vision to underground layers. Each level of this research allows radars to "see" one level deeper.
     - Added placement help HUD. After researching "Ground Penetrating Radar," if a player has in their hand an item that bridges levels (Belt-Elevators, Stairs, Power-Converters) they will see colored boxes within a moderate radius showing where entities are built on the target layer (below of above, depending if holding an 'up' or 'down' item). Power Converters show all levels, above and below. Current colors are Orange for below layers, Blue for above layers.
+    - Added additional undergorund whitelist based on entity type. This has default values (see wiki) and can be added to by the startup setting.
+    - Added undergorund entity blacklist based on entity name. This will override any whitelist entry for that entity. Default is empty, but can be added to via a startup setting.
+  Minor Features:
+    - Added icon and EN Localization for power output and input entities so they show up properly in the Electric network info panel.
   Changes:
-    - Power Converters now bridge all layers. The entire column (from the top to the bottom) now must be clear in order to place the converter. If migrating a save from a previous version, Subterra will try and extend existing power convertes to all layers. If there is a layer that it cannot place on at (usually due to something being in the way), it will skip that layer but then mark the pole (on layers it does exist) with a red circle and exclamation point: (!). Removing the coverted will remove this warning.
-    - Changed Power Converters' input and output priorities to "tertiary"
-    - Reduced Power Converter buffer size, giving a maximum throughput of
+    - Power Converters now bridge all layers. The entire column (from the top to the bottom) now must be clear in order to place the converter. If migrating a save from a previous version, Subterra will try and extend existing power convertes to all layers. If there is a layer that it cannot place on at (usually due to something being in the way), it will skip that layer but then mark the pole (on layers it does exist) with a red circle and exclamation point: (!). Removing the entity will remove this warning.
+    - Renamed and combined "Power Converters - Top" and "- Bottom" to "Power Transfer Column".
+    - Changed Power Converters' output prioritiy to "tertiary". Input priority is unchanged ("secondary-input").
+    - Reduced Power Converter buffer size, giving a maximum throughput of MW through each column.
+  Optimization:
+    - Improved iteration performace for power transfer between layers.
+    - Added some caching and additional minor performace improvements for some event handlers.
+  Known Issues:
+    - When placing Underground Locomotives, they will always point westward (or north if placed vertically). Use the "Flip rolling stock" command (Default: CONTROL + F) as a workaround.
 ---------------------------------------------------------------------------------------------------
 Version: 0.5.3
 Date: 2019-05-19T14:45:48-05:00
@@ -15,11 +25,15 @@ Date: 2019-05-19T14:45:48-05:00
     - Battery recharge recipes are now hidden until the requisite level of Subways is researched.
   Optimization:
     - Additional code refactoring and optimization.
+  Known Issues:
+    - When placing Underground Locomotives, they will always point westward (or north if placed vertically). Use the "Flip rolling stock" command (Default: CONTROL + F) as a workaround.
 ---------------------------------------------------------------------------------------------------
 Version: 0.5.2
 Date: 2019-05-18T12:56:08-05:00
   BuxFixes:
     - Fixed initialization bug.
+  Known Issues:
+    - When placing Underground Locomotives, they will always point westward (or north if placed vertically). Use the "Flip rolling stock" command (Default: CONTROL + F) as a workaround.
 ---------------------------------------------------------------------------------------------------
 Version: 0.5.1
 Date: 2019-05-18T12:53:56-05:00
@@ -27,6 +41,8 @@ Date: 2019-05-18T12:53:56-05:00
     - Changed some messages when a 2-layer entity is denied placement.
   BuxFixes:
     - Picking up a power converter no longer crashes the game. :)
+  Known Issues:
+    - When placing Underground Locomotives, they will always point westward (or north if placed vertically). Use the "Flip rolling stock" command (Default: CONTROL + F) as a workaround.
 ---------------------------------------------------------------------------------------------------
 Version: 0.5.0
 Date: 2019-05-14T20:24:18-05:00
@@ -47,6 +63,8 @@ Date: 2019-05-14T20:24:18-05:00
     - Fixed numerous entity placement and removal errors.
     - `raise_destroy` is now set to true when cleaning up blacklisted entities.
     - Major Refactor of code has started, there are multiple large and small bugs that have been fixed that are not noted here.
+  Known Issues:
+    - When placing Underground Locomotives, they will always point westward (or north if placed vertically). Use the "Flip rolling stock" command (Default: CONTROL + F) as a workaround.
 ---------------------------------------------------------------------------------------------------
 Version: 0.4.0
 Date: 2018-07-24T22:19:12-05:00
