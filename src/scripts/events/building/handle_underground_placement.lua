@@ -61,7 +61,8 @@ local handle_underground_placement = function (entity, creator, layer)
             end
         else
             debug("Tried to place: " .. ent_type .. " | " .. ent_name)
-            if not (global.underground_whitelist[ent_name] or global.underground_types[ent_type]) then
+            if global.underground_blacklist[ent_name] or not
+              (global.underground_whitelist[ent_name] or global.underground_types[ent_type]) then
                 if player then
                     fly_text(player, {"message.building-blacklist", {"entity-name."..ent_name}}, entity.position)
                 end

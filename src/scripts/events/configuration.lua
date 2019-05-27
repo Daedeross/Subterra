@@ -221,3 +221,47 @@ function (config)
         current_list[name] = nil
     end
 end)
+
+-- blacklist changed
+register_configuration_event(
+function (config)
+    if not config.mod_startup_settings_changed then
+        return false
+    end
+    local blacklist_string = global.blacklist_string
+    return (not blacklist_string) or blacklist_string ~= settings.startup["subterra-blacklist"].value
+end,
+function (config)
+    local removed = {}
+    local added = {}
+
+    if not global.underground_blacklist then global.underground_blacklist = {} end
+    for name, _ in pairs(subterra.config.underground_blacklist) do
+        added[name] = true
+    end
+
+    for name, _ in pairs(global.underground_blacklist) do
+        -- keep core blacklist entities
+        if not subterra.config.underground_blacklist[name] then
+            removed[name] = true
+        end
+    end
+
+    local current_list = global.underground_blacklist
+    local blacklist_string = settings.startup["subterra-blacklist"].value
+    local new_list = split(blacklist_string, ";")
+
+    for _, name in pairs(new_list) do
+        removed[name] = nil
+        if not current_list[name] then
+            added[name] = true
+        end
+    end
+
+    for name, _ in pairs(added) do
+        current_list[name] = true
+    end
+    for name, _ in pairs(removed) do
+        current_list[name] = nil
+    end
+end)

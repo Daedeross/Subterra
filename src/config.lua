@@ -156,3 +156,7 @@ underground_entities["pipe-to-ground"] = true
 underground_entities["pump"] = true
 underground_entities["accumulator"] = true
 underground_entities["electric-energy-interface"] = true
+
+-- blacklist
+local underground_blacklist = {}
+subterra.config.underground_blacklist = underground_blacklist
