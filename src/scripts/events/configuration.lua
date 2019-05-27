@@ -147,6 +147,11 @@ function (config)
     local removed = {}
     local added = {}
 
+    if not global.underground_entities then global.underground_entities = {} end
+    for name, _ in pairs(subterra.config.underground_entities) do
+        added[name] = true
+    end
+
     for name, _ in pairs(global.underground_whitelist) do
         -- keep core whitelist entities
         if not subterra.config.underground_entities[name] then
@@ -157,6 +162,50 @@ function (config)
     local current_list = global.underground_whitelist
     local whitelist_string = settings.startup["subterra-whitelist"].value
     local new_list = split(whitelist_string, ";")
+
+    for _, name in pairs(new_list) do
+        removed[name] = nil
+        if not current_list[name] then
+            added[name] = true
+        end
+    end
+
+    for name, _ in pairs(added) do
+        current_list[name] = true
+    end
+    for name, _ in pairs(removed) do
+        current_list[name] = nil
+    end
+end)
+
+-- type whitelist changed
+register_configuration_event(
+function (config)
+    if not config.mod_startup_settings_changed then
+        return false
+    end
+    local type_whitelist_string = global.type_whitelist_string
+    return (not type_whitelist_string) or type_whitelist_string ~= settings.startup["subterra-type-whitelist"].value
+end,
+function (config)
+    local removed = {}
+    local added = {}
+
+    for name, _ in pairs(subterra.config.underground_types) do
+        added[name] = true
+    end
+
+    if not global.underground_types then global.underground_types = {} end
+    for name, _ in pairs(global.underground_types) do
+        -- keep core whitelist types
+        if not subterra.config.underground_types[name] then
+            removed[name] = true
+        end
+    end
+
+    local current_list = global.underground_types
+    local type_whitelist_string = settings.startup["subterra-type-whitelist"].value
+    local new_list = split(type_whitelist_string, ";")
 
     for _, name in pairs(new_list) do
         removed[name] = nil

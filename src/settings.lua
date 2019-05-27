@@ -17,6 +17,13 @@ data:extend({
     },
     {
         type = "string-setting",
+        name = "subterra-type-whitelist",
+        setting_type = "startup",
+        default_value = "",
+        allow_blank = true
+    },
+    {
+        type = "string-setting",
         name = "subterra-log-sink",
         setting_type = "startup",
         default_value = "None",

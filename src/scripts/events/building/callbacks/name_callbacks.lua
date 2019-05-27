@@ -50,6 +50,7 @@ remove_events["subterra-power-column"] = remove_power_interface
 
 -- locomotives
 surface_build_events["subterra-locomotive"] = add_locomotive
+underground_build_events["subterra-locomotive"] = add_locomotive
 underground_build_events["subterra-recharger"] = function () return true end
 
 

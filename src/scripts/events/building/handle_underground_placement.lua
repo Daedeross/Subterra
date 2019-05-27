@@ -29,11 +29,13 @@ local handle_underground_placement = function (entity, creator, layer)
     if ent_name == "entity-ghost" then
         ent_name = entity.ghost_prototype.name
     end
-    
+
     if global.belt_elevators[ent_name] then
         ent_name = "belt-elevator"
     end
-    
+
+    local ent_type = entity.type
+
     local callback = name_callbacks.underground_build[ent_name]
     if callback then
         local result, message = callback(entity, creator.surface, creator)
@@ -44,7 +46,7 @@ local handle_underground_placement = function (entity, creator, layer)
             destroy_and_return(entity, creator)
         end
     else
-        callback = type_callbacks.underground_build[entity.type]
+        callback = type_callbacks.underground_build[ent_type]
         if callback then
             local result, message = callback(entity, creator.surface, creator) 
             if not result then
@@ -58,8 +60,8 @@ local handle_underground_placement = function (entity, creator, layer)
                 destroy_and_return(entity, creator)
             end
         else
-            debug("Tried to place:" .. ent_name)
-            if not global.underground_whitelist[ent_name] then
+            debug("Tried to place: " .. ent_type .. " | " .. ent_name)
+            if not (global.underground_whitelist[ent_name] or global.underground_types[ent_type]) then
                 if player then
                     fly_text(player, {"message.building-blacklist", {"entity-name."..ent_name}}, entity.position)
                 end
