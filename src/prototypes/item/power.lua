@@ -1,24 +1,13 @@
 data:extend({
     {
         type = "item",
-        name = "subterra-power-up",
-        icon = "__subterra__/graphics/icons/power-up-icon-32.png",
+        name = "subterra-power-column",
+        icon = "__subterra__/graphics/icons/power-column-icon-32.png",
         icon_size = 32,
         flags = { },
         subgroup = "energy-pipe-distribution",
-        order = "s[subterra-power-up]-s[subterra-power-up]",
-        place_result = "subterra-power-up",
+        order = "s[subterra-power-column]-s[subterra-power-column]",
+        place_result = "subterra-power-column",
         stack_size = 50
     },
-    {
-        type = "item",
-        name = "subterra-power-down",
-        icon = "__subterra__/graphics/icons/power-down-icon-32.png",
-        icon_size = 32,
-        flags = { },
-        subgroup = "energy-pipe-distribution",
-        order = "s[subterra-power-down]-s[subterra-power-down]",
-        place_result = "subterra-power-down",
-        stack_size = 50
-    }
 })

@@ -1,5 +1,7 @@
-local callbacks = require("__subterra__.scripts.events.building.callbacks.callbacks")
 require("__subterra__.scripts.utils")
+
+local name_callbacks = require("__subterra__.scripts.events.building.callbacks.name_callbacks")
+local type_callbacks = require("__subterra__.scripts.events.building.callbacks.type_callbacks")
 --============================================================================--
 -- on_entity_died(event)
 --
@@ -14,7 +16,7 @@ local on_entity_died = function (event)
         ent_name = "belt-elevator"
     end
 
-    local callback = callbacks.remove[ent_name]
+    local callback = name_callbacks.remove[ent_name] or type_callbacks.remove[ent_name]
     if callback then
         callback(event.entity)
     end

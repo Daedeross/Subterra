@@ -1,7 +1,10 @@
+require("__subterra__.scripts.utils")
+
 local check_all_ghosts = require("__subterra__.scripts.events.building.check_all_ghosts")
 local destroy_and_return = require("__subterra__.scripts.events.building.destroy_and_return")
-local callbacks = require("__subterra__.scripts.events.building.callbacks.callbacks")
-require("__subterra__.scripts.utils")
+local name_callbacks = require("__subterra__.scripts.events.building.callbacks.name_callbacks")
+local type_callbacks = require("__subterra__.scripts.events.building.callbacks.type_callbacks")
+
 --============================================================================--
 -- handle_surface_placement(entity, creator, layer)
 --
@@ -33,7 +36,7 @@ local handle_surface_placement = function (entity, creator, layer)
         player = creator
     end
 
-    local callback = callbacks.surface_build[ent_name]
+    local callback = name_callbacks.surface_build[ent_name]
     if callback then
         if not layer then
             if player then
@@ -41,6 +44,21 @@ local handle_surface_placement = function (entity, creator, layer)
             end
             destroy_and_return(entity, creator)
         else
+            local result, message = callback(entity, creator.surface, creator) 
+            if not result then
+                if player then
+                    if message then
+                        fly_text(player, message, entity.position)
+                    else
+                        fly_text(player, {"message.building-conflict", {"entity-name."..ent_name}}, entity.position)
+                    end
+                end
+                destroy_and_return(entity, creator)
+            end
+        end
+    else
+        callback = type_callbacks.surface_build[entity.type]
+        if callback then
             local result, message = callback(entity, creator.surface, creator) 
             if not result then
                 if player then

@@ -8,6 +8,7 @@ require ('config')
 require 'scripts/utils'
 
 local display_level = require("__subterra__.scripts.events.ui.display_level")
+local on_player_cursor_stack_changed = require("__subterra__.scripts.events.player.on_player_cursor_stack_changed")
 
 --============================================================================--
 -- on_player_joined()
@@ -46,6 +47,12 @@ end)
 --============================================================================--
 register_event(defines.events.on_player_left_game,
 function (event)
+    local proxy = event.player_index
+    if proxy then
+        for k, _ in pairs(proxy) do
+            proxy[k] = nil
+        end
+    end
     global.player_proxies[event.player_index] = nil
 end)
 
@@ -56,6 +63,12 @@ end)
 --============================================================================--
 register_event(defines.events.on_player_died,
 function (event)
+    local proxy = event.player_index
+    if proxy then
+        for k, _ in pairs(proxy) do
+            proxy[k] = nil
+        end
+    end
     global.player_proxies[event.player_index] = nil
 end)
 
@@ -68,16 +81,8 @@ register_event(defines.events.on_player_changed_surface,
 function (event)
     local player = game.players[event.player_index]
     display_level(player)
+    on_player_cursor_stack_changed(event)
 end)
-
--- register_nth_tick_event(600,
--- function (event)
---     for i, proxy in pairs(global.player_proxies) do
---         if proxy.player then
---             display_level(proxy.player)
---         end
---     end
--- end))
 
 register_event("subterra-flip-rolling-stock",
 function (event)
@@ -102,3 +107,5 @@ function (event)
         selected.connect_rolling_stock(defines.rail_direction.front)
     end
 end)
+
+register_event(defines.events.on_player_cursor_stack_changed, on_player_cursor_stack_changed)

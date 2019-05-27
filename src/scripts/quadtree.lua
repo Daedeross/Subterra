@@ -73,6 +73,13 @@ function QuadtreeNode:new_root (new_children)
 end
 
 function QuadtreeNode:add_proxy (proxy)
+	local bbox = proxy.bbox
+	local p_left_top = bbox.left_top
+	local p_right_bottom = bbox.right_bottom
+	local center = self.center
+	local center_x = center.x
+	local center_y = center.y
+
 	if self.children == nil then
 		-- print ("self: " .. tostring(self))
 		-- print ("proxies: " .. tostring(self.proxies))
@@ -81,19 +88,19 @@ function QuadtreeNode:add_proxy (proxy)
 			self:split()
 		end
 	else
-		if proxy.bbox.left_top.y < self.center.y then
-			if proxy.bbox.left_top.x < self.center.x then
+		if p_left_top.y < center_y then
+			if p_left_top.x < center_x then
 				self.children[1]:add_proxy(proxy)
 			end
-			if proxy.bbox.right_bottom.x > self.center.x then
+			if p_right_bottom.x > center_x then
 				self.children[2]:add_proxy(proxy)
 			end
 		end
-		if proxy.bbox.right_bottom.y > self.center.y then
-			if proxy.bbox.left_top.x < self.center.x then
+		if p_right_bottom.y > center_y then
+			if p_left_top.x < center_x then
 				self.children[3]:add_proxy(proxy)
 			end
-			if proxy.bbox.right_bottom.x > self.center.x then
+			if p_right_bottom.x > center_x then
 				self.children[4]:add_proxy(proxy)
 			end
 		end

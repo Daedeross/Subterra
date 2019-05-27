@@ -1,4 +1,28 @@
 require("__subterra__.scripts.utils")
+
+local function create_hidden_entities(surface, position, direction, force)
+    local input = surface.create_entity{
+        name = "subterra-power-in",
+        position = position,
+        force = force,
+        direction = direction
+    }
+    local output = surface.create_entity{
+        name = "subterra-power-out",
+        position = position,
+        force = force,
+        direction = direction
+    }
+    local pole = surface.create_entity{
+        name = "subterra-power-pole",
+        position = position,
+        force = force,
+        direction = direction
+    }
+
+    return input, output, pole
+end
+
 --============================================================================--
 -- add_power_proxy(placed, surface, creator)
 --
@@ -17,104 +41,117 @@ require("__subterra__.scripts.utils")
 local add_power_proxy = function (placed, surface, creator)
     local force = creator and get_member_safe(creator, "force")
 
+    local sname = surface.name
+    local layers = global.layers 
+    local layer = layers[sname]
+    debug("Place Surface: " .. sname)
+
     local ent_name = placed.name
     local is_ghost = ent_name == "entity-ghost"
+
+    -- to prevent entity from being built on other mods' surfaces
+    if not layer then
+        return false, {"message.building-surface-blacklist", {"entity-name."..ent_name}}
+    end
 
     if is_ghost then
         ent_name = placed.ghost_name
     end
 
-    local is_down = string.find(ent_name, "%-down") ~= nil
+    local target_name = "subterra-power-column"
+    local target_position = placed.position
+    local target_direction = placed.direction
 
-    local layer, target_layer, message = check_layer(surface, ent_name, is_down, force)
-    if message then
-        return false, message
+    -- check if target locations are free
+    local max_level = settings.startup["subterra-max-depth"].value + 1  -- level is depth + 1 (i.e. nauvis = depth 0 & level 1)
+    local surfaces = {}
+    local invalid = false
+    for i = 1, max_level do
+        local target_surface = layers[i].surface
+        if (surface ~= target_surface and not target_surface.can_place_entity{name = target_name, position = target_position}) then
+            debug("Can't place on Surface: " .. target_surface.name .. " | level: " .. i)
+            invalid = true     
+        end
+        surfaces[i] = target_surface
     end
 
-    local target_name = "subterra-power-" .. (is_down and "up" or "down")
-
-    -- check if target location is free
-    local target_surface = target_layer.surface
-    if not target_surface.can_place_entity{name = target_name, position = placed.position} then
+    if invalid then
         return false, {"message.building-conflict", {"entity-name."..ent_name}}
     end
 
     if is_ghost then 
-        -- create target ghost
-        local target_entity = target_surface.create_entity{
-            name = "entity-ghost",
-            inner_name = target_name,
-            position = placed.position,
-            force = placed.force
-        }
-
-        local top = is_down and placed or target_entity
-        local bottom = is_down and target_entity or placed
-
-        -- create ghost proxies
+        -- create target ghosts
+        local ghosts = {}
+        for i = 1, max_level do
+            local target_surface = surfaces[i]
+            local target_entity
+            if target_surface == surface then
+                target_entity = placed
+            else
+                target_entity = target_surface.create_entity{
+                    name = "entity-ghost",
+                    inner_name = target_name,
+                    force = force,
+                    position = target_position,
+                    direction = target_direction
+                }
+            end
+            ghosts[i] = target_entity 
+        end
+        -- create ghost proxy
         local ghost_proxy = {
             bbox = top.bounding_box,
-            top_ghost = top,
-            bottom_ghost = bottom,
-            top_layer = is_down and layer or target_layer,
-            bottom_layer = is_down and target_layer or layer
+            ghosts = ghosts
         }
 
         layer.power_ghosts:add_proxy(ghost_proxy)
         target_layer.power_ghosts:add_proxy(ghost_proxy)
-    else
 
-        local target_entity = target_surface.create_entity{
-            name = target_name,
-            position = placed.position,
-            force = placed.force,
-            direction = placed.direction
-        }
-
-        -- electic interfaces
-        local input = surface.create_entity{
-            name = "subterra-power-in",
-            position = placed.position,
-            force = placed.force,
-            direction = placed.direction
-        }
-
-        local output = target_surface.create_entity{
-            name = "subterra-power-out",
-            position = placed.position,
-            force = placed.force,
-            direction = placed.direction
-        }
-
-        local top_surface = is_down and surface or target_surface
-        local bottom_surface = is_down and target_surface or surface
-        -- hidden power poles
-        local pole_top = top_surface.create_entity{
-            name = "subterra-power-pole",
-            position = placed.position,
-            force = placed.force,
-            direction = placed.direction
-        }
-        local pole_bottom = bottom_surface.create_entity{
-            name = "subterra-power-pole",
-            position = placed.position,
-            force = placed.force,
-            direction = placed.direction
-        }
-        
-        local power_proxy = {
-            input = input,
-            output = output,
-            top = is_down and placed or target_entity,
-            bottom = is_down and target_entity or placed,
-            pole_top = pole_top,
-            pole_bottom = pole_bottom,
-            target_layer = target_layer
-        }
-
-        global.power_inputs[placed.unit_number] = power_proxy
-        global.power_outputs[target_entity.unit_number] = power_proxy
+        return true
     end
+    -- when actually placing the entity
+    local unit_numbers = {}
+    local inputs = {}
+    local outputs = {}
+    local columns = {}
+    local poles = {}
+
+    for i = 1, max_level do
+        local target_surface = surfaces[i]
+        local column
+        if target_surface == surface then
+            column = placed
+        else
+            column = target_surface.create_entity{
+                name = "subterra-power-column",
+                force = force,
+                position = target_position,
+                direction = target_direction
+            }
+        end
+        columns[i] = column
+        unit_numbers[i] = column.unit_number
+
+        local input, output, pole = create_hidden_entities(target_surface, target_position, target_direction, force)
+        inputs[i] = input
+        outputs[i] = output
+        poles[i] = pole
+    end
+
+    local power_proxy = {
+        columns = columns,
+        inputs = inputs,
+        outputs = outputs,
+        poles = poles
+    }
+
+    -- add to proxy table with index for each 'column' entity
+    for _, unit_number in pairs(unit_numbers) do
+        global.power_proxies[unit_number] = power_proxy
+    end
+    -- add to compact table
+    table.insert(global.power_array, power_proxy)
+
     return true
 end
 

@@ -5,28 +5,28 @@ local function get_line_items (proxy)
 
     for name, count in pairs(proxy.in_line1.get_contents()) do
         if all_items[name] then
-            all_items[name] = all_items + count
+            all_items[name] = all_items[name] + count
         else
             all_items[name] = count
         end
     end
     for name, count in pairs(proxy.in_line2.get_contents()) do
         if all_items[name] then
-            all_items[name] = all_items + count
+            all_items[name] = all_items[name] + count
         else
             all_items[name] = count
         end
     end
     for name, count in pairs(proxy.out_line1.get_contents()) do
         if all_items[name] then
-            all_items[name] = all_items + count
+            all_items[name] = all_items[name] + count
         else
             all_items[name] = count
         end
     end
     for name, count in pairs(proxy.out_line2.get_contents()) do
         if all_items[name] then
-            all_items[name] = all_items + count
+            all_items[name] = all_items[name] + count
         else
             all_items[name] = count
         end

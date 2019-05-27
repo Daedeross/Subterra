@@ -14,3 +14,4 @@ for i=1, 5, 1 do
         subterra_locomotive.fast_replaceable_group = group_name
     end
 end
+

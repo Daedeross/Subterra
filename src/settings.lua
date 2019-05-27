@@ -17,6 +17,20 @@ data:extend({
     },
     {
         type = "string-setting",
+        name = "subterra-blacklist",
+        setting_type = "startup",
+        default_value = "",
+        allow_blank = true
+    },
+    {
+        type = "string-setting",
+        name = "subterra-type-whitelist",
+        setting_type = "startup",
+        default_value = "",
+        allow_blank = true
+    },
+    {
+        type = "string-setting",
         name = "subterra-log-sink",
         setting_type = "startup",
         default_value = "None",
@@ -27,5 +41,27 @@ data:extend({
         name = "subterra-show-level",
         setting_type = "runtime-per-user",
         default_value = true
+    },
+    {
+        type = "bool-setting",
+        name = "subterra-show-build-hud",
+        setting_type = "runtime-per-user",
+        default_value = true
+    },
+    {
+        type = "double-setting",
+        name = "subterra-build-hud-radius",
+        setting_type = "startup",
+        default_value = 20,
+        minimum_value = 1,
+        maximum_value = 200
+    },
+    {
+        type = "int-setting",
+        name = "subterra-radar-update-chunk-size",
+        setting_type = "startup",
+        default_value = 60,
+        minimum_value = 1,
+        maximum_value = 120,
     }
 })

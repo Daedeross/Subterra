@@ -34,12 +34,21 @@ function initialize_subterra ()
     --         remote.call("RSO", "ignoreSurface", layer_name)
     --     end
     -- end
+
+    -- create force_proxies
+    -- global.force_proxies = {}
+    -- for name, force in pairs(game.forces) do
+    --     force_proxies[name] = {
+
+    --     }
+    -- end
     
     -- create player proxies
     global.player_proxies = {}
+    global.drawing_players = {}
     debug("Player Count: " .. tostring(# game.players))
     for i, p in pairs(game.players) do
-       debug("Creating proxy for player:" .. p.name)
+       debug("Creating proxy for player: " .. p.name)
        add_player_proxy(i)
     end
 
@@ -59,7 +68,7 @@ function initialize_subterra ()
     ground.pad_ghosts:rebuild_index()
     ground.belt_ghosts:rebuild_index()
     ground.power_ghosts:rebuild_index()
-    
+
     table.insert(global.layers, ground)
 
     global.layers["nauvis"] = global.layers[1]
@@ -96,8 +105,8 @@ function initialize_subterra ()
     if not global.belt_inputs then global.belt_inputs = {} end
     if not global.belt_outputs then global.belt_outputs = {} end
 
-    if not global.power_inputs then global.power_inputs = {} end
-    if not global.power_outputs then global.power_outputs = {} end
+    if not global.power_proxies then global.power_proxies = {} end
+    if not global.power_array then global.power_array = {} end
 
     if not global.current_depth then global.current_depth = {} end
     for index, force in pairs(game.forces) do
@@ -106,9 +115,40 @@ function initialize_subterra ()
 
     -- set underground enitity list
     initialize_belt_elevators()
+    initialize_underground_blacklist()
     initialize_underground_whitelist()
+    initialize_underground_type_whitelist()
+
+    -- intialize radar proxy table
+    -- will only be populated runtime
+    global.radar_proxies = {}       -- indexed by unit_number, for lookup from entity
+    global.radar_proxy_array = {}  -- compact array of all proxies, for iterating over on_tick
+    global.radar_proxy_forces = {}  -- compact arrays indexed by force name, for iterating over on tech rechearhed
+
+    for name, force in pairs(game.forces) do
+        global.radar_proxy_forces[name] = {}
+    end
 
     debug("SubTerra Initialization Complete")
+end
+
+function initialize_underground_blacklist()
+    if not global.underground_blacklist then global.underground_blacklist = {} end
+    local blacklist = global.underground_blacklist
+    -- required entities
+    for name,_ in pairs(subterra.config.underground_blacklist) do
+        blacklist[name] = true
+    end
+
+    -- add entities from settings
+    local blacklist_string = settings.startup["subterra-blacklist"].value or ""
+    local new_list = split(blacklist_string, ";")
+    global.blacklist_string = blacklist_string
+
+    for _, name in pairs(new_list) do
+        log("blacklist: " .. name)
+        blacklist[name] = true
+    end
 end
 
 function initialize_underground_whitelist()
@@ -116,6 +156,25 @@ function initialize_underground_whitelist()
     local whitelist = global.underground_whitelist
     -- required entities
     for name,_ in pairs(subterra.config.underground_entities) do
+        whitelist[name] = true
+    end
+
+    -- add entities from settings
+    local whitelist_string = settings.startup["subterra-whitelist"].value or ""
+    local new_list = split(whitelist_string, ";")
+    global.whitelist_string = whitelist_string
+
+    for _, name in pairs(new_list) do
+        log("whitelist: " .. name)
+        whitelist[name] = true
+    end
+end
+
+function initialize_underground_type_whitelist()
+    if not global.underground_types then global.underground_types = {} end
+    local whitelist = global.underground_types
+    -- required entities
+    for name,_ in pairs(subterra.config.underground_types) do
         whitelist[name] = true
     end
 

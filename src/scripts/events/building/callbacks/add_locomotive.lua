@@ -1,7 +1,8 @@
 require("__subterra__.scripts.utils")
 local get_subway_level = function (force)
+    local technologies = force.technologies
     for i=1, 5 do
-        local tech = force.technologies["subway-"..i]
+        local tech = technologies["subway-"..i]
         if not tech.researched then
             return i - 1
         end

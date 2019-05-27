@@ -2,11 +2,30 @@
 
 ## Know Issues
 - At this time, when Underground Locomotives, they will always point westward (or north if placed vertically).
-See below for a workaround.
+See [below](#v050) below for a workaround.
 - Other mods that place entities and do not raise the `script_raised_built` event may lead to unintended consequences.
-- If a Stairs, Belt-Elevator, or Power transfer entity is destroyed, it will leave a ghost on only one of its two layers.
-- There are still some edge cases that need to be tested for creation and deletion of these special entities.
-- Power-Transfer only works one way. The placed entity becomes the input.
+- If a Stairs, Belt-Elevator, or Power transfer entity is destroyed, it will leave a ghost on only one of its layers.
+- Endgame testing and balance is incomplete.
+
+## v0.6.0
+### Features:
+- Added "Ground Penetrating Radar" technology. Researching this will change all radars to give vision to underground layers. Each level of this research allows radars to "see" one level deeper.
+- Added placement help HUD. After researching "Ground Penetrating Radar," if a player has in their hand an item that bridges levels (Belt-Elevators, Stairs, Power-Converters) they will see colored boxes within a moderate radius showing where entities are built on the target layer (below of above, depending if holding an 'up' or 'down' item). Power Converters show all levels, above and below. Current colors are Orange for below layers, Blue for above layers.
+- Added additional undergorund whitelist based on entity type. This has default values (see wiki) and can be added to by the startup setting.
+- Added undergorund entity blacklist based on entity name. This will override any whitelist entry for that entity. Default is empty, but can be added to via a startup setting.
+### Changes:
+- Power Converters now bridge all layers. The entire column (from the top to the bottom) now must be clear in order to place the converter. If migrating a save from a previous version, Subterra will try and extend existing power convertes to all layers. If there is a layer that it cannot place on at (usually due to something being in the way), it will skip that layer but then mark the pole (on layers it does exist) with a red circle and exclamation point: **( ! )**. _Removing the entity will remove this warning._
+- Renamed and combined "Power Converters - Top" and "- Bottom" to "Power Transfer Column".
+- Changed Power Converters' output prioritiy to "tertiary". Input priority is unchanged ("secondary-input").
+- Reduced Power Converter buffer size, giving a maximum throughput of MW through each column.
+### Graphics:
+- Changed the look of the icon for Power Converters (now called "Power Transfer Column").
+### Optimization:
+- Improved iteration performace for power transfer between layers.
+- Added some caching and additional minor performace improvements in some event handlers.
+### Bugfixes:
+- Added icon and EN Localization for power output and input entities so they show up properly in the Electric network info panel.
+- Adding Subterra to an existing save which has researched Logistics 2 or 3 will now also unlock the exhange recipes.
 
 ## v0.5.3
 - Battery recharge recipes are now hidden until the requisite level of Subways is researched.

@@ -1,4 +1,4 @@
--- This file contains all callbacks to be registerd to handle entity placement
+-- This file contains all callbacks to be registerd (by name) to handle entity placement
 -- each callback must conform to the following signature:
 --============================================================================--
 -- function (entity, surface, creator)
@@ -21,7 +21,7 @@ local add_locomotive = require("__subterra__.scripts.events.building.callbacks.a
 
 local remove_telepad = require("__subterra__.scripts.events.building.callbacks.remove_telepad")
 local remove_belt_elevator = require("__subterra__.scripts.events.building.callbacks.remove_belt_elevator")
-local remove_power_interface = require("__subterra__.scripts.events.building.callbacks.remove_power_interface")
+local remove_power_proxy = require("__subterra__.scripts.events.building.callbacks.remove_power_proxy")
 
 local surface_build_events = {}
 local underground_build_events = {}
@@ -41,26 +41,20 @@ remove_events["subterra-telepad-up"] = remove_telepad
 remove_events["subterra-telepad-down"] = remove_telepad
 
 -- power convertes
-underground_build_events["subterra-power-up"] = add_power_proxy
-underground_build_events["subterra-power-down"] = add_power_proxy
-surface_build_events["subterra-power-up"] = add_power_proxy
-surface_build_events["subterra-power-down"] = add_power_proxy
-remove_events["subterra-power-up"] = remove_power_interface
-remove_events["subterra-power-down"] = remove_power_interface
+--underground_build_events["subterra-power-up"] = add_power_proxy
+underground_build_events["subterra-power-column"] = add_power_proxy
+--surface_build_events["subterra-power-up"] = add_power_proxy
+surface_build_events["subterra-power-column"] = add_power_proxy
+--remove_events["subterra-power-up"] = remove_power_proxy
+remove_events["subterra-power-column"] = remove_power_proxy
 
 -- locomotives
 surface_build_events["subterra-locomotive"] = add_locomotive
--- surface_build_events["subterra-locomotive-1"] = add_locomotive
--- surface_build_events["subterra-locomotive-2"] = add_locomotive
--- surface_build_events["subterra-locomotive-3"] = add_locomotive
--- surface_build_events["subterra-locomotive-4"] = add_locomotive
--- surface_build_events["subterra-locomotive-5"] = add_locomotive
 underground_build_events["subterra-locomotive"] = add_locomotive
--- underground_build_events["subterra-locomotive-1"] = add_locomotive
--- underground_build_events["subterra-locomotive-2"] = add_locomotive
--- underground_build_events["subterra-locomotive-3"] = add_locomotive
--- underground_build_events["subterra-locomotive-4"] = add_locomotive
--- underground_build_events["subterra-locomotive-5"] = add_locomotive
+underground_build_events["subterra-recharger"] = function () return true end
+
+
+underground_build_events["subterra-power-column"] = add_power_proxy
 
 -- ghosts, requires access to all previously registered remove_events
 remove_events["entity-ghost"] = function(entity)
