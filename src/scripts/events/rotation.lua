@@ -99,22 +99,22 @@ function swap_belt_elevator(belt_proxy, direction)
     -- re-insert items
     if cin1 > 0 then
         for i = 1, cin1 do
-            bett_proxy.in_line1.insert_at(i, {name=new_out1[i]})
+            belt_proxy.in_line1.insert_at(i, {name=new_out1[i]})
         end
     end
     if cin2 > 0 then
         for i = 1, cin2 do
-            bett_proxy.in_line1.insert_at(i, {name=new_out2[i]})
+            belt_proxy.in_line1.insert_at(i, {name=new_out2[i]})
         end
     end
     if cout1 > 0 then
         for i = 1, cout1 do
-            bett_proxy.in_line1.insert_at(i, {name=new_in1[i]})
+            belt_proxy.in_line1.insert_at(i, {name=new_in1[i]})
         end
     end
     if cout2 > 0 then
         for i = 1, cout2 do
-            bett_proxy.in_line1.insert_at(i, {name=new_in2[i]})
+            belt_proxy.in_line1.insert_at(i, {name=new_in2[i]})
         end
     end
 

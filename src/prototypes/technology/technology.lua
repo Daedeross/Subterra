@@ -220,10 +220,6 @@ data:extend(
         icon = "__base__/graphics/technology/railway.png",
         effects =
         {
-            -- {
-            --     type = "unlock-recipe",
-            --     recipe = "subterra-locomotive-2"
-            -- },
             {
                 type = "unlock-recipe",
                 recipe = "subterra-battery-empty-2"
@@ -256,10 +252,6 @@ data:extend(
         icon = "__base__/graphics/technology/railway.png",
         effects =
         {
-            -- {
-            --     type = "unlock-recipe",
-            --     recipe = "subterra-locomotive-3"
-            -- },
             {
                 type = "unlock-recipe",
                 recipe = "subterra-battery-empty-3"
@@ -293,10 +285,7 @@ data:extend(
         icon = "__base__/graphics/technology/railway.png",
         effects =
         {
-            -- {
-            --     type = "unlock-recipe",
-            --     recipe = "subterra-locomotive-4"
-            -- },
+
             {
                 type = "unlock-recipe",
                 recipe = "subterra-battery-empty-4"
@@ -331,10 +320,6 @@ data:extend(
         icon = "__base__/graphics/technology/railway.png",
         effects =
         {
-            -- {
-            --     type = "unlock-recipe",
-            --     recipe = "subterra-locomotive-5"
-            -- },
             {
                 type = "unlock-recipe",
                 recipe = "subterra-battery-empty-5"

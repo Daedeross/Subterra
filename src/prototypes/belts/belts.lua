@@ -1,6 +1,5 @@
 require ("util")
 
-
 subterra.configured_belts = {
     ["transport-belt"] = {
         up_icon = "__subterra__/graphics/icons/belt-up-1-icon-32.png",
@@ -41,8 +40,8 @@ local function make_exchange_recipe(source, target)
         name = target.name .. "-ex",
         enabled = false,
         energy_required = 0.5,
-		allow_as_intermediate = false,
-		allow_intermediates = false,
+        allow_as_intermediate = false,
+        allow_intermediates = false,
         ingredients =
         {
             { source.name, 1}
@@ -136,7 +135,6 @@ function make_belt_elevator(belt_prototype, source_name, config)
         })
     end
 end
-
 
 local belts = data.raw["transport-belt"]
 if belts then

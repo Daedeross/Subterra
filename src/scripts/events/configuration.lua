@@ -53,6 +53,7 @@ function (config)
 end)
 
 -- set all belts
+local find = string.find
 register_configuration_event(
 function (config)
     return true
@@ -62,7 +63,7 @@ function (config)
     global.belt_elevators = {}
     local count = 0
     for name, prototype in pairs(game.entity_prototypes) do
-        local s, e = string.find(prototype.name, "subterra%-%a*%-*transport%-belt")
+        local s, e = find(prototype.name, "subterra%-%a*%-*transport%-belt")
         if s then
             count = count + 1
             global.belt_elevators[prototype.name] = true
