@@ -8,7 +8,6 @@ See [below](#v050) below for a workaround.
 - Endgame testing and balance is incomplete.
 
 ## v0.6.0
-Date: 2019-05-26T18:42:54-05:00
 ### Features:
 - Added "Ground Penetrating Radar" technology. Researching this will change all radars to give vision to underground layers. Each level of this research allows radars to "see" one level deeper.
 - Added placement help HUD. After researching "Ground Penetrating Radar," if a player has in their hand an item that bridges levels (Belt-Elevators, Stairs, Power-Converters) they will see colored boxes within a moderate radius showing where entities are built on the target layer (below of above, depending if holding an 'up' or 'down' item). Power Converters show all levels, above and below. Current colors are Orange for below layers, Blue for above layers.

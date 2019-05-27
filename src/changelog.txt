@@ -1,6 +1,6 @@
 ---------------------------------------------------------------------------------------------------
 Version: 0.6.0
-Date: 2019-05-26T18:42:54-05:00
+Date: Date: 2019-05-27 14:14:12 -0500
   Features:
     - Added "Ground Penetrating Radar" technology. Researching this will change all radars to give vision to underground layers. Each level of this research allows radars to "see" one level deeper.
     - Added placement help HUD. After researching "Ground Penetrating Radar," if a player has in their hand an item that bridges levels (Belt-Elevators, Stairs, Power-Converters) they will see colored boxes within a moderate radius showing where entities are built on the target layer (below of above, depending if holding an 'up' or 'down' item). Power Converters show all levels, above and below. Current colors are Orange for below layers, Blue for above layers.
@@ -23,7 +23,7 @@ Date: 2019-05-26T18:42:54-05:00
     - Adding Subterra to an existing save which has researched Logistics 2 or 3 will now also unlock the exhange recipes.
 ---------------------------------------------------------------------------------------------------
 Version: 0.5.3
-Date: 2019-05-19T14:45:48-05:00
+Date: 2019-05-19 14:45:48 -0500
   Bugfixes:
     - Battery recharge recipes are now hidden until the requisite level of Subways is researched.
   Optimization:
@@ -32,14 +32,14 @@ Date: 2019-05-19T14:45:48-05:00
     - When placing Underground Locomotives, they will always point westward (or north if placed vertically). Use the "Flip rolling stock" command (Default: CONTROL + F) as a workaround.
 ---------------------------------------------------------------------------------------------------
 Version: 0.5.2
-Date: 2019-05-18T12:56:08-05:00
+Date: 2019-05-18 12:56:08 -0500
   BuxFixes:
     - Fixed initialization bug.
   Known Issues:
     - When placing Underground Locomotives, they will always point westward (or north if placed vertically). Use the "Flip rolling stock" command (Default: CONTROL + F) as a workaround.
 ---------------------------------------------------------------------------------------------------
 Version: 0.5.1
-Date: 2019-05-18T12:53:56-05:00
+Date: 2019-05-18 12:53:56 -0500
   Changes:
     - Changed some messages when a 2-layer entity is denied placement.
   BuxFixes:
@@ -48,7 +48,7 @@ Date: 2019-05-18T12:53:56-05:00
     - When placing Underground Locomotives, they will always point westward (or north if placed vertically). Use the "Flip rolling stock" command (Default: CONTROL + F) as a workaround.
 ---------------------------------------------------------------------------------------------------
 Version: 0.5.0
-Date: 2019-05-14T20:24:18-05:00
+Date: 2019-05-14 20:24:18 -0500
   Features:
     - Added ability to add any entity to the Underground Whitelist via semicolon delimited list in the mod's startup settings.
   Minor Features:
@@ -70,7 +70,7 @@ Date: 2019-05-14T20:24:18-05:00
     - When placing Underground Locomotives, they will always point westward (or north if placed vertically). Use the "Flip rolling stock" command (Default: CONTROL + F) as a workaround.
 ---------------------------------------------------------------------------------------------------
 Version: 0.4.0
-Date: 2018-07-24T22:19:12-05:00
+Date: 2018-07-24 22:19:12 -0500
   Features:
     - Added configuration to the mod. User can now set Max Depth (min 1, max 4, default 2). WARNING: reducing this value for existing worlds is not supported, but increasing works (so far in my testing, at least).
     - Added technology: Underground levels are now unlocked by successive researches. NOTE: This will prevent you from placing entities that 'dig' down to a specific layer (i.e. Stairs, Elevator, Power transfer) until the research is completed. For safety, move to the surface before updating the Max Depth setting
@@ -86,14 +86,14 @@ Date: 2018-07-24T22:19:12-05:00
     - Game will no longer crash in sandbox or if you manually type the statement `\c game.player.character = nil`
 ---------------------------------------------------------------------------------------------------
 Version: 0.3.3
-Date: 2018-07-08T18:07:10-05:00
+Date: 2018-07-08 18:07:10 -0500
   Minor Features:
     - Added remote calls so other mods can add or remove entities from the underground whitelist
     - To add an entity: `remote.call("subterra:entities", "add", %NAME%)` - Replace `%NAME` with the name of the entity (i.e. the name of the prototype)
     - To remove an entity: `remote.call("subterra:entities", "remove", %NAME%)` 
 ---------------------------------------------------------------------------------------------------
 Version: 0.3.2
-Date: 2018-07-08T16:35:31-05:00
+Date: 2018-07-08 16:35:31 -0500
   Minor Features:
     - Added some feedback messages for when players are unable to place certain structures
   Bugfixes:
@@ -101,14 +101,14 @@ Date: 2018-07-08T16:35:31-05:00
     - Adjusted the position of a hidden entity so the no-electric-network icon shows in the center of the transfer pole.
 ---------------------------------------------------------------------------------------------------
 Version: 0.3.1
-Date: 2018-07-08T14:28:48-05:00
+Date: 2018-07-08 14:28:48 -0500
   Bugfixes:
     - Subscribes to the `script_raised_built` event to percent non-whitelisted entities from being built underground.
     - Added some missed vanilla entities to underground whitelist.
     - Mod now handles being added to large existing worlds. (Note: Loading into a large explored world will cause performance to drop for a time while the underground surface generation catches up.)
 ---------------------------------------------------------------------------------------------------
 Version: 0.3.0
-Date: 2018-07-07T22:34:21-05:00
+Date: 2018-07-07 22:34:21 -0500
   Changes:
     - "Telepads" renamed to "Stairs"
   Features:
@@ -121,13 +121,13 @@ Date: 2018-07-07T22:34:21-05:00
     - updated all api calls to work with Factorio v0.16.x
 ---------------------------------------------------------------------------------------------------
 Version: 0.1.0
-Date: 2017-04-03T19:44:22-05:00
+Date: 2017-04-03 19:44:22 -0500
   Features:
     - Belt Elevators. Special belts that will transport items up or down one level
     - Teleport pads to transport players between levels
 ---------------------------------------------------------------------------------------------------
 Version: 0.0.1
-Date: 2016-09-26T10:52:07-05:00
+Date: 2016-09-26 10:52:07 -0500
   Features:
     - "Underground" layers added.
     - Chunk-generation for underground layers is kept in lockstep with 'top' surface
