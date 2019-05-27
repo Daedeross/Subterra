@@ -54,13 +54,19 @@ local handle_remove_power_interface = function (mined, removing_entity, buffer)
     proxy.destroying = true          -- to prevent re-entry for same proxy
     local mine_results = mined.name  -- naming convention, entity is named same as item that places it
 
-
     local max_level = settings.startup["subterra-max-depth"].value + 1  -- level is depth + 1 (i.e. nauvis = depth 0 & level 1)
     local unit_numbers = destroy_hidden_entities(proxy, mined, max_level)
 
     -- remove proxy from index
     for _, unit_number in pairs(unit_numbers) do
         power_proxies[unit_number] = nil
+    end
+    local power_array = global.power_array
+    for i = 1, # power_array do
+        if power_array[i] == proxy then
+            table.remove(power_array, i)
+            break
+        end
     end
 
     if buffer then

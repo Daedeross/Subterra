@@ -106,6 +106,7 @@ function initialize_subterra ()
     if not global.belt_outputs then global.belt_outputs = {} end
 
     if not global.power_proxies then global.power_proxies = {} end
+    if not global.power_array then global.power_array = {} end
 
     if not global.current_depth then global.current_depth = {} end
     for index, force in pairs(game.forces) do

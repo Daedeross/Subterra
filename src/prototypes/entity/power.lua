@@ -1,4 +1,4 @@
-local transfer_rate =  20 -- in MW
+local transfer_rate =  50 -- in MW
 local buffer_size = transfer_rate * 16667 -- J/tick (enough to hold 1 tick's worth of energy)
 local input_priority = "tertiary"
 local output_priority = "tertiary"
@@ -9,9 +9,9 @@ local function blank_picture()
     return {
         filename = _blank,
         priority = "low",
-		width = 1,
-		height = 1,
-		frame_count = 1,
+        width = 1,
+        height = 1,
+        frame_count = 1,
     }
 end
 

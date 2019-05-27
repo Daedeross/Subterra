@@ -65,6 +65,7 @@ end
 
 -- migrate power_proxies
 local power_proxies = {}
+local power_array = {}
 local power_inputs = global.power_inputs
 local power_outputs = global.power_outputs
 
@@ -76,6 +77,29 @@ local mark_scale = 5
 local mark_text = "!"
 local mark_offset = {-0.3, -1.5}
 
+local function create_hidden_entities(surface, position, direction, force)
+    local input = surface.create_entity{
+        name = "subterra-power-in",
+        position = position,
+        force = force,
+        direction = direction
+    }
+    local output = surface.create_entity{
+        name = "subterra-power-out",
+        position = position,
+        force = force,
+        direction = direction
+    }
+    local pole = surface.create_entity{
+        name = "subterra-power-pole",
+        position = position,
+        force = force,
+        direction = direction
+    }
+
+    return input, output, pole
+end
+
 for _, old_proxy in pairs(power_inputs) do
     local unit_numbers = {}
     local inputs = {}
@@ -83,19 +107,21 @@ for _, old_proxy in pairs(power_inputs) do
     local columns = {}
     local poles = {}
 
-    local old_input = old_proxy.input
-    local old_output = old_proxy.output
+    old_proxy.input.destroy()
+    old_proxy.output.destroy()
     local old_top = old_proxy.top
-    local old_bottom = old_proxy.bottom
-    local old_pole_top = old_proxy.pole_top
-    local old_pole_bottom = old_proxy.pole_bottom
-    local old_out_index = old_proxy.target_layer.index
-    local old_in_index = layers[old_top.surface.name].index
-    local old_top_index = layers[old_input.surface.name].index
-    local old_bottom_index = old_top_index + 1
     local target_position = old_top.position
     local target_direction = old_top.direction
     local force = old_top.force
+    old_top.destroy()
+
+    old_proxy.bottom.destroy()
+    old_proxy.pole_top.destroy()
+    old_proxy.pole_bottom.destroy()
+    -- local old_out_index = old_proxy.target_layer.index
+    -- local old_in_index = layers[old_top.surface.name].index
+    -- local old_top_index = layers[old_input.surface.name].index
+    -- local old_bottom_index = old_top_index + 1
 
     local draw_marks = false
 
@@ -107,71 +133,28 @@ for _, old_proxy in pairs(power_inputs) do
         local output
         local column
         local pole
-    
-        if i == old_in_index then
-            input = old_input
-            output = surface.create_entity{
-                name = "subterra-power-out",
-                position = target_position,
-                force = force,
-                direction = target_direction
-            }
-        elseif i == old_out_index then
-            output = old_output
-            input = surface.create_entity{
-                name = "subterra-power-in",
-                position = target_position,
-                force = force,
-                direction = target_direction
-            }
-        elseif can_place then
-            input = surface.create_entity{
-                name = "subterra-power-in",
-                position = target_position,
-                force = force,
-                direction = target_direction
-            }
-            output = surface.create_entity{
-                name = "subterra-power-out",
-                position = target_position,
-                force = force,
-                direction = target_direction
-            }
-        end
 
-        if i == old_top_index then
-            column = old_top
-            pole = old_pole_top
-        elseif i == old_bottom_index then
-            column = old_bottom
-            pole = old_pole_bottom
-        elseif can_place then
+        if can_place then
             column = surface.create_entity{
                 name = "subterra-power-column",
                 force = force,
                 position = target_position,
                 direction = target_direction
             }
-            pole = surface.create_entity{
-                name = "subterra-power-pole",
-                position = target_position,
-                force = force,
-                direction = target_direction
-            }
+            table.insert(unit_numbers, column.unit_number)
+            input, output, pole = create_hidden_entities(surface, target_position, target_direction, force)
         else
             draw_marks = true
-            debug("CAN'T PLACE : " .. surface.name)
+            debug("Unable to place Power Column at (" .. target_position.x .. ", " .. target_position.y .. ") on surface :" .. surface.name)
         end
 
         columns[i] = column
         inputs[i] = input
         outputs[i] = output
         poles[i] = pole
-
-        if column then
-            table.insert(unit_numbers, column.unit_number)
-        end
     end
+
+    debug("Column count: " .. table_size(columns))
 
     -- these rendering are automatically invalidated when the target is removed/destroyed
     if draw_marks then
@@ -215,9 +198,14 @@ for _, old_proxy in pairs(power_inputs) do
     for _, unit_number in pairs(unit_numbers) do
         power_proxies[unit_number] = power_proxy
     end
+    -- add to compact table
+    table.insert(power_array, power_proxy)
+
+    --log(serpent.block(power_proxy))
 end
 
 global.power_proxies = power_proxies
+global.power_array = power_array
 
 -- clear old tables
 global.power_inputs = nil

@@ -1,0 +1,113 @@
+---------------------------------------------------------------------------------------------------
+Version: 0.6.0
+Date: 2019-05-26T18:42:54-05:00
+  Features:
+    - Added "Ground Penetrating Radar" technology. Researching this will change all radars to give vision to underground layers. Each level of this research allows radars to "see" one level deeper.
+    - Added placement help HUD. After researching "Ground Penetrating Radar," if a player has in their hand an item that bridges levels (Belt-Elevators, Stairs, Power-Converters) they will see colored boxes within a moderate radius showing where entities are built on the target layer (below of above, depending if holding an 'up' or 'down' item). Power Converters show all levels, above and below. Current colors are Orange for below layers, Blue for above layers.
+  Changes:
+    - Power Converters now bridge all layers. The entire column (from the top to the bottom) now must be clear in order to place the converter. If migrating a save from a previous version, Subterra will try and extend existing power convertes to all layers. If there is a layer that it cannot place on at (usually due to something being in the way), it will skip that layer but then mark the pole (on layers it does exist) with a red circle and exclamation point: (!). Removing the coverted will remove this warning.
+    - Changed Power Converters' input and output priorities to "tertiary"
+    - Reduced Power Converter buffer size, giving a maximum throughput of
+---------------------------------------------------------------------------------------------------
+Version: 0.5.3
+Date: 2019-05-19T14:45:48-05:00
+  Bugfixes:
+    - Battery recharge recipes are now hidden until the requisite level of Subways is researched.
+  Optimization:
+    - Additional code refactoring and optimization.
+---------------------------------------------------------------------------------------------------
+Version: 0.5.2
+Date: 2019-05-18T12:56:08-05:00
+  BuxFixes:
+    - Fixed initialization bug.
+---------------------------------------------------------------------------------------------------
+Version: 0.5.1
+Date: 2019-05-18T12:53:56-05:00
+  Changes:
+    - Changed some messages when a 2-layer entity is denied placement.
+  BuxFixes:
+    - Picking up a power converter no longer crashes the game. :)
+---------------------------------------------------------------------------------------------------
+Version: 0.5.0
+Date: 2019-05-14T20:24:18-05:00
+  Features:
+    - Added ability to add any entity to the Underground Whitelist via semicolon delimited list in the mod's startup settings.
+  Minor Features:
+    - Added Gui element to show current Depth. Simple text label for now.
+    - Added keyboard shortcut to flip the direction of any rolling stock under the cursor (Default: CONTROL + F). This can be used to work-around for the issue of underground locomotives not always placing down with the desired orientation.
+  Changes:
+    - WARNING: Compatibility with saves from previous versions is spotty at best.
+    - Updated to Factorio v 0.17.x
+    - Completely changed how underground locomotives are handled. Now there is only one item and recipe that improves in performance the further underground it is placed. Levels of the Subways technology unlocks the ability to place locomotives deeper underground.
+    - Changed the max-depth setting to default to 4, with a max of 5
+    - Feedback messages changed to fly-text insetead of console text
+  Bugfixes:
+    - Removing a belt-elevator now properly picks up the items on its input and output.
+    - The fifth level of the Underground is now properly generated.
+    - Fixed numerous entity placement and removal errors.
+    - `raise_destroy` is now set to true when cleaning up blacklisted entities.
+    - Major Refactor of code has started, there are multiple large and small bugs that have been fixed that are not noted here.
+---------------------------------------------------------------------------------------------------
+Version: 0.4.0
+Date: 2018-07-24T22:19:12-05:00
+  Features:
+    - Added configuration to the mod. User can now set Max Depth (min 1, max 4, default 2). WARNING: reducing this value for existing worlds is not supported, but increasing works (so far in my testing, at least).
+    - Added technology: Underground levels are now unlocked by successive researches. NOTE: This will prevent you from placing entities that 'dig' down to a specific layer (i.e. Stairs, Elevator, Power transfer) until the research is completed. For safety, move to the surface before updating the Max Depth setting
+    - Added Subways: Special, faster locomotives that can only be placed underground. Unlocked by research
+    - Added Rechargeable Batteries: Special 'fuel' for subways. Recharged in a special dedicated machine
+    - Added more belt elevators. The three levels of belts in the base game now have equavalent speed elevators. Unlocked at the same level of logistics as the equivalent belt.
+    - Added support for ghosts and robots to construct stairs, elevators, and power transfer entities
+  Changes:
+    - Changed the first underground level, it now spawns water tiles which follow the water in the main surface. NOTE: will not change already generated chunks in that layer.
+  Bugfixes:
+    - Changed chunk generation logic. Possible fix of a logic error in the previous versions, though requires more testing.
+    - Fixed bug where game would crash if you died. (X_X)
+    - Game will no longer crash in sandbox or if you manually type the statement `\c game.player.character = nil`
+---------------------------------------------------------------------------------------------------
+Version: 0.3.3
+Date: 2018-07-08T18:07:10-05:00
+  Minor Features:
+    - Added remote calls so other mods can add or remove entities from the underground whitelist
+    - To add an entity: `remote.call("subterra:entities", "add", %NAME%)` - Replace `%NAME` with the name of the entity (i.e. the name of the prototype)
+    - To remove an entity: `remote.call("subterra:entities", "remove", %NAME%)` 
+---------------------------------------------------------------------------------------------------
+Version: 0.3.2
+Date: 2018-07-08T16:35:31-05:00
+  Minor Features:
+    - Added some feedback messages for when players are unable to place certain structures
+  Bugfixes:
+    - Fixed compatibility with other mods that create additional surfaces (so far tested with Factorissimo2).
+    - Adjusted the position of a hidden entity so the no-electric-network icon shows in the center of the transfer pole.
+---------------------------------------------------------------------------------------------------
+Version: 0.3.1
+Date: 2018-07-08T14:28:48-05:00
+  Bugfixes:
+    - Subscribes to the `script_raised_built` event to percent non-whitelisted entities from being built underground.
+    - Added some missed vanilla entities to underground whitelist.
+    - Mod now handles being added to large existing worlds. (Note: Loading into a large explored world will cause performance to drop for a time while the underground surface generation catches up.)
+---------------------------------------------------------------------------------------------------
+Version: 0.3.0
+Date: 2018-07-07T22:34:21-05:00
+  Changes:
+    - "Telepads" renamed to "Stairs"
+  Features:
+    - Power can now be transfered between layers using Power Converters.
+  Graphics:
+    - Custom graphics for stairs and power transfer structures.
+  Minor Features:
+    - Added whitelist of vanilla structures able build underground.
+  Bugfixes:
+    - updated all api calls to work with Factorio v0.16.x
+---------------------------------------------------------------------------------------------------
+Version: 0.1.0
+Date: 2017-04-03T19:44:22-05:00
+  Features:
+    - Belt Elevators. Special belts that will transport items up or down one level
+    - Teleport pads to transport players between levels
+---------------------------------------------------------------------------------------------------
+Version: 0.0.1
+Date: 2016-09-26T10:52:07-05:00
+  Features:
+    - "Underground" layers added.
+    - Chunk-generation for underground layers is kept in lockstep with 'top' surface
+    - Quadtree data structure for faster collision detection.

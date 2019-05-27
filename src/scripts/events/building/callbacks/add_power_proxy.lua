@@ -149,6 +149,8 @@ local add_power_proxy = function (placed, surface, creator)
     for _, unit_number in pairs(unit_numbers) do
         global.power_proxies[unit_number] = power_proxy
     end
+    -- add to compact table
+    table.insert(global.power_array, power_proxy)
 
     return true
 end
