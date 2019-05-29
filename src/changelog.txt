@@ -1,4 +1,10 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.6.1
+Date: Date: 2019-05-29 02:46:15 -0500
+  Bugfixes:
+    - Fixed error on player disconnect and on death
+    - Fixed possible incompatibility with other radar changing mods.
+---------------------------------------------------------------------------------------------------
 Version: 0.6.0
 Date: Date: 2019-05-27 14:14:12 -0500
   Features:

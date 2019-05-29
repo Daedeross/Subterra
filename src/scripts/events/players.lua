@@ -10,6 +10,16 @@ require 'scripts/utils'
 local display_level = require("__subterra__.scripts.events.ui.display_level")
 local on_player_cursor_stack_changed = require("__subterra__.scripts.events.player.on_player_cursor_stack_changed")
 
+local function remove_player_proxy(index)
+    local proxy = global.player_proxies[index]
+    if proxy then
+        for k, _ in pairs(proxy) do
+            proxy[k] = nil
+        end
+    end
+    global.player_proxies[index] = nil
+end
+
 --============================================================================--
 -- on_player_joined()
 --
@@ -47,13 +57,7 @@ end)
 --============================================================================--
 register_event(defines.events.on_player_left_game,
 function (event)
-    local proxy = event.player_index
-    if proxy then
-        for k, _ in pairs(proxy) do
-            proxy[k] = nil
-        end
-    end
-    global.player_proxies[event.player_index] = nil
+    remove_player_proxy(event.player_index)
 end)
 
 --============================================================================--
@@ -63,13 +67,7 @@ end)
 --============================================================================--
 register_event(defines.events.on_player_died,
 function (event)
-    local proxy = event.player_index
-    if proxy then
-        for k, _ in pairs(proxy) do
-            proxy[k] = nil
-        end
-    end
-    global.player_proxies[event.player_index] = nil
+    remove_player_proxy(event.player_index)
 end)
 
 --============================================================================--

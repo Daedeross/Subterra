@@ -20,9 +20,11 @@ local blank_pictures = {
     }
 }
 
+local math_max = math.max
+
 local function make_radar(existing_radar)
     local new_name = "subterra-hidden-" .. existing_radar.name
-    local range = existing_radar.max_distance_of_nearby_sector_revealed * 32
+    local range = math_max(existing_radar.max_distance_of_nearby_sector_revealed * 32, 1)
 
     if data.raw.radar[new_name] then
         return
