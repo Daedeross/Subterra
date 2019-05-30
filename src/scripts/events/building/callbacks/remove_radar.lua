@@ -1,3 +1,4 @@
+require("__subterra__.scripts.utils")
 --============================================================================--
 -- remove_radar(radar)
 --
@@ -18,10 +19,12 @@ local remove_radar = function(radar)
     end
 
     local force_array = global.radar_proxy_forces[radar.force.name]
+    local radar_proxies = global.radar_proxies
+    local proxy_array = global.radar_proxy_array
 
-    table.remove(global.radar_proxies, unit_number)
-    table.remove(global.radar_proxy_array, proxy.index)
-    table.remove(force_array, proxy.force_index)
+    remove_item(proxy_array, proxy)
+    remove_item(force_array, proxy)
+    radar_proxies[unit_number] = nil
 end
 
 return remove_radar

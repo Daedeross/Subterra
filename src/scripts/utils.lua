@@ -426,3 +426,22 @@ function split(str,sep)
     end
     return ret
 end
+
+function remove_item(table, item)
+    local j, n = 1, #table
+
+    for i=1,n do
+        if table[i] ~= item then
+            -- Move i's kept value to j's position, if it's not already there.
+            if (i ~= j) then
+                table[j] = table[i]
+                table[i] = nil
+            end
+            j = j + 1 -- Increment position of where we'll place the next kept value.
+        else
+            table[i] = nil
+        end
+    end
+
+    return table
+end
