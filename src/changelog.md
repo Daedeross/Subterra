@@ -7,6 +7,15 @@ See [below](#v050) below for a workaround.
 - If a Stairs, Belt-Elevator, or Power transfer entity is destroyed, it will leave a ghost on only one of its layers.
 - Endgame testing and balance is incomplete.
 
+## v0.6.2
+### Bugfixes:
+- Fixed bug where in some cases the game would crash after researching "Ground Penetrating Radar"
+
+## v0.6.1
+### Bugfixes:
+- Fixed error on player disconnect and on death
+- Fixed possible incompatibility with other radar changing mods.
+
 ## v0.6.0
 ### Features:
 - Added "Ground Penetrating Radar" technology. Researching this will change all radars to give vision to underground layers. Each level of this research allows radars to "see" one level deeper.

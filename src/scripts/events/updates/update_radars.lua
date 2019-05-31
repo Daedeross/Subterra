@@ -1,4 +1,4 @@
--- local radar_chunk = 60
+local remove_radar = require("__subterra__.scripts.events.building.callbacks.remove_radar")
 --============================================================================--
 -- update_radars(event)
 --
@@ -15,7 +15,7 @@ local update_radars = function (event)
     if count < 1 then return end
 
     local max_depth = settings.startup["subterra-max-depth"].value
-    local radar_chunk = settings.startup["subterra-radar-update-chunk-size"].value or 60
+    local radar_chunk = (settings.startup["subterra-radar-update-chunk-size"].value or 60) * 2
 
     local layers = global.layers
     local surfaces = {}
@@ -27,10 +27,13 @@ local update_radars = function (event)
     for i = start, count, radar_chunk do
         local proxy = radar_proxy_array[i]
         local max_level = proxy.max_level
-        if max_level > 1 and proxy.radar.energy > 0 then
-            local force = proxy.force
-            for j = 2, max_level do
-                force.chart(surfaces[j], proxy.chart_area)
+        local radar = proxy.radar
+        if radar.valid then
+            if max_level > 1 and radar.energy > 0 then
+                local force = proxy.force
+                for j = 2, max_level do
+                    force.chart(surfaces[j], proxy.chart_area)
+                end
             end
         end
     end

@@ -36,8 +36,6 @@ local try_add_radar_proxy = function(radar)
     local range = hidden_prototype.max_health   -- haaaaak
 
     local proxy = {
-        index = index,
-        force_index = f_index,
         force = radar.force,
         radar = radar,
         chart_area = { { center.x - range, center.y - range }, { center.x + range, center.y + range } },
