@@ -17,6 +17,19 @@ subterra.configured_belts = {
     }
 }
 
+-- local new_ug = table.deepcopy(data.raw["underground-belt"]["underground-belt"])
+-- new_ug.name = "the-new-ug"
+-- new_ug.max_distance = 0
+
+-- local new_i = table.deepcopy(data.raw["item"]["underground-belt"])
+-- new_i.name = new_ug.name
+-- new_i.place_result = new_ug.name
+
+-- local new_r = table.deepcopy(data.raw["recipe"]["underground-belt"])
+-- new_r.enabled = true
+-- new_r.results = {{ new_ug.name, 1}}
+-- data:extend({ new_ug, new_i, new_r })
+
 local function make_recipe(prototype, source_name)
     --debug("SOURCE: ".. source_name)
     return {
@@ -82,12 +95,15 @@ function make_belt_elevator(belt_prototype, source_name, config)
     up_name = "subterra-" .. up.name .. "-up"
     up.name = up_name
     up.minable.result = up_name
+    up.max_distance = 0
     down_name = "subterra-" .. down.name .. "-down"
     down.name = down_name
     down.minable.result = down_name
+    down.max_distance = 0
     out_name = "subterra-" .. out.name .. "-out"
     out.name = out_name
     out.minable.result = out_name
+    out.max_distance = 0
 
     local up_recipe = make_recipe(up, source_name)
     local up_ex = make_exchange_recipe(down, up)
@@ -135,7 +151,7 @@ function make_belt_elevator(belt_prototype, source_name, config)
         })
     end
 end
-
+log("Making Belt Elevator Recipies")
 local belts = data.raw["transport-belt"]
 if belts then
     for name, config in pairs(subterra.configured_belts) do
@@ -145,3 +161,4 @@ if belts then
         end
     end
 end
+log(serpent.block(data.raw["transport-belt"]))

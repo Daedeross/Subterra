@@ -367,7 +367,7 @@ data:extend(
         type = "technology",
         name = "subterra-mapping",
         icon_size = 128,
-        icon = "__base__/graphics/technology/demo/basic-mapping.png",
+        icon = "__base__/graphics/technology/radar.png",
         enabled = true,
         upgrade = true,
         effects = { },

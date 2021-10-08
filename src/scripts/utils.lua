@@ -113,8 +113,9 @@ function print_bounding_box(bbox)
 end
 
 function add_player_proxy(i)
+    debug("Trying to add Player [" .. i .. "] to proxies")
     local p = game.players[i]
-    if global.player_proxies[i] == nil and p.connected and p.character then
+    if global.player_proxies[i] == nil and p.connected then
         local proxy = {
             name = p.name,
             index = i,
@@ -122,8 +123,8 @@ function add_player_proxy(i)
             on_pad = -1,
         }
         global.player_proxies[i] = proxy
+        debug("Added player: " .. p.name )
     end
-    print("Added player: " .. p.name )
 end
 
 function get_underground_settings(surface)
@@ -175,7 +176,7 @@ end
 function create_layer(depth, gen_settings)
     local layer_name = "underground_" .. tostring(depth)
 
-    print("Making Layer: " .. layer_name)
+    log("Making Layer: " .. layer_name)
 
     local surface = game.surfaces[layer_name]
     if not surface then

@@ -15,7 +15,7 @@ local on_built_entity = function (event)
     local player = game.players[p_index]
     local surface = player.surface
     local layer = global.layers[surface.name]
-
+    debug("Built Entity:"..event.created_entity.name)
     -- if not layer then
     --     handle_other_placement(event, player)
     -- else

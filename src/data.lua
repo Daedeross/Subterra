@@ -13,7 +13,7 @@ function blank_picture()
 		frame_count = 1,
     }
 end
-
+log("Loading Subterra Data")
 require("config")
 require("prototypes.categories.fuel-category")
 require("prototypes.categories.recipe-category")
@@ -26,6 +26,7 @@ require("prototypes.item.power")
 --require("prototypes.item.rail")
 require("prototypes.batteries.batteries")
 require("prototypes.rail.locomotives")
+require("prototypes.belts.belts")
 --require("prototypes.recipe.belts")
 require("prototypes.recipe.pads")
 require("prototypes.recipe.power")

@@ -1,3 +1,5 @@
+local dirt_pollution_absorption = 0.0000066
+
 data:extend(
 {
   {
@@ -6,7 +8,7 @@ data:extend(
     collision_mask = {"ground-tile"},
     autoplace = nil,
     layer = 23,
-    
+    pollution_absorption_per_second = dirt_pollution_absorption,
     variants =
     {
       main =

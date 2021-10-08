@@ -16,7 +16,7 @@ data:extend({
     type = "item",
     name = "subterra-locomotive",
     icons ={
-      {icon = "__base__/graphics/icons/diesel-locomotive.png", tint = {r=0.5,g=0.7, b=0.5, a=1} }
+      {icon = "__base__/graphics/icons/locomotive.png", tint = {r=0.5,g=0.7, b=0.5, a=1} }
     },
     icon_size = 32,
     flags = { },
@@ -88,7 +88,7 @@ data:extend({
     type = "locomotive",
     name = name,
     icons = {
-      {icon = "__base__/graphics/icons/diesel-locomotive.png", tint = {r=0.5,g=0.7, b=0.5, a=1} }
+      {icon = "__base__/graphics/icons/locomotive.png", tint = {r=0.5,g=0.7, b=0.5, a=1} }
     },
     
     fast_replaceable_group = "locomotive",
