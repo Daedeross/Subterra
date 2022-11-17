@@ -2,7 +2,7 @@ data:extend({
 {
     type = "lamp",
     name = "subterra-telepad-up",
-    icon = "__subterra__/graphics/entities/telepad/telepad-up-icon.png",
+    icon = "__subterra__/graphics/entity/telepad/telepad-up-icon.png",
     icon_size = 32,
     flags = {"placeable-neutral", "player-creation"},
     minable = {hardness = 0.1, mining_time = 0.1, result = "subterra-telepad-up"},
@@ -26,7 +26,7 @@ data:extend({
     },
     picture_off =
     {
-        filename = "__subterra__/graphics/entities/telepad/stairs-up.png",
+        filename = "__subterra__/graphics/entity/telepad/stairs-up.png",
         priority = "high",
         width = 219,
         height = 215,
@@ -35,7 +35,7 @@ data:extend({
     },
     picture_on =
     {
-        filename = "__subterra__/graphics/entities/telepad/stairs-up.png",
+        filename = "__subterra__/graphics/entity/telepad/stairs-up.png",
         priority = "high",
         width = 219,
         height = 215,
@@ -46,7 +46,7 @@ data:extend({
 {
     type = "lamp",
     name = "subterra-telepad-down",
-    icon = "__subterra__/graphics/entities/telepad/telepad-down-icon.png",
+    icon = "__subterra__/graphics/entity/telepad/telepad-down-icon.png",
     icon_size = 32,
     flags = {"placeable-neutral", "player-creation"},
     minable = {hardness = 0.1, mining_time = 0.1, result = "subterra-telepad-down"},
@@ -70,7 +70,7 @@ data:extend({
     },
     picture_off =
     {
-        filename = "__subterra__/graphics/entities/telepad/stairs-down.png",
+        filename = "__subterra__/graphics/entity/telepad/stairs-down.png",
         priority = "high",
         width = 219,
         height = 215,
@@ -79,7 +79,7 @@ data:extend({
     },
     picture_on =
     {
-        filename = "__subterra__/graphics/entities/telepad/stairs-down.png",
+        filename = "__subterra__/graphics/entity/telepad/stairs-down.png",
         priority = "high",
         width = 219,
         height = 215,

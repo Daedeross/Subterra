@@ -36,6 +36,7 @@ local handle_surface_placement = function (entity, creator, layer)
         player = creator
     end
 
+    -- first check of there is a callback for the specific name of the entity (i.e. name has priority)
     local callback = name_callbacks.surface_build[ent_name]
     if callback then
         if not layer then
@@ -57,6 +58,7 @@ local handle_surface_placement = function (entity, creator, layer)
             end
         end
     else
+        -- then check by type
         callback = type_callbacks.surface_build[entity.type]
         if callback then
             local result, message = callback(entity, creator.surface, creator) 

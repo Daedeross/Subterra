@@ -1,19 +1,133 @@
 require ("util")
 
 subterra.configured_belts = {
-    ["transport-belt"] = {
+    ["underground-belt"] = {
         up_icon = "__subterra__/graphics/icons/belt-up-1-icon-32.png",
-        down_icon = "__subterra__/graphics/icons/belt-down-1-icon-32.png"
+        down_icon = "__subterra__/graphics/icons/belt-down-1-icon-32.png",
+        top_in =
+        {
+            sheet =
+            {
+                filename = "__subterra__/graphics/entity/belt-elevator/regular-belt-top.png",
+                priority = "extra-high",
+                width = 96,
+                height = 96,
+                y = 96,
+                hr_version =
+                {
+                    filename = "__subterra__/graphics/entity/belt-elevator/hr-regular-belt-top.png",
+                    priority = "extra-high",
+                    width = 192,
+                    height =192,
+                    y = 192,
+                    scale = 0.5
+                }
+            }
+        },
+        top_out = 
+        {
+            sheet =
+            {
+                filename = "__subterra__/graphics/entity/belt-elevator/regular-belt-top.png",
+                priority = "extra-high",
+                width = 96,
+                height = 96,
+                hr_version =
+                {
+                    filename = "__subterra__/graphics/entity/belt-elevator/hr-regular-belt-top.png",
+                    priority = "extra-high",
+                    width = 192,
+                    height = 192,
+                    scale = 0.5
+                }
+            }
+        }
     },
-    ["fast-transport-belt"] = {
+    ["fast-underground-belt"] = {
         up_icon = "__subterra__/graphics/icons/belt-up-2-icon-32.png",
         down_icon = "__subterra__/graphics/icons/belt-down-2-icon-32.png",
-        technology_name = "logistics-2"
+        technology_name = "logistics-2",
+        top_in =
+        {
+            sheet =
+            {
+                filename = "__subterra__/graphics/entity/belt-elevator/fast-belt-top.png",
+                priority = "extra-high",
+                width = 96,
+                height = 96,
+                y = 96,
+                hr_version =
+                {
+                    filename = "__subterra__/graphics/entity/belt-elevator/hr-fast-belt-top.png",
+                    priority = "extra-high",
+                    width = 192,
+                    height =192,
+                    y = 192,
+                    scale = 0.5
+                }
+            }
+        },
+        top_out = 
+        {
+            sheet =
+            {
+                filename = "__subterra__/graphics/entity/belt-elevator/fast-belt-top.png",
+                priority = "extra-high",
+                width = 96,
+                height = 96,
+                hr_version =
+                {
+                    filename = "__subterra__/graphics/entity/belt-elevator/hr-fast-belt-top.png",
+                    priority = "extra-high",
+                    width = 192,
+                    height = 192,
+                    scale = 0.5
+                }
+            }
+        }
     },
-    ["express-transport-belt"] = {
+    ["express-underground-belt"] = {
         up_icon = "__subterra__/graphics/icons/belt-up-3-icon-32.png",
         down_icon = "__subterra__/graphics/icons/belt-down-3-icon-32.png",
-        technology_name = "logistics-3"
+        technology_name = "logistics-3",
+        top_in =
+        {
+            sheet =
+            {
+                filename = "__subterra__/graphics/entity/belt-elevator/express-belt-top.png",
+                priority = "extra-high",
+                width = 96,
+                height = 96,
+                y = 96,
+                hr_version =
+                {
+                    filename = "__subterra__/graphics/entity/belt-elevator/hr-express-belt-top.png",
+                    priority = "extra-high",
+                    width = 192,
+                    height =192,
+                    y = 192,
+                    scale = 0.5
+                }
+            }
+        },
+        top_out = 
+        {
+            sheet =
+            {
+                filename = "__subterra__/graphics/entity/belt-elevator/express-belt-top.png",
+                priority = "extra-high",
+                width = 96,
+                height = 96,
+                hr_version =
+                {
+                    filename = "__subterra__/graphics/entity/belt-elevator/hr-express-belt-top.png",
+                    priority = "extra-high",
+                    width = 192,
+                    height = 192,
+                    scale = 0.5
+                }
+            }
+        }
     }
 }
 
@@ -88,22 +202,46 @@ function make_belt_elevator(belt_prototype, source_name, config)
         icon_down = belt_prototype.icon
     end
 
+    local target_name, subs = string.gsub(belt_prototype.name, "underground", "transport")
+    log(target_name)
     local up = table.deepcopy(belt_prototype)
     local down = table.deepcopy(belt_prototype)
-    local out = table.deepcopy(belt_prototype)
+    local bottom_out = table.deepcopy(belt_prototype)
+    local top_out = table.deepcopy(belt_prototype)
 
-    up_name = "subterra-" .. up.name .. "-up"
+    up_name = "subterra-" .. target_name .. "-up"
     up.name = up_name
     up.minable.result = up_name
     up.max_distance = 0
-    down_name = "subterra-" .. down.name .. "-down"
+    up.type = "linked-belt"
+    --up.structure.direction_in = config.bottom_in
+    --up.structure.direction_out = config.bottom_out
+
+    down_name = "subterra-" .. target_name .. "-down"
     down.name = down_name
     down.minable.result = down_name
     down.max_distance = 0
-    out_name = "subterra-" .. out.name .. "-out"
-    out.name = out_name
-    out.minable.result = out_name
-    out.max_distance = 0
+    down.type = "linked-belt"
+    log(serpent.block(down.structure))
+    down.structure.direction_in = config.top_in
+    down.structure.direction_out = config.top_in
+    log(serpent.block(down.structure))
+
+    bottom_out_name = "subterra-" .. target_name .. "-bottom-out"
+    bottom_out.name = bottom_out_name
+    bottom_out.minable.result = bottom_out_name
+    bottom_out.max_distance = 0
+    bottom_out.type = "linked-belt"
+    --bottom_out.structure.direction_in = config.bottom_in
+    --bottom_out.structure.direction_out = config.bottom_out
+
+    top_out_name = "subterra-" .. target_name .. "-top-out"
+    top_out.name = top_out_name
+    top_out.minable.result = top_out_name
+    top_out.max_distance = 0
+    top_out.type = "linked-belt"
+    top_out.structure.direction_in = config.top_in
+    top_out.structure.direction_out = config.top_out
 
     local up_recipe = make_recipe(up, source_name)
     local up_ex = make_exchange_recipe(down, up)
@@ -113,7 +251,8 @@ function make_belt_elevator(belt_prototype, source_name, config)
     local down_ex = make_exchange_recipe(up, down)
     local down_item = make_item(down, icon_down)
 
-    local out_item = make_item(out, belt_prototype.icon)
+    local bottom_out_item = make_item(bottom_out, belt_prototype.icon)
+    local top_out_item = make_item(top_out, belt_prototype.icon)
 
     data:extend({
         up,
@@ -124,8 +263,10 @@ function make_belt_elevator(belt_prototype, source_name, config)
         down_item,
         down_recipe,
         down_ex,
-        out,
-        out_item
+        bottom_out,
+        bottom_out_item,
+        top_out,
+        top_out_item,
     })
 
     if config.technology_name then
@@ -152,7 +293,7 @@ function make_belt_elevator(belt_prototype, source_name, config)
     end
 end
 log("Making Belt Elevator Recipies")
-local belts = data.raw["transport-belt"]
+local belts = data.raw["underground-belt"]
 if belts then
     for name, config in pairs(subterra.configured_belts) do
         local source_prototype = belts[name]
@@ -161,4 +302,4 @@ if belts then
         end
     end
 end
-log(serpent.block(data.raw["transport-belt"]))
+--log(serpent.block(data.raw["transport-belt"]))

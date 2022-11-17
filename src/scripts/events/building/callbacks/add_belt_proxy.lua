@@ -25,13 +25,13 @@ local add_belt_proxy = function(belt, surface, creator)
         ent_name = belt.ghost_name
     end
 
-    local target_name, subs = gsub(ent_name, "-down", "-out")
+    local target_name, subs = gsub(ent_name, "-down", "-bottom-out")
     local is_down
     if subs > 0 then 
         is_down = true
     else
         is_down = false
-        target_name, subs = gsub(ent_name, "-up", "-out")
+        target_name, subs = gsub(ent_name, "-up", "-top-out")
     end
 
     --debug(target_name)
@@ -76,7 +76,7 @@ local add_belt_proxy = function(belt, surface, creator)
             name = target_name,
             position = belt.position,
             force = belt.force,
-            direction = belt.direction
+            direction = belt.direction,
         }
         
         local belt_proxy = {
@@ -93,6 +93,11 @@ local add_belt_proxy = function(belt, surface, creator)
         -- for k, v in pairs(belt_proxy) do
         --     debug(tostring(k) .. "|" ..  tostring(v))
         -- end
+
+        belt.linked_belt_type = "input"
+        target_entity.linked_belt_type = "output"
+
+        belt.connect_linked_belts(target_entity)
 
         global.belt_inputs[belt.unit_number] = belt_proxy
         global.belt_outputs[target_entity.unit_number] = belt_proxy

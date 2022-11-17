@@ -15,7 +15,7 @@ local pad_interval = (subterra and subterra.config and subterra.config.TELEPAD_U
 register_nth_tick_event (pad_interval, check_telepads)
 
 -- update belts
-register_event(defines.events.on_tick, update_belt_elevators)
+-- register_event(defines.events.on_tick, update_belt_elevators)
 
 -- power
 register_event(defines.events.on_tick, update_power)

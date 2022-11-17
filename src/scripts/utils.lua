@@ -139,6 +139,8 @@ function get_underground_settings(surface)
         end
     end
     gen_settings.peaceful_mode = true
+    gen_settings.daytime = 0.5  -- set it to midnight
+    gen_settings.wind_speed = 0
 
     return gen_settings
 end
@@ -183,6 +185,9 @@ function create_layer(depth, gen_settings)
         surface = game.create_surface(layer_name, gen_settings)
         surface.daytime = 0.5
         surface.freeze_daytime = true
+        surface.show_clouds = false
+        surface.wind_speed = 0
+        surface.solar_power_multiplier  = 0
     end
 
     if remote.interfaces["RSO"] then

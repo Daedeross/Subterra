@@ -17,7 +17,7 @@ end
 
 local function blank_pole_picture()
     return {
-        filename = S_ROOT .. "/graphics/entities/power/big-electric-pole-blank.png",
+        filename = S_ROOT .. "/graphics/entity/power/big-electric-pole-blank.png",
         priority = "low",
         width = 168,
         height = 165,
@@ -50,7 +50,7 @@ data:extend({
     animations =
     {
         {
-            filename = "__subterra__/graphics/entities/power/power-interface.png",
+            filename = "__subterra__/graphics/entity/power/power-interface.png",
             priority = "high",
             width = 400,
             height = 300,

@@ -143,17 +143,17 @@ end
 
 rotate_funcs["belt-elevator"] = rotate_belt
 
-register_event(defines.events.on_player_rotated_entity,
-function (event)
-    local entity = event.entity
-    local ent_name = entity.name
+-- register_event(defines.events.on_player_rotated_entity,
+-- function (event)
+--     local entity = event.entity
+--     local ent_name = entity.name
 
-    if global.belt_elevators[ent_name] then
-        ent_name = "belt-elevator"
-    end
+--     if global.belt_elevators[ent_name] then
+--         ent_name = "belt-elevator"
+--     end
 
-    local func = rotate_funcs[ent_name]
-    if func then
-        func(entity)
-    end
-end)
+--     local func = rotate_funcs[ent_name]
+--     if func then
+--         func(entity)
+--     end
+-- end)
